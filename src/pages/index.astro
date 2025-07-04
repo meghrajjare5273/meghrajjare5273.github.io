@@ -1,5 +1,5 @@
 ---
-import PortfolioHero from "../components/Header";
+import Header from "../components/Header";
 import BaseLayout from "../layouts/BaseLayout.astro";
 
 
@@ -8,5 +8,5 @@ import BaseLayout from "../layouts/BaseLayout.astro";
 // Don't want to use any of this? Delete everything in this file, the `assets`, `components`, and `layouts` directories, and start fresh.
 ---
 <BaseLayout>
-	<PortfolioHero />
+	<Header client:load/>
 </BaseLayout>

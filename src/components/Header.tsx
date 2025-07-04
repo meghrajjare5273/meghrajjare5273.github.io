@@ -12,7 +12,7 @@ interface PortfolioHeroProps {
   className?: string;
 }
 
-const PortfolioHero: React.FC<PortfolioHeroProps> = ({ className = "" }) => {
+const Header: React.FC<PortfolioHeroProps> = ({ className = "" }) => {
   const [activeTab, setActiveTab] = useState<string>("hey");
   const [isDarkMode, setIsDarkMode] = useState<boolean>(false);
 
@@ -61,7 +61,7 @@ const PortfolioHero: React.FC<PortfolioHeroProps> = ({ className = "" }) => {
               <div className="w-3 h-3 bg-yellow-500 rounded-full"></div>
               <div className="w-3 h-3 bg-green-500 rounded-full"></div>
               <span className="ml-4 text-sm font-medium opacity-60">
-                danielsun.space
+                meghrajjare5273.github.io
               </span>
             </div>
 
@@ -127,10 +127,10 @@ const PortfolioHero: React.FC<PortfolioHeroProps> = ({ className = "" }) => {
           <div className="mt-16 lg:mt-24">
             <h2 className="text-6xl md:text-8xl lg:text-9xl xl:text-[12rem] font-black leading-none tracking-tight">
               <span className="inline-block transform hover:scale-105 transition-transform duration-300">
-                Daniel
+                Meghraj
               </span>
               <span className="inline-block ml-4 lg:ml-8 transform hover:scale-105 transition-transform duration-300">
-                Sun
+                Jare
               </span>
             </h2>
           </div>
@@ -158,4 +158,4 @@ const PortfolioHero: React.FC<PortfolioHeroProps> = ({ className = "" }) => {
   );
 };
 
-export default PortfolioHero;
+export default Header;
