@@ -1,6 +1,9 @@
 ---
-import Header from "../components/Header";
-import BaseLayout from "../layouts/BaseLayout.astro";
+import About from "@/components/About";
+import Header from "@/components/Header";
+import Hero from "@/components/Hero";
+import Work from "@/components/Work"
+import BaseLayout from "@/layouts/BaseLayout.astro";
 
 
 
@@ -9,4 +12,7 @@ import BaseLayout from "../layouts/BaseLayout.astro";
 ---
 <BaseLayout>
 	<Header client:load/>
+	<Hero />
+	<About />
+	<Work />
 </BaseLayout>
