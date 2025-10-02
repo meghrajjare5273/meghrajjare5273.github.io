@@ -1,11 +1,19 @@
 ---
-import Welcome from '../components/Welcome.astro';
 import Layout from '../layouts/Layout.astro';
-
-// Welcome to Astro! Wondering what to do next? Check out the Astro documentation at https://docs.astro.build
-// Don't want to use any of this? Delete everything in this file, the `assets`, `components`, and `layouts` directories, and start fresh.
+import {Hero} from '@/components/Hero';
 ---
 
 <Layout>
-	<Welcome />
+  <Hero client:load />
+  
+  <!-- Additional sections with proper spacing -->
+  <section class="min-h-screen bg-background p-8 relative z-10">
+    <div class="max-w-4xl mx-auto">
+      <h2 class="text-4xl font-bold mb-8">About Me</h2>
+      <p class="text-xl text-muted-foreground leading-relaxed">
+        Passionate software developer specializing in AI applications, 
+        machine learning, and modern web technologies.
+      </p>
+    </div>
+  </section>
 </Layout>
