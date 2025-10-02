@@ -5,7 +5,7 @@ dist/
 .astro/
 
 # IDE Config
-.vscode/
+/.vscode
 
 # dependencies
 node_modules/
