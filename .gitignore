@@ -4,6 +4,9 @@ dist/
 # generated types
 .astro/
 
+# IDE Config
+.vscode/
+
 # dependencies
 node_modules/
 
