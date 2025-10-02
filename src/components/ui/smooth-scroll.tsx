@@ -4,6 +4,7 @@ import * as React from "react";
 import {
   motion,
   useMotionTemplate,
+  useMotionValueEvent,
   useScroll,
   useTransform,
 } from "motion/react";
@@ -21,6 +22,16 @@ interface SmoothScrollHeroProps {
 
 interface SmoothScrollHeroBackgroundProps extends SmoothScrollHeroProps {}
 
+// Global tuning for the "give it some time" hold and the fade-out window
+const HOLD_BEFORE_FADE_PX = 200; // how long to linger after text finishes entering
+const FADE_OUT_DURATION_PX = 500; // how long the fade-out takes
+const EXTRA_HOLD_PX = HOLD_BEFORE_FADE_PX + FADE_OUT_DURATION_PX + 200; // ensures background stays pinned through fade
+
+/**
+ * Background layer:
+ * - Maintains clipPath reveal tied to scroll.
+ * - Adds a synchronized blur filter that ramps from 0px to maxBlur as the reveal completes.
+ */
 const SmoothScrollHeroBackground: React.FC<SmoothScrollHeroBackgroundProps> = ({
   scrollHeight = 1500,
   desktopImage,
@@ -30,7 +41,7 @@ const SmoothScrollHeroBackground: React.FC<SmoothScrollHeroBackgroundProps> = ({
 }) => {
   const { scrollY } = useScroll();
 
-  // Fixed clip-path calculations - these should animate the polygon vertices correctly
+  // Image reveal via clip-path (polygon animates from a smaller rect to full).
   const clipStart = useTransform(
     scrollY,
     [0, scrollHeight],
@@ -44,19 +55,30 @@ const SmoothScrollHeroBackground: React.FC<SmoothScrollHeroBackgroundProps> = ({
 
   const clipPath = useMotionTemplate`polygon(${clipStart}% ${clipStart}%, ${clipEnd}% ${clipStart}%, ${clipEnd}% ${clipEnd}%, ${clipStart}% ${clipEnd}%)`;
 
-  // Fixed background size animation - should start larger and scale down
+  // Background size subtle settle
   const backgroundSize = useTransform(
     scrollY,
     [0, scrollHeight + 500],
     ["170%", "100%"]
   );
 
+  // Blur synchronized with reveal completion
+  const maxBlur = 12;
+  const revealProgress = useTransform(
+    clipEnd,
+    [finalClipPercentage, 100],
+    [0, 1],
+    { clamp: true }
+  );
+  const blurPx = useTransform(revealProgress, [0, 1], [0, maxBlur]);
+  const filter = useMotionTemplate`blur(${blurPx}px)`;
+
   return (
     <motion.div
       className="sticky top-0 h-screen w-full bg-black overflow-hidden"
       style={{
         clipPath,
-        willChange: "transform, opacity",
+        willChange: "clip-path, transform, filter",
       }}
     >
       {/* Mobile background */}
@@ -69,6 +91,8 @@ const SmoothScrollHeroBackground: React.FC<SmoothScrollHeroBackgroundProps> = ({
           backgroundRepeat: "no-repeat",
           width: "100%",
           height: "100%",
+          filter,
+          willChange: "filter, background-size",
         }}
       />
       {/* Desktop background */}
@@ -81,12 +105,22 @@ const SmoothScrollHeroBackground: React.FC<SmoothScrollHeroBackgroundProps> = ({
           backgroundRepeat: "no-repeat",
           width: "100%",
           height: "100%",
+          filter,
+          willChange: "filter, background-size",
         }}
       />
     </motion.div>
   );
 };
 
+/**
+ * Foreground text:
+ * - Appears only after background reveal reaches the gate.
+ * - Title mounts at gate to trigger per-character slide-up/fade-in.
+ * - Subtitle and description fade/slide in after, staggered by scroll distance.
+ * - Scroll indicator fades on initial scroll.
+ * - NEW: After a short hold, all text fades out while the background remains pinned.
+ */
 const SmoothScrollHeroText: React.FC<{
   title: string;
   subtitle?: string;
@@ -95,99 +129,133 @@ const SmoothScrollHeroText: React.FC<{
 }> = ({ title, subtitle, description, scrollHeight }) => {
   const { scrollY } = useScroll();
 
-  // Text animations that work with the scroll container
-  const titleY = useTransform(scrollY, [0, scrollHeight * 0.5], [0, -100]);
-  const titleOpacity = useTransform(scrollY, [0, scrollHeight * 0.3], [1, 0]);
-  const titleScale = useTransform(scrollY, [0, scrollHeight * 0.4], [1, 0.8]);
+  // Gate when image is "fully revealed"
+  const gateStart = scrollHeight * 0.6;
 
-  const subtitleY = useTransform(scrollY, [0, scrollHeight * 0.6], [0, -150]);
-  const subtitleOpacity = useTransform(
-    scrollY,
-    [0, scrollHeight * 0.4],
-    [1, 0]
-  );
+  // Title mounts at gate for per-character entrance
+  const [showTitle, setShowTitle] = React.useState(false);
+  React.useEffect(() => {
+    setShowTitle(false);
+  }, []);
+  useMotionValueEvent(scrollY, "change", (latest) => {
+    if (!showTitle && latest >= gateStart) {
+      setShowTitle(true);
+    }
+  });
 
-  const descriptionY = useTransform(
+  // Entrance sequencing windows
+  const titleRange: [number, number] = [gateStart, gateStart + 200];
+  const subtitleRange: [number, number] = [gateStart + 150, gateStart + 350];
+  const descriptionRange: [number, number] = [gateStart + 300, gateStart + 500];
+
+  const titleOpacity = useTransform(scrollY, titleRange, [0, 1], {
+    clamp: true,
+  });
+  const titleY = useTransform(scrollY, titleRange, [20, 0], { clamp: true });
+  const titleScale = useTransform(scrollY, titleRange, [0.98, 1], {
+    clamp: true,
+  });
+
+  const subtitleOpacity = useTransform(scrollY, subtitleRange, [0, 1], {
+    clamp: true,
+  });
+  const subtitleY = useTransform(scrollY, subtitleRange, [24, 0], {
+    clamp: true,
+  });
+
+  const descriptionOpacity = useTransform(scrollY, descriptionRange, [0, 1], {
+    clamp: true,
+  });
+  const descriptionY = useTransform(scrollY, descriptionRange, [28, 0], {
+    clamp: true,
+  });
+
+  // Scroll indicator fades immediately on start
+  const indicatorOpacity = useTransform(scrollY, [0, 60], [1, 0], {
+    clamp: true,
+  });
+
+  // NEW: Global text fade-out after a hold
+  const fadeOutStart = descriptionRange[1] + HOLD_BEFORE_FADE_PX; // after description finishes + hold
+  const fadeOutEnd = fadeOutStart + FADE_OUT_DURATION_PX; // gradual fade window
+  const overallTextOpacity = useTransform(
     scrollY,
-    [0, scrollHeight * 0.7],
-    [0, -200]
-  );
-  const descriptionOpacity = useTransform(
-    scrollY,
-    [0, scrollHeight * 0.5],
-    [1, 0]
+    [fadeOutStart, fadeOutEnd],
+    [1, 0],
+    {
+      clamp: true,
+    }
   );
 
   return (
-    <div className="fixed inset-0 flex items-center justify-center z-20 pointer-events-none">
+    <motion.div
+      className="fixed inset-0 flex items-center justify-center z-20 pointer-events-none"
+      style={{ opacity: overallTextOpacity }} // apply global fade-out
+    >
       <div className="text-center text-white px-4 max-w-4xl">
-        <motion.h1
-          style={{
-            y: titleY,
-            opacity: titleOpacity,
-            scale: titleScale,
-          }}
-          className="text-4xl md:text-7xl lg:text-8xl font-bold mb-4 md:mb-6 leading-tight tracking-tight"
-        >
-          {title.split("").map((char, index) => (
-            <motion.span
-              key={index}
-              initial={{ opacity: 0, y: 50 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{
-                delay: index * 0.05,
-                duration: 0.5,
-                ease: "easeOut",
-              }}
-              className="inline-block"
-            >
-              {char === " " ? "\u00A0" : char}
-            </motion.span>
-          ))}
-        </motion.h1>
+        {/* Title */}
+        {showTitle && (
+          <motion.h1
+            style={{
+              y: titleY,
+              opacity: titleOpacity,
+              scale: titleScale,
+            }}
+            className="text-4xl md:text-7xl lg:text-8xl font-bold mb-4 md:mb-6 leading-tight tracking-tight"
+          >
+            {title.split("").map((char, index) => (
+              <motion.span
+                key={index}
+                initial={{ opacity: 0, y: 50 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{
+                  delay: index * 0.05, // per-character stagger
+                  duration: 0.45,
+                  ease: "easeOut",
+                }}
+                className="inline-block"
+              >
+                {char === " " ? "\u00A0" : char}
+              </motion.span>
+            ))}
+          </motion.h1>
+        )}
 
+        {/* Subtitle */}
         {subtitle && (
           <motion.p
             style={{
               y: subtitleY,
               opacity: subtitleOpacity,
             }}
-            initial={{ opacity: 0, y: 30 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.5, duration: 0.6, ease: "easeOut" }}
             className="text-xl md:text-3xl lg:text-4xl font-light mb-4 md:mb-6 text-gray-200"
           >
             {subtitle}
           </motion.p>
         )}
 
+        {/* Description */}
         {description && (
           <motion.p
             style={{
               y: descriptionY,
               opacity: descriptionOpacity,
             }}
-            initial={{ opacity: 0, y: 30 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.8, duration: 0.6, ease: "easeOut" }}
             className="text-lg md:text-xl lg:text-2xl font-normal max-w-2xl mx-auto text-gray-300 leading-relaxed"
           >
             {description}
           </motion.p>
         )}
 
-        {/* Scroll indicator - only show when text is visible */}
+        {/* Scroll indicator: bottom-center, fades on first scroll */}
         <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ delay: 1.2, duration: 0.6 }}
-          style={{ opacity: titleOpacity }}
-          className="absolute bottom-8 left-1/2 transform -translate-x-1/2 pointer-events-auto"
+          style={{ opacity: indicatorOpacity }}
+          className="absolute bottom-8 left-1/2 -translate-x-1/2 pointer-events-auto"
         >
           <motion.div
             animate={{ y: [0, 10, 0] }}
             transition={{ repeat: Infinity, duration: 2, ease: "easeInOut" }}
-            className="w-6 h-10 border-2 border-white rounded-full flex justify-center"
+            className="w-6 h-10 border-2 border-white/80 rounded-full flex justify-center"
           >
             <motion.div
               animate={{ y: [0, 15, 0] }}
@@ -197,13 +265,13 @@ const SmoothScrollHeroText: React.FC<{
           </motion.div>
         </motion.div>
       </div>
-    </div>
+    </motion.div>
   );
 };
 
 /**
- * A smooth scroll hero component with parallax background effect and interactive typography
- * Fixed to work correctly with scroll positioning and viewport
+ * A smooth scroll hero component with parallax background effect and interactive typography.
+ * Ensures the background remains pinned through the fade-out window by extending the scroll container.
  */
 const SmoothScrollHero: React.FC<SmoothScrollHeroProps> = ({
   scrollHeight = 1500,
@@ -217,9 +285,11 @@ const SmoothScrollHero: React.FC<SmoothScrollHeroProps> = ({
 }) => {
   return (
     <>
-      {/* This is the key fix - proper scroll container structure */}
+      {/* Extend container height so sticky background stays pinned during the fade-out stage */}
       <div
-        style={{ height: `calc(${scrollHeight}px + 100vh)` }}
+        style={{
+          height: `calc(${scrollHeight}px + ${EXTRA_HOLD_PX}px + 100vh)`,
+        }}
         className="relative w-full"
       >
         <SmoothScrollHeroBackground
@@ -233,7 +303,7 @@ const SmoothScrollHero: React.FC<SmoothScrollHeroProps> = ({
           description={description}
         />
 
-        {/* Text overlay positioned correctly */}
+        {/* Text overlay */}
         <SmoothScrollHeroText
           title={title}
           subtitle={subtitle}
