@@ -141,3 +141,7 @@ html {
 ::-webkit-scrollbar-thumb:hover {
   background: hsl(var(--foreground));
 }
+
+.font-display {
+  font-family: "Space Grotesk Variable", ui-sans-serif, system-ui, sans-serif;
+}

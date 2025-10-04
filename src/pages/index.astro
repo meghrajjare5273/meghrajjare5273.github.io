@@ -1,6 +1,8 @@
 ---
 import Layout from '../layouts/Layout.astro';
 import {Hero} from '@/components/Hero';
+import {HeroLetterReveal} from "@/components/HeroLetterReveal"
+
 ---
 
 <Layout>
@@ -16,4 +18,5 @@ import {Hero} from '@/components/Hero';
       </p>
     </div>
   </section>
+ <HeroLetterReveal client:load />
 </Layout>
