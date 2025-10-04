@@ -5,8 +5,8 @@ const Hero = () => {
     <div className="relative min-h-screen">
       <SmoothScrollHero
         scrollHeight={1500}
-        desktopImage="https://images.unsplash.com/photo-1517077304055-6e89abbf09b0?q=80&w=2418&auto=format&fit=crop&ixlib=rb-4.1.0"
-        mobileImage="https://images.unsplash.com/photo-1517077304055-6e89abbf09b0?q=80&w=1287&auto=format&fit=crop&ixlib=rb-4.1.0"
+        desktopImage="/image.jpeg"
+        mobileImage="/image.jpeg"
         initialClipPercentage={25}
         finalClipPercentage={75}
         title="Meghraj Jare"
