@@ -13,7 +13,7 @@ import {
   Braces,
   Binary,
 } from "lucide-react";
-import PyramidAnimation from "../ui/pyramid";
+import { FlickeringGrid } from "@/components/ui/flickering-grid";
 
 const HeroLetterReveal = () => {
   // Tech logos - you can replace these with custom SVG imports
@@ -73,12 +73,14 @@ const HeroLetterReveal = () => {
   return (
     <section className="relative flex items-center justify-center min-h-screen bg-gradient-to-br from-neutral-50 via-white to-neutral-100 dark:from-neutral-950 dark:via-neutral-900 dark:to-neutral-950 overflow-hidden">
       <div className="absolute inset-0 z-0 flex items-center justify-center mb-10 dark:opacity-10">
-        <PyramidAnimation
-          wireframe={false}
-          color={true}
-          speed={0.02}
-          axis="y"
-          edges={true}
+        <FlickeringGrid
+          squareSize={4}
+          gridGap={6}
+          color="#3B4250"
+          maxOpacity={0.5}
+          flickerChance={0.1}
+          height={1080}
+          width={1920}
         />
       </div>
       {/* Gradient overlay for depth */}
