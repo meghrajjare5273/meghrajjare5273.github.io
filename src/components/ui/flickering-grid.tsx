@@ -66,16 +66,9 @@ const FlickeringGrid: React.FC<FlickeringGridProps> = ({
   useEffect(() => {
     if (typeof window === "undefined") return;
 
-    const computeIsDark = () => {
-      const hasHtmlDark = document.documentElement.classList.contains("dark");
-      if (hasHtmlDark) return true;
-      if (
-        window.matchMedia &&
-        window.matchMedia("(prefers-color-scheme: dark)").matches
-      )
-        return true;
-      return false;
-    };
+    // Only trust the html class set by the app
+    const computeIsDark = () =>
+      document.documentElement.classList.contains("dark");
 
     setIsDark(computeIsDark());
 
@@ -85,16 +78,9 @@ const FlickeringGrid: React.FC<FlickeringGridProps> = ({
       attributeFilter: ["class"],
     });
 
-    const mql = window.matchMedia?.("(prefers-color-scheme: dark)");
-    const handleChange = (e: MediaQueryListEvent) =>
-      setIsDark(
-        e.matches || document.documentElement.classList.contains("dark")
-      );
-    mql?.addEventListener?.("change", handleChange);
-
+    // Remove matchMedia listener entirely
     return () => {
       mo.disconnect();
-      mql?.removeEventListener?.("change", handleChange);
     };
   }, []);
 
