@@ -1,19 +1,11 @@
 ---
 import Layout from '../layouts/Layout.astro';
-import {Hero} from '@/components/Hero';
+import {HeroLetterReveal} from "@/components/landing/HeroLetterReveal"
+import { Hero } from '@/components/Hero';
+
 ---
 
 <Layout>
-  <Hero client:load />
-  
-  <!-- Additional sections with proper spacing -->
-  <section class="min-h-screen bg-background p-8 relative z-10">
-    <div class="max-w-4xl mx-auto">
-      <h2 class="text-4xl font-bold mb-8">About Me</h2>
-      <p class="text-xl text-muted-foreground leading-relaxed">
-        Passionate software developer specializing in AI applications, 
-        machine learning, and modern web technologies.
-      </p>
-    </div>
-  </section>
+ <HeroLetterReveal client:load />
+ <Hero client:load />
 </Layout>
