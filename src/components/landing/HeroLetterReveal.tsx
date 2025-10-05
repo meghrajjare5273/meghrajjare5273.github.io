@@ -72,20 +72,22 @@ const HeroLetterReveal = () => {
 
   return (
     <section className="relative flex items-center justify-center min-h-screen bg-gradient-to-br from-neutral-50 via-white to-neutral-100 dark:from-neutral-950 dark:via-neutral-900 dark:to-neutral-950 overflow-hidden">
-      <div className="absolute inset-0 z-0 flex items-center justify-center mb-10 dark:opacity-10">
+      {/* Put the overlay first and keep it under the grid */}
+      <div className="absolute inset-0 z-0 bg-[radial-gradient(circle_at_50%_50%,rgba(0,0,0,0.02),transparent_50%)] dark:bg-[radial-gradient(circle_at_50%_50%,rgba(255,255,255,0.03),transparent_50%)]" />
+
+      {/* Raise the grid above the overlay; remove dark:opacity-10 wrapper */}
+      <div className="absolute inset-0 z-[1]">
         <FlickeringGrid
           squareSize={6}
           gridGap={6}
-          // color="#3B4250"
-          colorDark="#ffffff"
-          // darkColor="#ffffff"
-          // maxOpacity={0.5}
-          flickerChance={0.5}
-          height={1080}
-          width={1920}
-          maxOpacity={0.35}
-          maxOpacityDark={0.18}
-          colorLight="#3B4250"
+          colorLight="#0B0F19" // darker than #3B4250 on white
+          colorDark="#FFFFFF"
+          minOpacity={0.1} // raise light-mode floor
+          maxOpacity={0.24} // keep tasteful but readable
+          flickerChance={0.4}
+          minOpacityDark={0.01}
+          maxOpacityDark={0.14}
+          className="min-h-screen w-full"
         />
       </div>
       {/* Gradient overlay for depth */}
