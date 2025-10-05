@@ -26,7 +26,6 @@ const LetterReveal = ({
         "font-display font-bold tracking-tight",
         "text-7xl md:text-8xl lg:text-[12rem] xl:text-[14rem]",
         "select-none",
-        "text-black",
         className,
       ].join(" ")}
     >
@@ -45,7 +44,7 @@ const LetterReveal = ({
             }}
           >
             {/* The letter itself */}
-            <span className="relative z-10 inline-block">
+            <span className="relative z-10 inline-block text-black hover:text-transparent">
               {char === " " ? "\u00A0" : char}
             </span>
 

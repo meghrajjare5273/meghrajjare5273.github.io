@@ -1,5 +1,7 @@
 @import "tailwindcss";
 @import "tw-animate-css";
+@import "@fontsource-variable/space-grotesk";
+
 
 @custom-variant dark (&:is(.dark *));
 
