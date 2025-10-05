@@ -13,6 +13,7 @@ import {
   Braces,
   Binary,
 } from "lucide-react";
+import PyramidAnimation from "../ui/pyramid";
 
 const HeroLetterReveal = () => {
   // Tech logos - you can replace these with custom SVG imports
@@ -71,6 +72,15 @@ const HeroLetterReveal = () => {
 
   return (
     <section className="relative flex items-center justify-center min-h-screen bg-gradient-to-br from-neutral-50 via-white to-neutral-100 dark:from-neutral-950 dark:via-neutral-900 dark:to-neutral-950 overflow-hidden">
+      <div className="absolute inset-0 z-0 flex items-center justify-center mb-10 dark:opacity-10">
+        <PyramidAnimation
+          wireframe={false}
+          color={true}
+          speed={0.02}
+          axis="y"
+          edges={true}
+        />
+      </div>
       {/* Gradient overlay for depth */}
       <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_50%,rgba(0,0,0,0.02),transparent_50%)] dark:bg-[radial-gradient(circle_at_50%_50%,rgba(255,255,255,0.03),transparent_50%)]" />
 
@@ -80,20 +90,18 @@ const HeroLetterReveal = () => {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6 }}
-          className="text-sm md:text-base tracking-[0.3em] uppercase text-neutral-500 dark:text-neutral-400 mb-8 font-light"
+          className="text-sm md:text-base tracking-[0.3em] uppercase mb-50 text-neutral-500 dark:text-neutral-400  font-light"
         >
           Full-Stack Developer • AI Engineer
         </motion.p>
-
         {/* Main title with letter reveal */}
         <LetterReveal
           text="Meghraj Jare"
           images={techLogos}
-          className="bg-clip-text text-transparent bg-gradient-to-br from-neutral-900 via-neutral-700 to-neutral-500 dark:from-white dark:via-neutral-200 dark:to-neutral-400"
+          className="top-32 bg-clip-text text-transparent bg-gradient-to-br from-neutral-900 via-neutral-700 to-neutral-500 dark:from-white dark:via-neutral-200 dark:to-neutral-400"
           imageScale={1.8}
         />
-
-        {/* Description below */}
+        {/* Description below
         <motion.p
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
@@ -103,9 +111,8 @@ const HeroLetterReveal = () => {
           Building intelligent applications and seamless user experiences
           <br className="hidden md:block" />
           with modern technologies
-        </motion.p>
-
-        {/* Optional CTA */}
+        </motion.p> */}
+        {/* Optional CTA
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
@@ -118,7 +125,7 @@ const HeroLetterReveal = () => {
           <button className="px-6 py-3 border-2 border-neutral-300 dark:border-neutral-700 rounded-lg font-medium hover:border-neutral-900 dark:hover:border-white transition-colors">
             Contact Me
           </button>
-        </motion.div>
+        </motion.div> */}
       </div>
     </section>
   );
