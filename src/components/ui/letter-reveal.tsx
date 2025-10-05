@@ -43,10 +43,21 @@ const LetterReveal = ({
               zIndex: isHovered ? 50 : 1,
             }}
           >
-            {/* The letter itself */}
-            <span className="relative z-10 inline-block text-black hover:text-transparent">
+            {/* The letter itself with TextMorph animation */}
+            <motion.span
+              className="relative z-10 inline-block dark:text-white dark:hover:text-transparent text-black hover:text-transparent"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{
+                type: "spring",
+                stiffness: 280,
+                damping: 18,
+                mass: 0.3,
+                delay: index * 0.03, // Stagger animation for each letter
+              }}
+            >
               {char === " " ? "\u00A0" : char}
-            </span>
+            </motion.span>
 
             {/* The image overlay on hover */}
             <AnimatePresence>
