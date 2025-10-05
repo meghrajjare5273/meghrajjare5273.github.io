@@ -2,7 +2,6 @@
 import '@/styles/global.css'
 ---
 
-
 <!doctype html>
 <html lang="en">
 	<head>
@@ -10,7 +9,25 @@ import '@/styles/global.css'
 		<meta name="viewport" content="width=device-width" />
 		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
 		<meta name="generator" content={Astro.generator} />
-		<title>Astro Basics 1</title>
+		<title>Meghraj Jare - Portfolio</title>
+		
+		<!-- Inline script to prevent FOUC (Flash of Unstyled Content) -->
+		<script is:inline>
+			const getThemePreference = () => {
+				if (typeof localStorage !== 'undefined' && localStorage.getItem('theme')) {
+					return localStorage.getItem('theme');
+				}
+				return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+			};
+			
+			const theme = getThemePreference();
+			if (theme === 'dark') {
+				document.documentElement.classList.add('dark');
+			} else {
+				document.documentElement.classList.remove('dark');
+			}
+			window.localStorage.setItem('theme', theme);
+		</script>
 	</head>
 	<body>
 		<slot />
