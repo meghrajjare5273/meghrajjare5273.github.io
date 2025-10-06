@@ -1,44 +1,47 @@
 ---
-import '@/styles/global.css'
+// srclayouts/Layout.astro
+import "../styles/global.css";
 ---
-
 <!doctype html>
 <html lang="en">
-	<head>
-		<meta charset="UTF-8" />
-		<meta name="viewport" content="width=device-width" />
-		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-		<meta name="generator" content={Astro.generator} />
-		<title>Meghraj Jare - Portfolio</title>
-		
-		<!-- Inline script to prevent FOUC (Flash of Unstyled Content) -->
-		<script is:inline>
-			const getThemePreference = () => {
-				if (typeof localStorage !== 'undefined' && localStorage.getItem('theme')) {
-					return localStorage.getItem('theme');
-				}
-				return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
-			};
-			
-			const theme = getThemePreference();
-			if (theme === 'dark') {
-				document.documentElement.classList.add('dark');
-			} else {
-				document.documentElement.classList.remove('dark');
-			}
-			window.localStorage.setItem('theme', theme);
-		</script>
-	</head>
-	<body>
-		<slot />
-	</body>
-</html>
+  <head>
+    <!-- ...existing head... -->
+  </head>
+  <body>
+    <!-- Navbar -->
+    <header class="fixed top-0 inset-x-0 z-50 bg-black/10 dark:bg-white/5 backdrop-blur-md border-b border-white/10">
+      <nav class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+        <!-- Control overall navbar height with h-16 (64px) on mobile and h-20 (80px) on md+ -->
+        <div class="flex h-16 md:h-20 items-center justify-between">
+          <!-- Brand -->
+          <a href="#home" class="flex items-center gap-3 py-2">
+            <span class="grid h-9 w-9 place-items-center rounded-full bg-neutral-200 dark:bg-neutral-800 text-sm font-semibold">M</span>
+            <span class="text-lg md:text-xl font-semibold">Meghraj Jare</span>
+          </a>
 
-<style>
-	html,
-	body {
-		margin: 0;
-		width: 100%;
-		height: 100%;
-	}
-</style>
+          <!-- Links (spacing controlled by gap) -->
+          <ul class="hidden md:flex items-center gap-6 lg:gap-8">
+            <li><a href="#home" class="px-2 py-2 text-sm md:text-base hover:opacity-80">Home</a></li>
+            <li><a href="#about" class="px-2 py-2 text-sm md:text-base hover:opacity-80">About</a></li>
+            <li><a href="#projects" class="px-2 py-2 text-sm md:text-base hover:opacity-80">Projects</a></li>
+            <li><a href="#skills" class="px-2 py-2 text-sm md:text-base hover:opacity-80">Skills</a></li>
+            <li><a href="#contact" class="px-2 py-2 text-sm md:text-base hover:opacity-80">Contact</a></li>
+          </ul>
+
+          <!-- Right actions -->
+          <div class="flex items-center gap-3">
+            <a href="#contact"
+               class="inline-flex items-center rounded-lg px-4 py-2 text-sm md:text-base bg-blue-600 text-white hover:bg-blue-500 transition">
+              Get in Touch
+            </a>
+          </div>
+        </div>
+      </nav>
+    </header>
+
+    <!-- Page content -->
+    <main>
+      <slot />
+    </main>
+  </body>
+</html>

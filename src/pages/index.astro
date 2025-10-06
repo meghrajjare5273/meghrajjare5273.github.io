@@ -1,29 +1,12 @@
 ---
 import Layout from "../layouts/Layout.astro";
-import { Navbar } from "@/components/landing/Navbar";
-import { HeroLetterReveal } from "@/components/landing/HeroLetterReveal";
+import {HeroLetterReveal} from "../components/landing/HeroLetterReveal";
+// import Hero from "../components/Hero";
 ---
-
 <Layout>
-  <Navbar client:load />
-  <div >
+  <!-- Push content below the fixed navbar (64–80px) -->
+  <div class="pt-16 md:pt-20">
     <HeroLetterReveal client:load />
+    <!-- <Hero client:load /> -->
   </div>
-  
-  <!-- Add sections for other nav items -->
-  <section id="about" class="min-h-screen bg-white dark:bg-neutral-900">
-    <!-- About content will go here -->
-  </section>
-  
-  <section id="projects" class="min-h-screen bg-neutral-50 dark:bg-neutral-950">
-    <!-- Projects content will go here -->
-  </section>
-  
-  <section id="skills" class="min-h-screen bg-white dark:bg-neutral-900">
-    <!-- Skills content will go here -->
-  </section>
-  
-  <section id="contact" class="min-h-screen bg-neutral-50 dark:bg-neutral-950">
-    <!-- Contact content will go here -->
-  </section>
 </Layout>
