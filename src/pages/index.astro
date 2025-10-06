@@ -1,14 +1,29 @@
 ---
-import ThemeToggle from '@/components/ui/theme-toggle';
-import Layout from '../layouts/Layout.astro';
-import {HeroLetterReveal} from "@/components/landing/HeroLetterReveal"
-// import { Hero } from '@/components/Hero';
-import { AnimatedThemeToggler } from "@/components/ui/animated-theme-toggle";
-
+import Layout from "../layouts/Layout.astro";
+import { Navbar } from "@/components/landing/Navbar";
+import { HeroLetterReveal } from "@/components/landing/HeroLetterReveal";
 ---
 
 <Layout>
- <!-- <AnimatedThemeToggler client:load />  -->
- <HeroLetterReveal client:load />
- <!-- <Hero client:load /> -->
+  <Navbar client:load />
+  <div >
+    <HeroLetterReveal client:load />
+  </div>
+  
+  <!-- Add sections for other nav items -->
+  <section id="about" class="min-h-screen bg-white dark:bg-neutral-900">
+    <!-- About content will go here -->
+  </section>
+  
+  <section id="projects" class="min-h-screen bg-neutral-50 dark:bg-neutral-950">
+    <!-- Projects content will go here -->
+  </section>
+  
+  <section id="skills" class="min-h-screen bg-white dark:bg-neutral-900">
+    <!-- Skills content will go here -->
+  </section>
+  
+  <section id="contact" class="min-h-screen bg-neutral-50 dark:bg-neutral-950">
+    <!-- Contact content will go here -->
+  </section>
 </Layout>
