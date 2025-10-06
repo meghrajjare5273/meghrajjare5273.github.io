@@ -3,11 +3,12 @@ import ThemeToggle from '@/components/ui/theme-toggle';
 import Layout from '../layouts/Layout.astro';
 import {HeroLetterReveal} from "@/components/landing/HeroLetterReveal"
 // import { Hero } from '@/components/Hero';
+import { AnimatedThemeToggler } from "@/components/ui/animated-theme-toggle";
 
 ---
 
 <Layout>
-    <ThemeToggle client:load />
+ <AnimatedThemeToggler client:load /> 
  <HeroLetterReveal client:load />
  <!-- <Hero client:load /> -->
 </Layout>

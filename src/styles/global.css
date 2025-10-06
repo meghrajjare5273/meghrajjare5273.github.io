@@ -147,3 +147,9 @@ html {
 .font-display {
   font-family: "Space Grotesk Variable", ui-sans-serif, system-ui, sans-serif;
 }
+
+::view-transition-old(root),
+::view-transition-new(root) {
+  animation: none;
+  mix-blend-mode: normal;
+}
