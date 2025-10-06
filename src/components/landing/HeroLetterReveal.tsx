@@ -14,6 +14,7 @@ import {
   Binary,
 } from "lucide-react";
 import { FlickeringGrid } from "@/components/ui/flickering-grid";
+import ThemeToggleButton from "@/components/ui/theme-button";
 
 const HeroLetterReveal = () => {
   // Tech logos - you can replace these with custom SVG imports
@@ -72,29 +73,33 @@ const HeroLetterReveal = () => {
 
   return (
     <section className="relative flex items-center justify-center min-h-screen bg-gradient-to-br from-neutral-50 via-white to-neutral-100 dark:from-neutral-950 dark:via-neutral-900 dark:to-neutral-950 overflow-hidden">
-      {/* Put the overlay first and keep it under the grid */}
+      {/* Existing overlay and grid code remains the same */}
       <div className="absolute inset-0 z-0 bg-[radial-gradient(circle_at_50%_50%,rgba(0,0,0,0.02),transparent_50%)] dark:bg-[radial-gradient(circle_at_50%_50%,rgba(255,255,255,0.03),transparent_50%)]" />
 
-      {/* Raise the grid above the overlay; remove dark:opacity-10 wrapper */}
       <div className="absolute inset-0 z-[1]">
         <FlickeringGrid
           squareSize={6}
           gridGap={6}
-          colorLight="#0B0F19" // darker than #3B4250 on white
+          colorLight="#0B0F19"
           colorDark="#FFFFFF"
-          minOpacity={0.1} // raise light-mode floor
-          maxOpacity={0.24} // keep tasteful but readable
+          minOpacity={0.1}
+          maxOpacity={0.24}
           flickerChance={0.4}
           minOpacityDark={0.01}
           maxOpacityDark={0.14}
           className="min-h-screen w-full"
         />
       </div>
-      {/* Gradient overlay for depth */}
+
       <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_50%,rgba(0,0,0,0.02),transparent_50%)] dark:bg-[radial-gradient(circle_at_50%_50%,rgba(255,255,255,0.03),transparent_50%)]" />
 
+      {/* ADD THEME TOGGLE BUTTON HERE */}
+      <div className="absolute top-0 right-0 z-50">
+        <ThemeToggleButton />
+      </div>
+
       <div className="relative z-10 px-6 py-12 text-center">
-        {/* Subtitle above */}
+        {/* Existing content remains the same */}
         <motion.p
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
@@ -103,38 +108,13 @@ const HeroLetterReveal = () => {
         >
           Full-Stack Developer • AI Engineer
         </motion.p>
-        {/* Main title with letter reveal */}
+        
         <LetterReveal
-          text="Meghraj Jare"
+          text="Meghraj"
           images={techLogos}
           className="top-32 bg-clip-text text-transparent bg-gradient-to-br from-neutral-900 via-neutral-700 to-neutral-500 dark:from-white dark:via-neutral-200 dark:to-neutral-400"
           imageScale={1.8}
         />
-        {/* Description below
-        <motion.p
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6, delay: 0.2 }}
-          className="mt-8 text-base md:text-lg text-neutral-600 dark:text-neutral-300 max-w-2xl mx-auto leading-relaxed"
-        >
-          Building intelligent applications and seamless user experiences
-          <br className="hidden md:block" />
-          with modern technologies
-        </motion.p> */}
-        {/* Optional CTA
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6, delay: 0.4 }}
-          className="mt-12 flex gap-4 justify-center"
-        >
-          <button className="px-6 py-3 bg-neutral-900 dark:bg-white text-white dark:text-neutral-900 rounded-lg font-medium hover:scale-105 transition-transform">
-            View Projects
-          </button>
-          <button className="px-6 py-3 border-2 border-neutral-300 dark:border-neutral-700 rounded-lg font-medium hover:border-neutral-900 dark:hover:border-white transition-colors">
-            Contact Me
-          </button>
-        </motion.div> */}
       </div>
     </section>
   );
