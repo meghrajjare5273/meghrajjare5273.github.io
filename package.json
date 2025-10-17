@@ -11,6 +11,7 @@
   "dependencies": {
     "@astrojs/react": "^4.4.0",
     "@fontsource-variable/space-grotesk": "^5.2.10",
+    "@radix-ui/react-slot": "^1.2.3",
     "@tailwindcss/vite": "^4.1.14",
     "@types/react": "^19.2.0",
     "@types/react-dom": "^19.2.0",
