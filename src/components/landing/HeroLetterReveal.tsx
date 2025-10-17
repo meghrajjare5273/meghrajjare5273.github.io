@@ -76,7 +76,7 @@ const HeroLetterReveal = () => {
       <div className="absolute inset-0 z-0 bg-[radial-gradient(circle_at_50%_50%,rgba(0,0,0,0.02),transparent_50%)] dark:bg-[radial-gradient(circle_at_50%_50%,rgba(255,255,255,0.03),transparent_50%)]" />
 
       {/* Raise the grid above the overlay; remove dark:opacity-10 wrapper */}
-      <div className="absolute inset-0 z-[1]">
+      <div className="absolute inset-0 z-[1] overflow-hidden">
         <FlickeringGrid
           squareSize={6}
           gridGap={6}
