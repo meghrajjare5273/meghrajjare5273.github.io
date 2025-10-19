@@ -90,7 +90,7 @@ const BlurText: React.FC<BlurTextProps> = ({
   );
 };
 
-export default function Component() {
+export default function Hero() {
   const [isDark, setIsDark] = useState(true);
 
   useEffect(() => {

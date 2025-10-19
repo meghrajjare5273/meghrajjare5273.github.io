@@ -1,17 +1,10 @@
 ---
 import Layout from '../layouts/Layout.astro';
-// import HeroLetterReveal from "@/components/temporary/HeroLetterReveal"
-// import HeroSection from '@/components/temporary/HeroSection04';
-import Component from "@/components/landing/Hero"
-// import { Hero } from '@/components/Hero';
-
+import Hero from "@/components/landing/Hero"
+import About from '@/components/landing/About';
 ---
 
 <Layout>
- <!-- <HeroLetterReveal client:load /> -->
-  <!-- <HeroSection client:load /> -->
-   <Component client:load />
-
-
- <!-- <Hero client:load /> -->
+  <Hero client:load />
+  <About client:load />
 </Layout>
