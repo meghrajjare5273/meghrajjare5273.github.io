@@ -3,6 +3,7 @@ import ThemeToggle from '@/components/ui/theme-toggle';
 import Layout from '../layouts/Layout.astro';
 import HeroLetterReveal from "@/components/landing/HeroLetterReveal"
 import HeroSection from '@/components/landing/HeroSection04';
+import Component from "@/components/landing/Hero"
 // import { Hero } from '@/components/Hero';
 
 ---
@@ -10,7 +11,9 @@ import HeroSection from '@/components/landing/HeroSection04';
 <Layout>
     <ThemeToggle client:load />
  <!-- <HeroLetterReveal client:load /> -->
-  <HeroSection client:load />
+  <!-- <HeroSection client:load /> -->
+   <Component client:load />
+
 
  <!-- <Hero client:load /> -->
 </Layout>
