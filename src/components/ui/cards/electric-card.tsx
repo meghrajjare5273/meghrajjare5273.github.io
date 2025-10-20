@@ -1,31 +1,33 @@
-// src/components/cards/ElectricCard.tsx
-"use client";
+// ============================================================================
+// ELECTRIC CARD (updated with optional background image + shared border)
 
-import React, { useMemo } from "react";
+import { useMemo, useState } from "react";
+import { motion } from "framer-motion";
 
+// ============================================================================
 type Variant = "swirl" | "hue";
 
-export type ElectricCardProps = {
+type ElectricCardProps = {
   variant?: Variant;
   color?: string;
   badge?: string;
   title?: string;
   description?: string;
-  width?: string;
-  aspectRatio?: string;
+  image?: string; // NEW: optional background image
   className?: string;
+  onClick?: () => void;
 };
 
-const ElectricCard = ({
+const ElectricCard: React.FC<ElectricCardProps> = ({
   variant = "swirl",
   color = "#dd8448",
   badge = "Dramatic",
   title = "Original",
   description = "In case you'd like to emphasize something very dramatically.",
-  width = "22rem",
-  aspectRatio = "7 / 10",
+  image,
   className = "",
-}: ElectricCardProps) => {
+  onClick,
+}) => {
   const ids = useMemo(() => {
     const key = Math.random().toString(36).slice(2, 8);
     return { swirl: `swirl-${key}`, hue: `hue-${key}` };
@@ -33,9 +35,16 @@ const ElectricCard = ({
 
   const filterURL =
     variant === "hue" ? `url(#${ids.hue})` : `url(#${ids.swirl})`;
+  const [isHovered, setIsHovered] = useState(false);
 
   return (
-    <div className={`ec-wrap ${className}`}>
+    <div
+      className={`ec-wrap ${className}`}
+      onMouseEnter={() => setIsHovered(true)}
+      onMouseLeave={() => setIsHovered(false)}
+      onClick={onClick}
+    >
+      {/* SVG filters */}
       <svg
         className="svg-container"
         xmlns="http://www.w3.org/2000/svg"
@@ -180,85 +189,139 @@ const ElectricCard = ({
         </defs>
       </svg>
 
+      {/* Card base */}
       <div
         className="card-container"
-        style={
-          {
-            ["--electric-border-color" as any]: color,
-            ["--f" as any]: filterURL,
-          } as React.CSSProperties
-        }
+        style={{ "--electric-border-color": color, "--f": filterURL } as any}
       >
         <div className="inner-container">
           <div className="border-outer">
-            <div className="main-card" style={{ width, aspectRatio }} />
+            <div className="main-card" />
           </div>
           <div className="glow-layer-1" />
           <div className="glow-layer-2" />
         </div>
 
+        {/* Optional background image layer under overlays */}
+        {image && (
+          <div className="absolute inset-0 overflow-hidden rounded-2xl">
+            <img
+              src={image}
+              alt=""
+              className="h-full w-full object-cover opacity-70"
+            />
+            <div className="absolute inset-0 bg-gradient-to-b from-black/30 via-black/20 to-black/50" />
+          </div>
+        )}
+
         <div className="overlay-1" />
         <div className="overlay-2" />
         <div className="background-glow" />
 
-        <div className="content-container pointer-events-none">
+        <div className="content-container">
           <div className="content-top">
-            <div className="scrollbar-glass">{badge}</div>
-            <p className="title">{title}</p>
+            <motion.div
+              className="scrollbar-glass"
+              initial={{ opacity: 0, y: -10 }}
+              animate={{ opacity: isHovered ? 1 : 0, y: isHovered ? 0 : -10 }}
+              transition={{ duration: 0.3 }}
+            >
+              {badge}
+            </motion.div>
+
+            <motion.p
+              className="title"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: isHovered ? 1 : 0 }}
+              transition={{ duration: 0.3, delay: 0.1 }}
+            >
+              {title}
+            </motion.p>
           </div>
+
           <hr className="divider" />
+
           <div className="content-bottom">
-            <p className="description">{description}</p>
+            <motion.p
+              className="description"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: isHovered ? 1 : 0 }}
+              transition={{ duration: 0.3, delay: 0.2 }}
+            >
+              {description}
+            </motion.p>
           </div>
         </div>
       </div>
 
+      {/* Electric perimeter echo for consistency with PixelCard and modal */}
+      <div className="pointer-events-none absolute inset-0 rounded-2xl electric-border" />
+
       <style>{`
         :root { --color-neutral-900: oklch(0.185 0 0); }
-        .ec-wrap { position: relative; display: inline-block; color-scheme: light dark; }
+
+        .ec-wrap { position: relative; display: inline-block; color-scheme: light dark; width: 100%; height: 100%; }
         .svg-container { position: absolute; width: 0; height: 0; overflow: hidden; }
+
         .card-container {
-          padding: 2px; border-radius: 1.5em; position: relative;
+          padding: 2px; border-radius: 1.5em; position: relative; width: 100%; height: 100%;
           --electric-light-color: oklch(from var(--electric-border-color) l c h);
           --gradient-color: oklch(from var(--electric-border-color) 0.3 calc(c / 2) h / 0.4);
           background: linear-gradient(-30deg, var(--gradient-color), transparent, var(--gradient-color)),
             linear-gradient(to bottom, var(--color-neutral-900), var(--color-neutral-900));
           color: oklch(0.985 0 0);
         }
-        .inner-container { position: relative; }
-        .border-outer { border: 2px solid oklch(from var(--electric-border-color) l c h / 0.5); border-radius: 1.5em; padding-right: 0.15em; padding-bottom: 0.15em; }
-        .main-card { border-radius: 1.5em; border: 2px solid var(--electric-border-color); margin-top: -4px; margin-left: -4px; filter: var(--f); background: oklch(0.145 0 0); }
-        .glow-layer-1, .glow-layer-2, .overlay-1, .overlay-2, .background-glow { border-radius: 24px; position: absolute; inset: 0; }
+
+        .inner-container { position: relative; width: 100%; height: 100%; }
+        .border-outer {
+          border: 2px solid oklch(from var(--electric-border-color) l c h / 0.5);
+          border-radius: 1.5em; padding-right: 0.15em; padding-bottom: 0.15em; width: 100%; height: 100%;
+        }
+        .main-card {
+          width: 100%; height: 100%; border-radius: 1.5em; border: 2px solid var(--electric-border-color);
+          margin-top: -4px; margin-left: -4px; filter: var(--f); background: oklch(0.145 0 0);
+        }
+
+        .glow-layer-1, .glow-layer-2, .overlay-1, .overlay-2, .background-glow {
+          border-radius: 24px; position: absolute; inset: 0; pointer-events: none;
+        }
+
         .glow-layer-1 { border: 2px solid oklch(from var(--electric-border-color) l c h / 0.6); filter: blur(1px); }
         .glow-layer-2 { border: 2px solid var(--electric-light-color); filter: blur(4px); }
-        .overlay-1, .overlay-2 { mix-blend-mode: overlay; transform: scale(1.1); filter: blur(16px);
-          background: linear-gradient(-30deg, white, transparent 30%, transparent 70%, white); }
-        .overlay-1 { opacity: 1; } .overlay-2 { opacity: 0.5; }
-        .background-glow { filter: blur(32px); transform: scale(1.1); opacity: 0.3; z-index: -1;
-          background: linear-gradient(-30deg, var(--electric-light-color), transparent, var(--electric-border-color)); }
-        .content-container { position: absolute; inset: 0; display: flex; flex-direction: column; }
-        .content-top { display: flex; flex-direction: column; padding: 48px; padding-bottom: 16px; height: 100%; }
-        .content-bottom { display: flex; flex-direction: column; padding: 48px; padding-top: 16px; }
+
+        .overlay-1, .overlay-2 {
+          mix-blend-mode: overlay; transform: scale(1.1); filter: blur(16px);
+          background: linear-gradient(-30deg, white, transparent 30%, transparent 70%, white);
+        }
+        .overlay-1 { opacity: 1; }
+        .overlay-2 { opacity: 0.5; }
+
+        .background-glow {
+          filter: blur(32px); transform: scale(1.1); opacity: 0.3; z-index: -1;
+          background: linear-gradient(-30deg, var(--electric-light-color), transparent, var(--electric-border-color));
+        }
+
+        .content-container { position: absolute; inset: 0; display: flex; flex-direction: column; padding: 1.5rem; }
+        .content-top { display: flex; flex-direction: column; height: 100%; }
+        .content-bottom { display: flex; flex-direction: column; }
+
         .scrollbar-glass {
-          background: radial-gradient(47.2% 50% at 50.39% 88.37%, rgba(255,255,255,.12) 0%, rgba(255,255,255,0) 100%), rgba(255,255,255,.04);
-          position: relative; transition: background .3s ease; border-radius: 14px; width: fit-content; height: fit-content;
-          padding: .5em 1em; text-transform: uppercase; font-weight: bold; font-size: .85em; color: rgba(255,255,255,.8);
+          background: radial-gradient(47.2% 50% at 50.39% 88.37%, rgba(255, 255, 255, 0.12) 0%, rgba(255, 255, 255, 0) 100%), rgba(255, 255, 255, 0.04);
+          position: relative; transition: background 0.3s ease; border-radius: 14px; width: fit-content; height: fit-content;
+          padding: 0.5em 1em; text-transform: uppercase; font-weight: bold; font-size: 0.75rem; color: rgba(255, 255, 255, 0.8);
         }
-        .scrollbar-glass:hover { background: radial-gradient(47.2% 50% at 50.39% 88.37%, rgba(255,255,255,.12) 0%, rgba(255,255,255,0) 100%), rgba(255,255,255,.08); }
-        .scrollbar-glass::before {
-          content: ""; position: absolute; inset: 0; padding: 1px;
-          background: linear-gradient(150deg, rgba(255,255,255,.48) 16.73%, rgba(255,255,255,.08) 30.2%, rgba(255,255,255,.08) 68.2%, rgba(255,255,255,.6) 81.89%);
-          border-radius: inherit; mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
-          mask-composite: xor; -webkit-mask-composite: xor; pointer-events: none;
-        }
-        .title { font-size: 2.25em; font-weight: 500; margin-top: auto; }
-        .description { opacity: 0.5; }
-        .divider { margin-top: auto; border: none; height: 1px; background-color: currentColor; opacity: 0.1;
+
+        .title { font-size: 1.5rem; font-weight: 600; margin-top: auto; font-family: 'Space Grotesk Variable', sans-serif; }
+        .description { opacity: 0.7; font-size: 0.875rem; font-family: 'Space Grotesk Variable', sans-serif; }
+
+        .divider {
+          margin-top: auto; margin-bottom: 1rem; border: none; height: 1px; background-color: currentColor; opacity: 0.1;
           mask-image: linear-gradient(to right, transparent, black, transparent);
-          -webkit-mask-image: linear-gradient(to right, transparent, black, transparent); }
+          -webkit-mask-image: linear-gradient(to right, transparent, black, transparent);
+        }
       `}</style>
     </div>
   );
 };
 
-export { ElectricCard };
+export default ElectricCard;
