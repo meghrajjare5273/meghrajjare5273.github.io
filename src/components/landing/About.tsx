@@ -13,7 +13,7 @@ import { useState } from "react";
 // MAIN ABOUT
 // ============================================================================
 export default function About() {
-  const [selected, setSelected] = useState<any | null>(null);
+  const [selected, setSelected] = useState  <any | null>(null);
 
   const CARDS = [
     {
