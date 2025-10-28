@@ -2,15 +2,14 @@
 "use client";
 
 import React from "react";
-import { motion } from "motion/react";
 import { PixelCanvas } from "@/components/ui/cards/pixel-canvas";
 
 type PixelCardProps = {
   eyebrow?: string;
   title?: string;
   description?: string;
-  image?: string; // optional background image
-  colors?: string[]; // pixel canvas colors
+  image?: string;
+  colors?: string[];
   gap?: number;
   speed?: number;
   className?: string;
@@ -29,17 +28,15 @@ export default function PixelCard({
   onClick,
 }: PixelCardProps) {
   return (
-    <motion.div
-      whileHover={{ scale: 1.02 }}
-      transition={{ type: "spring", stiffness: 260, damping: 24 }}
+    <div
       className={[
         "relative w-full h-full rounded-2xl overflow-hidden cursor-pointer shadow-lg",
         "ring-1 ring-white/10 dark:ring-white/10",
+        "transition-transform duration-300 hover:scale-[1.02]",
         className || "",
       ].join(" ")}
       onClick={onClick}
     >
-      {/* Optional background image */}
       {image && (
         <div className="absolute inset-0">
           <img
@@ -51,12 +48,10 @@ export default function PixelCard({
         </div>
       )}
 
-      {/* Pixel energy layer */}
       <div className="absolute inset-0 pointer-events-none mix-blend-screen opacity-70">
         <PixelCanvas gap={gap} speed={speed} colors={colors} />
       </div>
 
-      {/* Content */}
       <div className="relative z-10 p-6 flex h-full flex-col">
         {eyebrow && (
           <p className="text-[11px] font-mono uppercase tracking-widest text-white/80">
@@ -71,8 +66,7 @@ export default function PixelCard({
         )}
       </div>
 
-      {/* Electric border perimeter */}
       <div className="pointer-events-none absolute inset-0 rounded-2xl electric-border" />
-    </motion.div>
+    </div>
   );
 }
