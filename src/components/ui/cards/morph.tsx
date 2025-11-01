@@ -34,7 +34,7 @@ export function AdaptiveMorphDialog({
         <>
           {/* Backdrop */}
           <motion.div
-            className="fixed inset-0 z-[60] bg-white/40 dark:bg-black/40 backdrop-blur-sm"
+            className="fixed inset-0 z-60 bg-white/40 dark:bg-black/40 backdrop-blur-sm"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
@@ -44,7 +44,7 @@ export function AdaptiveMorphDialog({
           {/* Container - Responsive positioning */}
           <div
             className={[
-              "fixed inset-0 z-[70] flex",
+              "fixed inset-0 z-70 flex",
               isMobile
                 ? "items-end justify-center"
                 : "items-center justify-center",
@@ -106,14 +106,14 @@ export function AdaptiveMorphDialog({
                     alt=""
                     className="h-full w-full object-cover opacity-80"
                   />
-                  <div className="absolute inset-0 bg-gradient-to-b from-black/20 via-black/40 to-black/60" />
+                  <div className="absolute inset-0 bg-linear-to-b from-black/20 via-black/40 to-black/60" />
                 </div>
               )}
 
               {/* Soft progressive blur at edges */}
               <div className="pointer-events-none absolute inset-0">
-                <div className="absolute inset-x-0 top-0 h-24 [backdrop-filter:blur(3px)] [mask-image:linear-gradient(to_bottom,black,transparent)]" />
-                <div className="absolute inset-x-0 bottom-0 h-24 [backdrop-filter:blur(3px)] [mask-image:linear-gradient(to_top,black,transparent)]" />
+                <div className="absolute inset-x-0 top-0 h-24 [backdrop-filter:blur(3px)] mask-[linear-gradient(to_bottom,black,transparent)]" />
+                <div className="absolute inset-x-0 bottom-0 h-24 [backdrop-filter:blur(3px)] mask-[linear-gradient(to_top,black,transparent)]" />
               </div>
 
               {/* Scrollable Content */}
