@@ -40,7 +40,16 @@ export default function About() {
   const paraRef = useRef<HTMLParagraphElement | null>(null);
 
   const [selected, setSelected] = useState<SlotData | null>(null);
+  const cardChrome =
+    "group relative h-full rounded-2xl border border-white/10 " +
+    "bg-neutral-50/80 dark:bg-neutral-900/60 shadow " +
+    "transition-all duration-300 hover:-translate-y-0.5 hover:shadow-xl";
 
+  // a tiny badge style
+  const chipCls =
+    "px-2.5 py-0.5 rounded-full border border-white/15 " +
+    "bg-white/10 text-[10px] md:text-xs text-neutral-700 " +
+    "dark:text-neutral-300/90";
   const SLOTS = useMemo(
     () => ({
       integration: {
@@ -48,8 +57,9 @@ export default function About() {
         title: "About Me",
         subtitle: "Full‑Stack + ML",
         description:
-          "Building legal tech, AI automations, and polished UIs with a product mindset and performance-first approach.",
-        image: "images/about/bg-fullstack.jpg",
+          "Engineer focused on legal tech, AI automations, and polished UIs with a product, performance-first mindset.",
+        image:
+          "https://images.unsplash.com/photo-1540959733332-eab4deabeeaf?q=80&auto=format&fit=crop",
         chips: ["React/Next", "TypeScript", "FastAPI", "Python", "Postgres"],
       },
       trackers: {
@@ -57,7 +67,9 @@ export default function About() {
         title: "Core Stack",
         subtitle: "Daily Drivers",
         description:
-          "React, Next.js, TypeScript, Python, and FastAPI compose the backbone of most builds.",
+          "React, Next.js, TypeScript, Python, and FastAPI power most builds and prototypes.",
+        image:
+          "https://images.unsplash.com/photo-1515879218367-8466d910aaa4?q=80&auto=format&fit=crop",
         chips: ["React", "Next.js", "TypeScript", "Python", "FastAPI"],
       },
       statistic: {
@@ -65,7 +77,9 @@ export default function About() {
         title: "AI × Web",
         subtitle: "Systems + UX",
         description:
-          "Where ML pipelines meet interactive UX: shipping practical AI for real products.",
+          "Shipping practical AI—RAG, RL, GPU workflows—wrapped in interactive, accessible UX.",
+        image:
+          "https://images.unsplash.com/photo-1518779578993-ec3579fee39f?q=80&auto=format&fit=crop",
         chips: ["NLP", "RAG", "RL", "GPU", "SB3"],
       },
       focus: {
@@ -73,7 +87,9 @@ export default function About() {
         title: "Current Focus",
         subtitle: "ML Ops + UI",
         description:
-          "Reinforcement learning experiments, contract analysis tooling, and refined UI motion.",
+          "RL experiments, contract analysis tooling, and refined motion patterns for production UIs.",
+        image:
+          "https://images.unsplash.com/photo-1526378722484-bd91ca387e72?q=80&auto=format&fit=crop",
         chips: ["RL", "Contracts AI", "UI Motion", "Performance"],
       },
       productivity: {
@@ -81,15 +97,19 @@ export default function About() {
         title: "Open Source",
         subtitle: "Community",
         description:
-          "Actively sharing code and re-usable UI/ML building blocks on GitHub.",
+          "Reusable UI and ML components with docs, examples, and pragmatic patterns.",
+        image:
+          "https://images.unsplash.com/photo-1498050108023-c5249f4df085?q=80&auto=format&fit=crop",
         chips: ["LegalMind", "DebateBot", "UI Kits"],
       },
       shortcuts: {
         id: "about-slot-shortcuts",
         title: "Quick Actions",
-        subtitle: "Open to collaborate",
+        subtitle: "Let’s collaborate",
         description:
-          "Get the resume, browse the code, or ping for scoped projects.",
+          "Get the resume, browse the code, or reach out for scoped projects and consulting.",
+        image:
+          "https://images.unsplash.com/photo-1498050108023-c5249f4df085?q=80&auto=format&fit=crop",
         chips: ["Resume", "GitHub", "Email"],
       },
     }),
@@ -164,136 +184,154 @@ export default function About() {
       </p>
 
       <BentoGridShowcase
-        /* Tall left card: narrative + CTA */
+        /* Tall left: About Me */
         integration={
           <CardShell data={SLOTS.integration}>
-            <CardCurtainReveal className="h-full rounded-2xl border border-white/10 bg-linear-to-b from-neutral-50/70 to-neutral-100/30 dark:from-neutral-900/60 dark:to-neutral-900/20 shadow-lg">
-              <CardCurtain />
+            <CardCurtainReveal className={cardChrome}>
               <CardCurtainRevealBody className="p-6 md:p-8">
-                <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-full bg-orange-100 dark:bg-orange-900/50">
-                  <span className="text-2xl" role="img" aria-label="sparkles">
-                    ✳️
-                  </span>
-                </div>
-                <CardCurtainRevealTitle className="text-2xl md:text-3xl font-semibold">
+                <CardCurtainRevealTitle className="text-2xl md:text-3xl font-semibold tracking-tight">
                   {SLOTS.integration.title}
                 </CardCurtainRevealTitle>
-                <CardCurtainRevealDescription className="mt-2 text-sm text-muted-foreground">
-                  {SLOTS.integration.description}
+                <CardCurtainRevealDescription className="mt-3 text-sm md:text-base text-neutral-700 dark:text-neutral-300">
+                  <p>{SLOTS.integration.description}</p>
                 </CardCurtainRevealDescription>
+                <CardCurtain className="bg-neutral-50 dark:bg-neutral-900" />
               </CardCurtainRevealBody>
-              <CardCurtainRevealFooter className="mt-auto flex items-center justify-between border-t border-white/10 p-4">
-                <button className="inline-flex items-center rounded-md border px-3 py-1.5 text-sm hover:bg-white/10 transition">
-                  <Settings2 className="mr-2 h-4 w-4" />
-                  Read more
-                </button>
-                <span className="inline-flex items-center text-xs text-muted-foreground">
-                  Hover to reveal
-                </span>
+              <CardCurtainRevealFooter className="mt-auto">
+                <img
+                  width="100%"
+                  height="100%"
+                  alt="About"
+                  className="h-48 w-full object-cover"
+                  src={SLOTS.integration.image!}
+                />
               </CardCurtainRevealFooter>
             </CardCurtainReveal>
           </CardShell>
         }
-        /* Top middle: avatars/stack */
+        /* Top middle: Core Stack */
         trackers={
           <CardShell data={SLOTS.trackers}>
-            <div className="h-full rounded-2xl border border-white/10 bg-background/60 p-6 backdrop-blur">
-              <div>
-                <div className="text-base font-medium">Core Stack</div>
-                <div className="text-sm text-muted-foreground">
-                  Daily Drivers
-                </div>
-              </div>
-              <div className="mt-6 flex -space-x-2 overflow-hidden">
-                <div className="inline-flex h-8 w-8 items-center justify-center rounded-full bg-neutral-800 text-white ring-2 ring-background">
-                  TS
-                </div>
-                <div className="inline-flex h-8 w-8 items-center justify-center rounded-full bg-neutral-900 text-white ring-2 ring-background">
-                  Py
-                </div>
-                <div className="inline-flex h-8 w-8 items-center justify-center rounded-full bg-neutral-700 text-white ring-2 ring-background">
-                  Rx
-                </div>
-              </div>
-            </div>
+            <CardCurtainReveal className={cardChrome}>
+              <CardCurtainRevealBody className="p-6">
+                <CardCurtainRevealTitle className="text-xl md:text-2xl font-semibold">
+                  {SLOTS.trackers.title}
+                </CardCurtainRevealTitle>
+                <CardCurtainRevealDescription className="mt-2 text-sm text-neutral-700 dark:text-neutral-300">
+                  <p>{SLOTS.trackers.description}</p>
+                </CardCurtainRevealDescription>
+                <CardCurtain className="bg-neutral-50 dark:bg-neutral-900" />
+              </CardCurtainRevealBody>
+              <CardCurtainRevealFooter>
+                <img
+                  width="100%"
+                  height="100%"
+                  alt="Core stack"
+                  className="h-36 w-full object-cover"
+                  src={SLOTS.trackers.image!}
+                />
+              </CardCurtainRevealFooter>
+            </CardCurtainReveal>
           </CardShell>
         }
-        /* Top right: big symbol */
+        /* Top right: AI × Web */
         statistic={
           <CardShell data={SLOTS.statistic}>
-            <div className="relative h-full w-full overflow-hidden rounded-2xl border border-white/10">
-              <div
-                className="absolute inset-0 opacity-20"
-                style={{
-                  backgroundImage:
-                    "radial-gradient(hsl(var(--foreground)) 1px, transparent 1px)",
-                  backgroundSize: "16px 16px",
-                }}
-              />
-              <div className="relative z-10 flex h-full items-center justify-center p-6">
-                <span className="text-6xl md:text-7xl font-bold text-foreground/90">
-                  AI×Web
-                </span>
-              </div>
-            </div>
+            <CardCurtainReveal className={cardChrome}>
+              <CardCurtainRevealBody className="p-6">
+                <CardCurtainRevealTitle className="text-xl md:text-2xl font-semibold">
+                  {SLOTS.statistic.title}
+                </CardCurtainRevealTitle>
+                <CardCurtainRevealDescription className="mt-2 text-sm text-neutral-700 dark:text-neutral-300">
+                  <p>{SLOTS.statistic.description}</p>
+                </CardCurtainRevealDescription>
+                <CardCurtain className="bg-neutral-50 dark:bg-neutral-900" />
+              </CardCurtainRevealBody>
+              <CardCurtainRevealFooter>
+                <img
+                  width="100%"
+                  height="100%"
+                  alt="AI and web"
+                  className="h-36 w-full object-cover"
+                  src={SLOTS.statistic.image!}
+                />
+              </CardCurtainRevealFooter>
+            </CardCurtainReveal>
           </CardShell>
         }
-        /* Middle middle: focus */
+        /* Middle middle: Current Focus */
         focus={
           <CardShell data={SLOTS.focus}>
-            <div className="h-full rounded-2xl border border-white/10 bg-background/60 p-6 backdrop-blur">
-              <div className="flex items-start justify-between">
-                <div>
-                  <div className="text-base font-medium">Current Focus</div>
-                  <div className="text-sm text-muted-foreground">
-                    Productivity Analytics
-                  </div>
-                </div>
-                <span className="rounded-full border border-orange-300 px-2 py-0.5 text-xs text-orange-600">
-                  Range Ratio
-                </span>
-              </div>
-              <div className="mt-2">
-                <span className="text-5xl font-bold">42%</span>
-              </div>
-              <div className="mt-1 flex justify-between text-xs text-muted-foreground">
-                <span>Depth work</span>
-                <span>Monthly avg</span>
-              </div>
-            </div>
+            <CardCurtainReveal className={cardChrome}>
+              <CardCurtainRevealBody className="p-6">
+                <CardCurtainRevealTitle className="text-xl md:text-2xl font-semibold">
+                  {SLOTS.focus.title}
+                </CardCurtainRevealTitle>
+                <CardCurtainRevealDescription className="mt-2 text-sm text-neutral-700 dark:text-neutral-300">
+                  <p>{SLOTS.focus.description}</p>
+                </CardCurtainRevealDescription>
+                <CardCurtain className="bg-neutral-50 dark:bg-neutral-900" />
+              </CardCurtainRevealBody>
+              <CardCurtainRevealFooter>
+                <img
+                  width="100%"
+                  height="100%"
+                  alt="Focus"
+                  className="h-36 w-full object-cover"
+                  src={SLOTS.focus.image!}
+                />
+              </CardCurtainRevealFooter>
+            </CardCurtainReveal>
           </CardShell>
         }
-        /* Middle right: open source */
+        /* Middle right: Open Source */
         productivity={
           <CardShell data={SLOTS.productivity}>
-            <div className="h-full rounded-2xl border border-white/10 bg-background/60 p-6 backdrop-blur">
-              <div className="text-base font-medium">Open Source</div>
-              <div className="text-sm text-muted-foreground">
-                Reusable UI/ML components and tools
-              </div>
-            </div>
+            <CardCurtainReveal className={cardChrome}>
+              <CardCurtainRevealBody className="p-6">
+                <CardCurtainRevealTitle className="text-xl md:text-2xl font-semibold">
+                  {SLOTS.productivity.title}
+                </CardCurtainRevealTitle>
+                <CardCurtainRevealDescription className="mt-2 text-sm text-neutral-700 dark:text-neutral-300">
+                  <p>{SLOTS.productivity.description}</p>
+                </CardCurtainRevealDescription>
+                <CardCurtain className="bg-neutral-50 dark:bg-neutral-900" />
+              </CardCurtainRevealBody>
+              <CardCurtainRevealFooter>
+                <img
+                  width="100%"
+                  height="100%"
+                  alt="Open source"
+                  className="h-36 w-full object-cover"
+                  src={SLOTS.productivity.image!}
+                />
+              </CardCurtainRevealFooter>
+            </CardCurtainReveal>
           </CardShell>
         }
-        /* Bottom wide: shortcuts */
+        /* Bottom wide (2 cols): Quick Actions */
         shortcuts={
           <CardShell data={SLOTS.shortcuts}>
-            <div className="h-full rounded-2xl border border-white/10 bg-background/60 p-6 md:p-6 flex flex-wrap items-center justify-between gap-4">
-              <div>
-                <div className="text-base font-medium">Quick Actions</div>
-                <div className="text-sm text-muted-foreground">
-                  Resume, GitHub, Contact
-                </div>
-              </div>
-              <div className="flex items-center gap-2">
-                <div className="flex h-7 w-7 items-center justify-center rounded-md border bg-background font-mono text-xs font-medium text-muted-foreground">
-                  <Command className="h-3 w-3" />
-                </div>
-                <Plus className="h-3 w-3 text-muted-foreground" />
-                <div className="flex h-7 w-7 items-center justify-center rounded-md border bg-background font-mono text-xs font-medium text-muted-foreground">
-                  M
-                </div>
-              </div>
-            </div>
+            <CardCurtainReveal className={cardChrome}>
+              <CardCurtainRevealBody className="p-6 md:p-8">
+                <CardCurtainRevealTitle className="text-2xl font-semibold">
+                  {SLOTS.shortcuts.title}
+                </CardCurtainRevealTitle>
+                <CardCurtainRevealDescription className="mt-3 text-sm md:text-base text-neutral-700 dark:text-neutral-300">
+                  <p>{SLOTS.shortcuts.description}</p>
+                </CardCurtainRevealDescription>
+                <CardCurtain className="bg-neutral-50 dark:bg-neutral-900" />
+              </CardCurtainRevealBody>
+              <CardCurtainRevealFooter>
+                <img
+                  width="100%"
+                  height="100%"
+                  alt="Shortcuts"
+                  className="h-40 w-full object-cover"
+                  src={SLOTS.shortcuts.image!}
+                />
+              </CardCurtainRevealFooter>
+            </CardCurtainReveal>
           </CardShell>
         }
       />

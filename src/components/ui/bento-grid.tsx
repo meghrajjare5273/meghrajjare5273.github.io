@@ -48,9 +48,10 @@ export function BentoGridShowcase({
       initial="hidden"
       animate="visible"
       className={cn(
-        "grid w-full grid-cols-1 gap-6 md:grid-cols-3",
+        "grid w-full grid-cols-1 gap-5 md:grid-cols-3",
         "md:grid-rows-3",
-        "auto-rows-[minmax(180px,auto)]",
+        // was: auto-rows-[minmax(180px,auto)]
+        "auto-rows-[minmax(140px,auto)] md:auto-rows-[minmax(130px,auto)] xl:auto-rows-[minmax(120px,auto)]",
         className
       )}
     >
