@@ -1,27 +1,7 @@
 "use client";
 
 import * as React from "react";
-import { motion, type Variants } from "motion/react";
 import { cn } from "@/lib/utils";
-
-// container stagger
-const containerVariants = {
-  hidden: { opacity: 0 },
-  visible: {
-    opacity: 1,
-    transition: { staggerChildren: 0.1, delayChildren: 0.1 },
-  },
-};
-
-// item spring-in
-const itemVariants: Variants = {
-  hidden: { opacity: 0, y: 20 },
-  visible: {
-    opacity: 1,
-    y: 0,
-    transition: { type: "spring", stiffness: 100, damping: 10 },
-  },
-};
 
 interface BentoGridShowcaseProps {
   integration: React.ReactNode;
@@ -43,65 +23,27 @@ export function BentoGridShowcase({
   className,
 }: BentoGridShowcaseProps) {
   return (
-    <motion.section
-      variants={containerVariants}
-      initial="hidden"
-      animate="visible"
+    <section
       className={cn(
         "grid w-full grid-cols-1 gap-5 md:grid-cols-3",
         "md:grid-rows-3",
-        // was: auto-rows-[minmax(180px,auto)]
         "auto-rows-[minmax(140px,auto)] md:auto-rows-[minmax(130px,auto)] xl:auto-rows-[minmax(120px,auto)]",
         className
       )}
     >
-      {/* Tall left card (3 rows) */}
-      <motion.div
-        variants={itemVariants}
-        className="md:col-span-1 md:row-span-3"
-      >
-        {integration}
-      </motion.div>
+      <div className="md:col-span-1 md:row-span-3 grid-item">{integration}</div>
 
-      {/* Top middle */}
-      <motion.div
-        variants={itemVariants}
-        className="md:col-span-1 md:row-span-1"
-      >
-        {trackers}
-      </motion.div>
+      <div className="md:col-span-1 md:row-span-1 grid-item">{trackers}</div>
 
-      {/* Top right */}
-      <motion.div
-        variants={itemVariants}
-        className="md:col-span-1 md:row-span-1"
-      >
-        {statistic}
-      </motion.div>
+      <div className="md:col-span-1 md:row-span-1 grid-item">{statistic}</div>
 
-      {/* Middle middle */}
-      <motion.div
-        variants={itemVariants}
-        className="md:col-span-1 md:row-span-1"
-      >
-        {focus}
-      </motion.div>
+      <div className="md:col-span-1 md:row-span-1 grid-item">{focus}</div>
 
-      {/* Middle right */}
-      <motion.div
-        variants={itemVariants}
-        className="md:col-span-1 md:row-span-1"
-      >
+      <div className="md:col-span-1 md:row-span-1 grid-item">
         {productivity}
-      </motion.div>
+      </div>
 
-      {/* Bottom wide (2 cols) */}
-      <motion.div
-        variants={itemVariants}
-        className="md:col-span-2 md:row-span-1"
-      >
-        {shortcuts}
-      </motion.div>
-    </motion.section>
+      <div className="md:col-span-2 md:row-span-1 grid-item">{shortcuts}</div>
+    </section>
   );
 }
