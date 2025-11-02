@@ -77,7 +77,7 @@ export function HeroSection() {
       ref={containerRef}
       className="min-h-screen overflow-hidden relative py-20"
     >
-      <Navbar isDark={isDark} setIsDark={setIsDark} />
+      <Navbar />
 
       <div className="mx-auto max-w-7xl relative z-20 px-6">
         <div className="relative pt-12 md:pt-20">

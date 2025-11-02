@@ -1,16 +1,32 @@
-// components/Navbar.tsx
 import React, { useEffect, useRef, useState } from "react";
 import { Menu, X } from "lucide-react";
+import { toggleTheme, initTheme } from "@/lib/theme";
 
-interface NavbarProps {
-  isDark: boolean;
-  setIsDark: React.Dispatch<React.SetStateAction<boolean>>;
-}
-
-export default function Navbar({ isDark, setIsDark }: NavbarProps) {
+export default function Navbar() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [isDark, setIsDark] = useState(false);
   const menuRef = useRef<HTMLDivElement>(null);
   const buttonRef = useRef<HTMLButtonElement>(null);
+
+  useEffect(() => {
+    // Initialize theme on mount
+    const theme = initTheme();
+    setIsDark(theme === "dark");
+
+    // Listen for theme changes
+    const handleThemeChange = (e: CustomEvent) => {
+      setIsDark(e.detail === "dark");
+    };
+
+    window.addEventListener("theme-change", handleThemeChange as EventListener);
+
+    return () => {
+      window.removeEventListener(
+        "theme-change",
+        handleThemeChange as EventListener
+      );
+    };
+  }, []);
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -29,16 +45,9 @@ export default function Navbar({ isDark, setIsDark }: NavbarProps) {
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, [isMenuOpen]);
 
-  const toggleTheme = () => {
-    setIsDark((prev) => {
-      const next = !prev;
-      if (next) {
-        document.documentElement.classList.add("dark");
-      } else {
-        document.documentElement.classList.remove("dark");
-      }
-      return next;
-    });
+  const handleToggleTheme = () => {
+    const newTheme = toggleTheme();
+    setIsDark(newTheme === "dark");
   };
 
   const menuItems = [
@@ -54,7 +63,6 @@ export default function Navbar({ isDark, setIsDark }: NavbarProps) {
   return (
     <header className="fixed top-0 left-0 right-0 z-50 px-6 py-6">
       <nav className="flex items-center justify-between max-w-screen-2xl mx-auto">
-        {/* Menu Button + Dropdown */}
         <div className="relative">
           <button
             ref={buttonRef}
@@ -79,33 +87,17 @@ export default function Navbar({ isDark, setIsDark }: NavbarProps) {
           {isMenuOpen && (
             <div
               ref={menuRef}
-              className="absolute top-full left-0 w-[200px] md:w-[240px] border-none shadow-2xl mt-2 ml-4 p-4 rounded-lg z-[100]"
-              style={{
-                backgroundColor: isDark ? "hsl(0 0% 0%)" : "hsl(0 0% 98%)",
-              }}
+              className="absolute top-full left-0 w-[200px] md:w-60 border-none shadow-2xl mt-2 ml-4 p-4 rounded-lg z-100 bg-background"
             >
               {menuItems.map((item) => (
                 <a
                   key={item.label}
                   href={item.href}
-                  className="block text-lg md:text-xl font-bold tracking-tight py-1.5 px-2 cursor-pointer transition-colors duration-300"
-                  style={{
-                    color: item.highlight
-                      ? "#C3E41D"
-                      : isDark
-                      ? "hsl(0 0% 100%)"
-                      : "hsl(0 0% 10%)",
-                  }}
-                  onMouseEnter={(e) => {
-                    e.currentTarget.style.color = "#C3E41D";
-                  }}
-                  onMouseLeave={(e) => {
-                    e.currentTarget.style.color = item.highlight
-                      ? "#C3E41D"
-                      : isDark
-                      ? "hsl(0 0% 100%)"
-                      : "hsl(0 0% 10%)";
-                  }}
+                  className={`block text-lg md:text-xl font-bold tracking-tight py-1.5 px-2 cursor-pointer transition-colors duration-300 ${
+                    item.highlight
+                      ? "text-[#C3E41D]"
+                      : "text-foreground hover:text-[#C3E41D]"
+                  }`}
                   onClick={() => setIsMenuOpen(false)}
                 >
                   {item.label}
@@ -115,31 +107,19 @@ export default function Navbar({ isDark, setIsDark }: NavbarProps) {
           )}
         </div>
 
-        {/* Signature */}
-        <div
-          className="text-4xl"
-          style={{
-            color: isDark ? "hsl(0 0% 100%)" : "hsl(0 0% 10%)",
-            fontFamily: "'Brush Script MT', 'Lucida Handwriting', cursive",
-          }}
-        >
+        <div className="text-4xl text-foreground font-handwriting">
           Meghraj Jare
         </div>
 
-        {/* Theme Toggle */}
         <button
           type="button"
-          onClick={toggleTheme}
-          className="relative w-16 h-8 rounded-full hover:opacity-80 transition-opacity"
-          style={{
-            backgroundColor: isDark ? "hsl(0 0% 15%)" : "hsl(0 0% 90%)",
-          }}
+          onClick={handleToggleTheme}
+          className="relative w-16 h-8 rounded-full bg-neutral-200 dark:bg-neutral-800 hover:opacity-80 transition-opacity"
           aria-label="Toggle theme"
         >
           <div
-            className="absolute top-1 left-1 w-6 h-6 rounded-full transition-transform duration-300"
+            className="absolute top-1 left-1 w-6 h-6 rounded-full bg-neutral-900 dark:bg-white transition-transform duration-300"
             style={{
-              backgroundColor: isDark ? "hsl(0 0% 100%)" : "hsl(0 0% 10%)",
               transform: isDark ? "translateX(2rem)" : "translateX(0)",
             }}
           />

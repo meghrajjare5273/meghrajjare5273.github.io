@@ -12,6 +12,7 @@ import {
   CardCurtainRevealDescription,
   CardCurtain,
 } from "@/components/ui/cards/card-curtain";
+import { AdaptiveMorphDialog } from "../ui/cards/morph";
 
 type SlotData = {
   id: string;
@@ -309,6 +310,34 @@ export default function About() {
             </CardCurtainReveal>
           </CardShell>
         }
+      />
+      {/* Morph dialog for card expansion */}
+      <AdaptiveMorphDialog
+        open={!!selected}
+        onOpenChange={(v) => !v && setSelected(null)}
+        layoutId={selected?.id ?? "about-slot-integration"}
+        title={selected?.title}
+        subtitle={selected?.subtitle}
+        description={
+          <div className="space-y-3">
+            <p className="text-sm text-muted-foreground">
+              {selected?.description}
+            </p>
+            {!!selected?.chips?.length && (
+              <div className="flex flex-wrap gap-2 pt-2">
+                {selected!.chips!.map((s, i) => (
+                  <span
+                    key={i}
+                    className="px-3 py-1 rounded-full border border-white/20 bg-white/10 text-white text-xs md:text-sm"
+                  >
+                    {s}
+                  </span>
+                ))}
+              </div>
+            )}
+          </div>
+        }
+        image={selected?.image}
       />
     </section>
   );
