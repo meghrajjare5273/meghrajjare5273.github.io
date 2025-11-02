@@ -1,18 +1,18 @@
+// src/components/ui/cards/card-curtain.tsx
 "use client";
 
 import * as React from "react";
 import gsap from "gsap";
+import { useGSAP } from "@gsap/react";
 import { cn } from "@/lib/utils";
 
 interface CardCurtainRevealContextValue {
   isMouseIn: boolean;
 }
-
 const CardCurtainRevealContext = React.createContext<
   CardCurtainRevealContextValue | undefined
 >(undefined);
-
-function useCardCurtainRevealContext() {
+function useCardCtx() {
   const ctx = React.useContext(CardCurtainRevealContext);
   if (!ctx)
     throw new Error(
@@ -21,24 +21,72 @@ function useCardCurtainRevealContext() {
   return ctx;
 }
 
-const CardCurtainReveal = React.forwardRef<
+// Shapes: closed = inset(0% 50% 0% 50%), open = inset(0% 0% 0% 0%)
+const CLOSED = "inset(0% 50% 0% 50%)";
+const OPEN = "inset(0% 0% 0% 0%)";
+
+export const CardCurtainReveal = React.forwardRef<
   HTMLDivElement,
   React.HTMLAttributes<HTMLDivElement>
 >(({ children, className, ...props }, ref) => {
   const [isMouseIn, setIsMouseIn] = React.useState(false);
-  const onIn = React.useCallback(() => setIsMouseIn(true), []);
-  const onOut = React.useCallback(() => setIsMouseIn(false), []);
+  const rootRef = React.useRef<HTMLDivElement | null>(null);
+
+  useGSAP(
+    () => {
+      const q = gsap.utils.selector(rootRef);
+      // Set initial states
+      gsap.set(
+        q(
+          "[data-curtain='cover'],[data-curtain='desc'],[data-curtain='footer']"
+        ),
+        {
+          clipPath: CLOSED,
+          willChange: "clip-path",
+        }
+      );
+      gsap.set(q("[data-curtain='title']"), { y: 8, willChange: "transform" });
+
+      // One timeline to rule them all
+      const tl = gsap.timeline({
+        paused: true,
+        defaults: { ease: "expo.out", duration: 0.34, overwrite: "auto" },
+      });
+      tl.to(
+        q(
+          "[data-curtain='cover'],[data-curtain='desc'],[data-curtain='footer']"
+        ),
+        { clipPath: OPEN },
+        0
+      ).to(q("[data-curtain='title']"), { y: 0, duration: 0.22 }, 0.02);
+
+      // Enter/leave control
+      rootRef.current?.addEventListener("pointerenter", () => tl.play());
+      rootRef.current?.addEventListener("pointerleave", () => tl.reverse());
+
+      return () => {
+        tl.kill();
+      };
+    },
+    { scope: rootRef }
+  );
 
   return (
     <CardCurtainRevealContext.Provider value={{ isMouseIn }}>
       <div
-        ref={ref}
+        ref={(node) => {
+          rootRef.current = node;
+          if (typeof ref === "function") ref(node);
+          else if (ref)
+            (ref as React.MutableRefObject<HTMLDivElement | null>).current =
+              node;
+        }}
         className={cn(
           "relative flex flex-col gap-2 overflow-hidden",
           className
         )}
-        onMouseEnter={onIn}
-        onMouseLeave={onOut}
+        onPointerEnter={() => setIsMouseIn(true)}
+        onPointerLeave={() => setIsMouseIn(false)}
         {...props}
       >
         {children}
@@ -48,43 +96,7 @@ const CardCurtainReveal = React.forwardRef<
 });
 CardCurtainReveal.displayName = "CardCurtainReveal";
 
-const CardCurtainRevealFooter = React.forwardRef<
-  HTMLDivElement,
-  React.HTMLAttributes<HTMLDivElement>
->(({ className, ...props }, ref) => {
-  const { isMouseIn } = useCardCurtainRevealContext();
-  const elementRef = React.useRef<HTMLDivElement>(null);
-
-  React.useEffect(() => {
-    if (!elementRef.current) return;
-
-    gsap.to(elementRef.current, {
-      clipPath: isMouseIn
-        ? "polygon(0 0,100% 0,100% 100%,0 100%)"
-        : "polygon(50% 0,50% 0,50% 100%,50% 100%)",
-      duration: 0.4,
-      ease: "power2.out",
-    });
-  }, [isMouseIn]);
-
-  return (
-    <div
-      ref={(node) => {
-        elementRef.current = node;
-        if (typeof ref === "function") ref(node);
-        else if (ref) ref.current = node;
-      }}
-      className={className}
-      style={{
-        clipPath: "polygon(50% 0,50% 0,50% 100%,50% 100%)",
-      }}
-      {...props}
-    />
-  );
-});
-CardCurtainRevealFooter.displayName = "CardCurtainRevealFooter";
-
-const CardCurtainRevealBody = React.forwardRef<
+export const CardCurtainRevealBody = React.forwardRef<
   HTMLDivElement,
   React.HTMLAttributes<HTMLDivElement>
 >(({ className, ...props }, ref) => (
@@ -92,117 +104,61 @@ const CardCurtainRevealBody = React.forwardRef<
 ));
 CardCurtainRevealBody.displayName = "CardCurtainRevealBody";
 
-const CardCurtainRevealTitle = React.forwardRef<
+export const CardCurtainRevealTitle = React.forwardRef<
   HTMLHeadingElement,
   React.HTMLAttributes<HTMLHeadingElement>
 >(({ className, ...props }, ref) => {
-  const { isMouseIn } = useCardCurtainRevealContext();
-  const elementRef = React.useRef<HTMLHeadingElement>(null);
-
-  React.useEffect(() => {
-    if (!elementRef.current) return;
-
-    gsap.to(elementRef.current, {
-      y: isMouseIn ? 0 : 8,
-      duration: 0.25,
-      ease: "power2.out",
-    });
-  }, [isMouseIn]);
-
-  return (
-    <h2
-      ref={(node) => {
-        elementRef.current = node;
-        if (typeof ref === "function") ref(node);
-        else if (ref) ref.current = node;
-      }}
-      className={className}
-      {...props}
-    />
-  );
+  return <h2 ref={ref} data-curtain="title" className={className} {...props} />;
 });
 CardCurtainRevealTitle.displayName = "CardCurtainRevealTitle";
 
-const CardCurtain = React.forwardRef<
+export const CardCurtainRevealDescription = React.forwardRef<
   HTMLDivElement,
   React.HTMLAttributes<HTMLDivElement>
->(({ className, ...props }, ref) => {
-  const { isMouseIn } = useCardCurtainRevealContext();
-  const elementRef = React.useRef<HTMLDivElement>(null);
-
-  React.useEffect(() => {
-    if (!elementRef.current) return;
-
-    gsap.to(elementRef.current, {
-      clipPath: isMouseIn
-        ? "polygon(0 0,100% 0,100% 100%,0 100%)"
-        : "polygon(50% 0,50% 0,50% 100%,50% 100%)",
-      duration: 0.4,
-      ease: "power2.out",
-    });
-  }, [isMouseIn]);
-
+>(({ className, style, ...props }, ref) => {
   return (
     <div
-      ref={(node) => {
-        elementRef.current = node;
-        if (typeof ref === "function") ref(node);
-        else if (ref) ref.current = node;
-      }}
-      className={cn(
-        "pointer-events-none absolute inset-0 size-full mix-blend-difference",
-        className
-      )}
-      style={{
-        clipPath: "polygon(50% 0,50% 0,50% 100%,50% 100%)",
-      }}
-      {...props}
-    />
-  );
-});
-CardCurtain.displayName = "CardCurtain";
-
-const CardCurtainRevealDescription = React.forwardRef<
-  HTMLDivElement,
-  React.HTMLAttributes<HTMLDivElement>
->(({ className, ...props }, ref) => {
-  const { isMouseIn } = useCardCurtainRevealContext();
-  const elementRef = React.useRef<HTMLDivElement>(null);
-
-  React.useEffect(() => {
-    if (!elementRef.current) return;
-
-    gsap.to(elementRef.current, {
-      clipPath: isMouseIn
-        ? "polygon(0 0,100% 0,100% 100%,0 100%)"
-        : "polygon(50% 0,50% 0,50% 100%,50% 100%)",
-      duration: 0.4,
-      ease: "power2.out",
-    });
-  }, [isMouseIn]);
-
-  return (
-    <div
-      ref={(node) => {
-        elementRef.current = node;
-        if (typeof ref === "function") ref(node);
-        else if (ref) ref.current = node;
-      }}
+      ref={ref}
+      data-curtain="desc"
       className={className}
-      style={{
-        clipPath: "polygon(50% 0,50% 0,50% 100%,50% 100%)",
-      }}
+      style={{ ...style, clipPath: CLOSED }}
       {...props}
     />
   );
 });
 CardCurtainRevealDescription.displayName = "CardCurtainRevealDescription";
 
-export {
-  CardCurtainReveal,
-  CardCurtainRevealBody,
-  CardCurtainRevealFooter,
-  CardCurtainRevealDescription,
-  CardCurtainRevealTitle,
-  CardCurtain,
-};
+export const CardCurtainRevealFooter = React.forwardRef<
+  HTMLDivElement,
+  React.HTMLAttributes<HTMLDivElement>
+>(({ className, style, ...props }, ref) => {
+  return (
+    <div
+      ref={ref}
+      data-curtain="footer"
+      className={className}
+      style={{ ...style, clipPath: CLOSED }}
+      {...props}
+    />
+  );
+});
+CardCurtainRevealFooter.displayName = "CardCurtainRevealFooter";
+
+export const CardCurtain = React.forwardRef<
+  HTMLDivElement,
+  React.HTMLAttributes<HTMLDivElement>
+>(({ className, style, ...props }, ref) => {
+  return (
+    <div
+      ref={ref}
+      data-curtain="cover"
+      className={cn(
+        "pointer-events-none absolute inset-0 size-full mix-blend-difference",
+        className
+      )}
+      style={{ ...style, clipPath: CLOSED }}
+      {...props}
+    />
+  );
+});
+CardCurtain.displayName = "CardCurtain";
