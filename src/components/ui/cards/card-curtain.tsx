@@ -1,23 +1,13 @@
 "use client";
 
 import * as React from "react";
-import { motion, type HTMLMotionProps, type Variants } from "motion/react";
+import gsap from "gsap";
 import { cn } from "@/lib/utils";
-
-const curtainVariants: Variants = {
-  visible: {
-    clipPath: "polygon(0 0,100% 0,100% 100%,0 100%)",
-    transition: { duration: 0.4, ease: ["easeOut", [0.25, 1.5, 0.5, 1]] },
-  },
-  hidden: {
-    clipPath: "polygon(50% 0,50% 0,50% 100%,50% 100%)",
-    transition: { duration: 0.3, ease: ["easeOut", [0.25, 1.5, 0.5, 1]] },
-  },
-};
 
 interface CardCurtainRevealContextValue {
   isMouseIn: boolean;
 }
+
 const CardCurtainRevealContext = React.createContext<
   CardCurtainRevealContextValue | undefined
 >(undefined);
@@ -38,6 +28,7 @@ const CardCurtainReveal = React.forwardRef<
   const [isMouseIn, setIsMouseIn] = React.useState(false);
   const onIn = React.useCallback(() => setIsMouseIn(true), []);
   const onOut = React.useCallback(() => setIsMouseIn(false), []);
+
   return (
     <CardCurtainRevealContext.Provider value={{ isMouseIn }}>
       <div
@@ -59,15 +50,34 @@ CardCurtainReveal.displayName = "CardCurtainReveal";
 
 const CardCurtainRevealFooter = React.forwardRef<
   HTMLDivElement,
-  HTMLMotionProps<"div">
+  React.HTMLAttributes<HTMLDivElement>
 >(({ className, ...props }, ref) => {
   const { isMouseIn } = useCardCurtainRevealContext();
+  const elementRef = React.useRef<HTMLDivElement>(null);
+
+  React.useEffect(() => {
+    if (!elementRef.current) return;
+
+    gsap.to(elementRef.current, {
+      clipPath: isMouseIn
+        ? "polygon(0 0,100% 0,100% 100%,0 100%)"
+        : "polygon(50% 0,50% 0,50% 100%,50% 100%)",
+      duration: 0.4,
+      ease: "power2.out",
+    });
+  }, [isMouseIn]);
+
   return (
-    <motion.div
-      ref={ref}
+    <div
+      ref={(node) => {
+        elementRef.current = node;
+        if (typeof ref === "function") ref(node);
+        else if (ref) ref.current = node;
+      }}
       className={className}
-      variants={curtainVariants}
-      animate={isMouseIn ? "visible" : "hidden"}
+      style={{
+        clipPath: "polygon(50% 0,50% 0,50% 100%,50% 100%)",
+      }}
       {...props}
     />
   );
@@ -84,52 +94,104 @@ CardCurtainRevealBody.displayName = "CardCurtainRevealBody";
 
 const CardCurtainRevealTitle = React.forwardRef<
   HTMLHeadingElement,
-  HTMLMotionProps<"h2">
+  React.HTMLAttributes<HTMLHeadingElement>
 >(({ className, ...props }, ref) => {
   const { isMouseIn } = useCardCurtainRevealContext();
+  const elementRef = React.useRef<HTMLHeadingElement>(null);
+
+  React.useEffect(() => {
+    if (!elementRef.current) return;
+
+    gsap.to(elementRef.current, {
+      y: isMouseIn ? 0 : 8,
+      duration: 0.25,
+      ease: "power2.out",
+    });
+  }, [isMouseIn]);
+
   return (
-    <motion.h2
-      ref={ref}
+    <h2
+      ref={(node) => {
+        elementRef.current = node;
+        if (typeof ref === "function") ref(node);
+        else if (ref) ref.current = node;
+      }}
       className={className}
-      initial={{ y: 0 }}
-      animate={isMouseIn ? { y: 0 } : { y: 8 }} // was 170
-      transition={{ duration: 0.25, ease: "easeOut" }}
       {...props}
     />
   );
 });
 CardCurtainRevealTitle.displayName = "CardCurtainRevealTitle";
 
-const CardCurtain = React.forwardRef<HTMLDivElement, HTMLMotionProps<"div">>(
-  ({ className, ...props }, ref) => {
-    const { isMouseIn } = useCardCurtainRevealContext();
-    return (
-      <motion.div
-        ref={ref}
-        className={cn(
-          "pointer-events-none absolute inset-0 size-full mix-blend-difference",
-          className
-        )}
-        variants={curtainVariants}
-        animate={isMouseIn ? "visible" : "hidden"}
-        {...props}
-      />
-    );
-  }
-);
+const CardCurtain = React.forwardRef<
+  HTMLDivElement,
+  React.HTMLAttributes<HTMLDivElement>
+>(({ className, ...props }, ref) => {
+  const { isMouseIn } = useCardCurtainRevealContext();
+  const elementRef = React.useRef<HTMLDivElement>(null);
+
+  React.useEffect(() => {
+    if (!elementRef.current) return;
+
+    gsap.to(elementRef.current, {
+      clipPath: isMouseIn
+        ? "polygon(0 0,100% 0,100% 100%,0 100%)"
+        : "polygon(50% 0,50% 0,50% 100%,50% 100%)",
+      duration: 0.4,
+      ease: "power2.out",
+    });
+  }, [isMouseIn]);
+
+  return (
+    <div
+      ref={(node) => {
+        elementRef.current = node;
+        if (typeof ref === "function") ref(node);
+        else if (ref) ref.current = node;
+      }}
+      className={cn(
+        "pointer-events-none absolute inset-0 size-full mix-blend-difference",
+        className
+      )}
+      style={{
+        clipPath: "polygon(50% 0,50% 0,50% 100%,50% 100%)",
+      }}
+      {...props}
+    />
+  );
+});
 CardCurtain.displayName = "CardCurtain";
 
 const CardCurtainRevealDescription = React.forwardRef<
   HTMLDivElement,
-  HTMLMotionProps<"div">
+  React.HTMLAttributes<HTMLDivElement>
 >(({ className, ...props }, ref) => {
   const { isMouseIn } = useCardCurtainRevealContext();
+  const elementRef = React.useRef<HTMLDivElement>(null);
+
+  React.useEffect(() => {
+    if (!elementRef.current) return;
+
+    gsap.to(elementRef.current, {
+      clipPath: isMouseIn
+        ? "polygon(0 0,100% 0,100% 100%,0 100%)"
+        : "polygon(50% 0,50% 0,50% 100%,50% 100%)",
+      duration: 0.4,
+      ease: "power2.out",
+    });
+  }, [isMouseIn]);
+
   return (
-    <motion.div
-      ref={ref}
+    <div
+      ref={(node) => {
+        elementRef.current = node;
+        if (typeof ref === "function") ref(node);
+        else if (ref) ref.current = node;
+      }}
       className={className}
-      variants={curtainVariants}
-      animate={isMouseIn ? "visible" : "hidden"}
+      style={{
+        clipPath: "polygon(50% 0,50% 0,50% 100%,50% 100%)",
+      }}
       {...props}
     />
   );

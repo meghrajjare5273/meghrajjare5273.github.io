@@ -1,12 +1,8 @@
 "use client";
 
 import React, { useMemo, useRef, useState } from "react";
-import { motion } from "motion/react";
-import { useGSAP as useGSAPHook } from "@gsap/react";
 import gsap from "gsap";
-import { Button } from "@/components/ui/button"; // using Button styles for compact badge look
-import { Command, Plus, Settings2 } from "lucide-react";
-
+import { useGSAP } from "@gsap/react";
 import { BentoGridShowcase } from "@/components/ui/bento-grid";
 import {
   CardCurtainReveal,
@@ -16,14 +12,6 @@ import {
   CardCurtainRevealDescription,
   CardCurtain,
 } from "@/components/ui/cards/card-curtain";
-
-import { AdaptiveMorphDialog } from "@/components/ui/cards/morph";
-
-// register gsap/react safely
-if (typeof window !== "undefined") {
-  gsap.registerPlugin(useGSAPHook as any);
-}
-const useGSAP = useGSAPHook as unknown as typeof useGSAPHook;
 
 type SlotData = {
   id: string;
@@ -45,11 +33,6 @@ export default function About() {
     "bg-neutral-50/80 dark:bg-neutral-900/60 shadow " +
     "transition-all duration-300 hover:-translate-y-0.5 hover:shadow-xl";
 
-  // a tiny badge style
-  const chipCls =
-    "px-2.5 py-0.5 rounded-full border border-white/15 " +
-    "bg-white/10 text-[10px] md:text-xs text-neutral-700 " +
-    "dark:text-neutral-300/90";
   const SLOTS = useMemo(
     () => ({
       integration: {
@@ -105,7 +88,7 @@ export default function About() {
       shortcuts: {
         id: "about-slot-shortcuts",
         title: "Quick Actions",
-        subtitle: "Let’s collaborate",
+        subtitle: "Let's collaborate",
         description:
           "Get the resume, browse the code, or reach out for scoped projects and consulting.",
         image:
@@ -116,36 +99,38 @@ export default function About() {
     []
   );
 
-  // GSAP entrance animations, reduced-motion aware
   useGSAP(
-    (ctx) => {
-      gsap.from(headingRef.current, {
-        opacity: 0,
-        y: 20,
-        duration: 0.6,
-        ease: "power2.out",
-      });
-      gsap.from(paraRef.current, {
-        opacity: 0,
-        y: 20,
-        duration: 0.6,
-        delay: 0.12,
-        ease: "power2.out",
-      });
+    () => {
+      const tl = gsap.timeline({ defaults: { ease: "power2.out" } });
 
-      const items = gsap.utils.toArray<HTMLElement>(".bento-about .grid-item");
-      gsap.from(items, {
+      tl.from(headingRef.current, {
         opacity: 0,
         y: 20,
-        duration: 0.45,
-        stagger: 0.08,
-        ease: "power2.out",
-      });
+        duration: 0.6,
+      })
+        .from(
+          paraRef.current,
+          {
+            opacity: 0,
+            y: 20,
+            duration: 0.6,
+          },
+          "-=0.3"
+        )
+        .from(
+          ".bento-about .grid-item",
+          {
+            opacity: 0,
+            y: 20,
+            duration: 0.45,
+            stagger: 0.08,
+          },
+          "-=0.2"
+        );
     },
     { scope: sectionRef }
   );
 
-  // card shell helper
   const CardShell = ({
     data,
     children,
@@ -155,13 +140,9 @@ export default function About() {
     children: React.ReactNode;
     className?: string;
   }) => (
-    <motion.div
-      layoutId={data.id}
-      className={`grid-item ${className}`}
-      onClick={() => setSelected(data)}
-    >
+    <div className={`grid-item ${className}`} onClick={() => setSelected(data)}>
       {children}
-    </motion.div>
+    </div>
   );
 
   return (
@@ -184,7 +165,6 @@ export default function About() {
       </p>
 
       <BentoGridShowcase
-        /* Tall left: About Me */
         integration={
           <CardShell data={SLOTS.integration}>
             <CardCurtainReveal className={cardChrome}>
@@ -209,7 +189,6 @@ export default function About() {
             </CardCurtainReveal>
           </CardShell>
         }
-        /* Top middle: Core Stack */
         trackers={
           <CardShell data={SLOTS.trackers}>
             <CardCurtainReveal className={cardChrome}>
@@ -234,7 +213,6 @@ export default function About() {
             </CardCurtainReveal>
           </CardShell>
         }
-        /* Top right: AI × Web */
         statistic={
           <CardShell data={SLOTS.statistic}>
             <CardCurtainReveal className={cardChrome}>
@@ -259,7 +237,6 @@ export default function About() {
             </CardCurtainReveal>
           </CardShell>
         }
-        /* Middle middle: Current Focus */
         focus={
           <CardShell data={SLOTS.focus}>
             <CardCurtainReveal className={cardChrome}>
@@ -284,7 +261,6 @@ export default function About() {
             </CardCurtainReveal>
           </CardShell>
         }
-        /* Middle right: Open Source */
         productivity={
           <CardShell data={SLOTS.productivity}>
             <CardCurtainReveal className={cardChrome}>
@@ -309,7 +285,6 @@ export default function About() {
             </CardCurtainReveal>
           </CardShell>
         }
-        /* Bottom wide (2 cols): Quick Actions */
         shortcuts={
           <CardShell data={SLOTS.shortcuts}>
             <CardCurtainReveal className={cardChrome}>
@@ -334,35 +309,6 @@ export default function About() {
             </CardCurtainReveal>
           </CardShell>
         }
-      />
-
-      {/* Morph dialog – preserves your shared-element layoutId pattern and drawer-on-mobile behavior */}
-      <AdaptiveMorphDialog
-        open={!!selected}
-        onOpenChange={(v) => !v && setSelected(null)}
-        layoutId={selected?.id ?? "about-slot-integration"}
-        title={selected?.title}
-        subtitle={selected?.subtitle}
-        description={
-          <div className="space-y-3">
-            <p className="text-sm text-muted-foreground">
-              {selected?.description}
-            </p>
-            {!!selected?.chips?.length && (
-              <div className="flex flex-wrap gap-2 pt-2">
-                {selected!.chips!.map((s, i) => (
-                  <span
-                    key={i}
-                    className="px-3 py-1 rounded-full border border-white/20 bg-white/10 text-white text-xs md:text-sm"
-                  >
-                    {s}
-                  </span>
-                ))}
-              </div>
-            )}
-          </div>
-        }
-        image={selected?.image}
       />
     </section>
   );
