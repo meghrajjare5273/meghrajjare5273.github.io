@@ -3,6 +3,7 @@
 import React, { useMemo, useRef, useState } from "react";
 import gsap from "gsap";
 import { useGSAP } from "@gsap/react";
+import { ScrollTrigger } from "gsap/dist/ScrollTrigger"; // Import ScrollTrigger
 import { BentoGridShowcase } from "@/components/ui/bento-grid";
 import {
   CardCurtainReveal,
@@ -13,6 +14,11 @@ import {
   CardCurtain,
 } from "@/components/ui/cards/card-curtain";
 import { AdaptiveMorphDialog } from "../ui/cards/morph";
+
+// Register Plugin
+if (typeof window !== "undefined") {
+  gsap.registerPlugin(ScrollTrigger);
+}
 
 type SlotData = {
   id: string;
@@ -25,8 +31,6 @@ type SlotData = {
 
 export default function About() {
   const sectionRef = useRef<HTMLDivElement | null>(null);
-  const headingRef = useRef<HTMLHeadingElement | null>(null);
-  const paraRef = useRef<HTMLParagraphElement | null>(null);
 
   const [selected, setSelected] = useState<SlotData | null>(null);
   const cardChrome =
@@ -102,31 +106,49 @@ export default function About() {
 
   useGSAP(
     () => {
-      const tl = gsap.timeline({ defaults: { ease: "power2.out" } });
+      const heading = sectionRef.current?.querySelector("h1");
+      const para = sectionRef.current?.querySelector("p");
+      const gridItems = gsap.utils.toArray(".grid-item");
 
-      tl.from(headingRef.current, {
-        opacity: 0,
-        y: 20,
-        duration: 0.6,
+      if (!heading || !para) return;
+
+      // Initial states
+      gsap.set([heading, para], { y: 50, opacity: 0 });
+      gsap.set(gridItems, { y: 60, opacity: 0 });
+
+      const tl = gsap.timeline({
+        scrollTrigger: {
+          trigger: sectionRef.current,
+          start: "top 75%", // Animation starts when top of section hits 75% of viewport height
+          end: "bottom 20%",
+          toggleActions: "play none none reverse", // Reverses when scrolling back up
+        },
+        defaults: { ease: "power3.out" },
+      });
+
+      tl.to(heading, {
+        opacity: 1,
+        y: 0,
+        duration: 1,
       })
-        .from(
-          paraRef.current,
+        .to(
+          para,
           {
-            opacity: 0,
-            y: 20,
-            duration: 0.6,
+            opacity: 1,
+            y: 0,
+            duration: 1,
           },
-          "-=0.3"
+          "-=0.8"
         )
-        .from(
-          ".bento-about .grid-item",
+        .to(
+          gridItems,
           {
-            opacity: 0,
-            y: 20,
-            duration: 0.45,
-            stagger: 0.08,
+            opacity: 1,
+            y: 0,
+            duration: 0.8,
+            stagger: 0.1, // Stagger the bento grid items
           },
-          "-=0.2"
+          "-=0.6"
         );
     },
     { scope: sectionRef }
@@ -152,13 +174,13 @@ export default function About() {
       className="container mx-auto pt-24 pb-16 px-6 bento-about"
     >
       <h1
-        ref={headingRef}
+        // ref={headingRef}
         className="font-SpaceGroteskVariable text-3xl md:text-5xl tracking-tight bg-clip-text text-transparent bg-linear-to-r from-gray-900/90 to-gray-500/40 dark:from-white dark:to-white/40"
       >
         About Me
       </h1>
       <p
-        ref={paraRef}
+        // ref={paraRef}
         className="mt-3 mb-8 max-w-2xl text-lg md:text-xl font-medium tracking-tight bg-linear-to-br from-black/90 to-gray-400/20 bg-clip-text text-transparent dark:from-white dark:to-white/40 font-SpaceGroteskVariable"
       >
         Building legal technology, AI automation, and elegant UIs, with an
