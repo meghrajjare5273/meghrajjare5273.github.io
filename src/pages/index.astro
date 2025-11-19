@@ -2,9 +2,11 @@
 import Layout from '../layouts/Layout.astro';
 import Hero from "@/components/landing/Hero"
 import About from '@/components/landing/About';
+import ImageCarousel from '@/components/landing/Projects';
 ---
 
 <Layout>
   <Hero client:load />
   <About client:load />
+  <ImageCarousel client:load />
 </Layout>

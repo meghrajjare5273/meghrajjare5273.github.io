@@ -1,0 +1,23 @@
+@import url("https://fonts.googleapis.com/css2?family=Sora:wght@100..800&display=swap");
+
+.figma-background {
+  background: linear-gradient(to right, black 50%, transparent 100%);
+}
+
+.slack-background {
+  background: linear-gradient(to right, #4b0b4b 50%, transparent 100%);
+}
+
+.openai-background {
+  background: linear-gradient(to right, #191927 50%, transparent 100%);
+}
+
+.shipt-background {
+  background: linear-gradient(to right, #25cc6b 50%, transparent 100%);
+}
+
+.image-text-container {
+  display: flex;
+  width: 400%;
+  transition: transform 0.5s ease;
+}
