@@ -138,6 +138,7 @@
 /* Smooth scrolling enhancement */
 html {
   scroll-behavior: smooth;
+  overscroll-behavior: none;
 }
 
 /* Custom scrollbar for better UX */
