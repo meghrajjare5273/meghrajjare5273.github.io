@@ -24,25 +24,25 @@ export function BentoGridShowcase({
   shortcuts,
   className,
 }: BentoGridShowcaseProps) {
-  const sectionRef = React.useRef<HTMLElement>(null);
+  // const sectionRef = React.useRef<HTMLElement>(null);
 
-  useGSAP(
-    () => {
-      const items = gsap.utils.toArray<HTMLElement>(".grid-item");
-      gsap.from(items, {
-        opacity: 0,
-        y: 20,
-        duration: 0.6,
-        stagger: 0.1,
-        ease: "power3.out",
-      });
-    },
-    { scope: sectionRef }
-  );
+  // useGSAP(
+  //   () => {
+  //     const items = gsap.utils.toArray<HTMLElement>(".grid-item");
+  //     gsap.from(items, {
+  //       opacity: 0,
+  //       y: 20,
+  //       duration: 0.6,
+  //       stagger: 0.1,
+  //       ease: "power3.out",
+  //     });
+  //   },
+  //   { scope: sectionRef }
+  // );
 
   return (
     <section
-      ref={sectionRef}
+      // ref={sectionRef}
       className={cn(
         "grid w-full grid-cols-1 gap-5 md:grid-cols-3 md:grid-rows-3 auto-rows-[minmax(140px,auto)] md:auto-rows-[minmax(130px,auto)] xl:auto-rows-[minmax(120px,auto)]",
         className
