@@ -3,9 +3,12 @@ import Layout from '../layouts/Layout.astro';
 import Hero from "@/components/landing/Hero"
 import About from '@/components/landing/About';
 import ImageCarousel from '@/components/landing/Projects';
+import SignatureIntro from '@/components/loading/signature-intro';
 ---
 
 <Layout>
+  <SignatureIntro client:load />
+
   <Hero client:load />
   <About client:load />
   <ImageCarousel client:load />
