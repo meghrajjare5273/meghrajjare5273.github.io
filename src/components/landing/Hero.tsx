@@ -1,4 +1,4 @@
-import React, { useRef } from "react";
+import React, { useRef, useState, useEffect } from "react";
 import { ArrowDownRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import gsap from "gsap";
@@ -8,6 +8,7 @@ import { GridBackground } from "@/components/ui/grid-background";
 
 export function HeroSection() {
   const containerRef = useRef<HTMLDivElement>(null);
+  const [signatureComplete, setSignatureComplete] = useState(false);
 
   // Refs for elements we want to animate
   const refs = useRef<{ [key: string]: HTMLElement | null }>({});
@@ -15,9 +16,35 @@ export function HeroSection() {
     if (el) refs.current[key] = el;
   };
 
+  // Listen for signature animation completion
+  useEffect(() => {
+    const handleSignatureComplete = (e: Event) => {
+      const customEvent = e as CustomEvent;
+      setSignatureComplete(true);
+    };
+
+    window.addEventListener(
+      "signature-animation-complete",
+      handleSignatureComplete
+    );
+
+    return () => {
+      window.removeEventListener(
+        "signature-animation-complete",
+        handleSignatureComplete
+      );
+    };
+  }, []);
+
   useGSAP(
     () => {
-      const tl = gsap.timeline({ defaults: { ease: "power3.out" } });
+      // Don't start animation until signature is complete
+      if (!signatureComplete) return;
+
+      const tl = gsap.timeline({
+        defaults: { ease: "power3.out" },
+        delay: 0.3, // Small delay after signature completes for smooth transition
+      });
 
       // 1. Set initial state to prevent FOUC
       gsap.set(
@@ -35,7 +62,7 @@ export function HeroSection() {
         }
       );
 
-      // 2. Animate
+      // 2. Animate in sequence
       tl.to(refs.current.name, {
         opacity: 1,
         y: 0,
@@ -69,7 +96,7 @@ export function HeroSection() {
           "-=0.4"
         );
     },
-    { scope: containerRef }
+    { scope: containerRef, dependencies: [signatureComplete] }
   );
 
   return (
