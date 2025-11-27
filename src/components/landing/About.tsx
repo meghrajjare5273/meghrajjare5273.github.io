@@ -14,6 +14,7 @@ import {
   CardCurtain,
 } from "@/components/ui/cards/card-curtain";
 import { AdaptiveMorphDialog } from "../ui/cards/morph";
+import { cn } from "@/lib/utils";
 
 // Register Plugin
 if (typeof window !== "undefined") {
@@ -33,11 +34,13 @@ export default function About() {
   const sectionRef = useRef<HTMLDivElement | null>(null);
 
   const [selected, setSelected] = useState<SlotData | null>(null);
-  const cardChrome =
-    "group relative h-full rounded-2xl border border-white/10 " +
-    "bg-neutral-50/80 dark:bg-neutral-900/60 shadow " +
-    "transition-all duration-300 hover:-translate-y-0.5 hover:shadow-xl";
-
+ const cardChrome = cn(
+  "group relative h-full rounded-2xl",
+  "border border-white/10",
+  "bg-neutral-50/80 dark:bg-neutral-900/60",
+  "shadow transition-all duration-300",
+  "hover:-translate-y-0.5 hover:shadow-xl"
+);
   const SLOTS = useMemo(
     () => ({
       integration: {

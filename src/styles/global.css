@@ -1,7 +1,6 @@
 @import "tailwindcss";
 @import "tw-animate-css";
 @import "@fontsource-variable/space-grotesk";
-@import "./electric-card.css";
 
 @custom-variant dark (&:is(.dark *));
 
