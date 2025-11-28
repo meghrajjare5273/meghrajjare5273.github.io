@@ -1,366 +1,298 @@
-"use client";
+import React, { useEffect, useRef } from "react";
+import { gsap } from "gsap";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
+import { SplitText } from "gsap/SplitText";
 
-import React, { useMemo, useRef, useState } from "react";
-import gsap from "gsap";
-import { useGSAP } from "@gsap/react";
-import { ScrollTrigger } from "gsap/dist/ScrollTrigger"; // Import ScrollTrigger
-import { BentoGridShowcase } from "@/components/ui/bento-grid";
-import {
-  CardCurtainReveal,
-  CardCurtainRevealBody,
-  CardCurtainRevealFooter,
-  CardCurtainRevealTitle,
-  CardCurtainRevealDescription,
-  CardCurtain,
-} from "@/components/ui/cards/card-curtain";
-import { AdaptiveMorphDialog } from "../ui/cards/morph";
+gsap.registerPlugin(ScrollTrigger, SplitText);
 
-// Register Plugin
-if (typeof window !== "undefined") {
-  gsap.registerPlugin(ScrollTrigger);
-}
+const AboutSection = () => {
+  const sectionRef = useRef<HTMLDivElement>(null);
+  const headingRef = useRef<HTMLHeadingElement>(null);
+  const imageRef = useRef<HTMLDivElement>(null);
+  const textBlocksRef = useRef<(HTMLDivElement | null)[]>([]);
 
-type SlotData = {
-  id: string;
-  title: string;
-  subtitle?: string;
-  description?: string;
-  image?: string;
-  chips?: string[];
-};
+  useEffect(() => {
+    const ctx = gsap.context(() => {
+      // --- HEADING ANIMATION ---
+      if (headingRef.current) {
+        const headingSplit = new SplitText(headingRef.current, {
+          type: "chars",
+          charsClass: "char",
+        });
 
-export default function About() {
-  const sectionRef = useRef<HTMLDivElement | null>(null);
+        gsap.from(headingSplit.chars, {
+          opacity: 0,
+          yPercent: 100,
+          rotationX: -90,
+          transformOrigin: "50% 100%",
+          stagger: {
+            each: 0.02,
+            from: "center",
+            ease: "power2.out",
+          },
+          duration: 0.8,
+          ease: "back.out(1.2)",
+          clearProps: "all",
+          onComplete: () => headingSplit.revert(),
+        });
+      }
 
-  const [selected, setSelected] = useState<SlotData | null>(null);
-  const cardChrome =
-    "group relative h-full rounded-2xl border border-white/10 " +
-    "bg-neutral-50/80 dark:bg-neutral-900/60 shadow " +
-    "transition-all duration-300 hover:-translate-y-0.5 hover:shadow-xl";
+      // --- TEXT BLOCK ANIMATIONS ---
+      textBlocksRef.current.forEach((block) => {
+        if (!block) return;
 
-  const SLOTS = useMemo(
-    () => ({
-      integration: {
-        id: "about-slot-integration",
-        title: "About Me",
-        subtitle: "Full‑Stack + ML",
-        description:
-          "Engineer focused on legal tech, AI automations, and polished UIs with a product, performance-first mindset.",
-        image:
-          "https://images.unsplash.com/photo-1540959733332-eab4deabeeaf?q=80&auto=format&fit=crop",
-        chips: ["React/Next", "TypeScript", "FastAPI", "Python", "Postgres"],
-      },
-      trackers: {
-        id: "about-slot-trackers",
-        title: "Core Stack",
-        subtitle: "Daily Drivers",
-        description:
-          "React, Next.js, TypeScript, Python, and FastAPI power most builds and prototypes.",
-        image:
-          "https://images.unsplash.com/photo-1515879218367-8466d910aaa4?q=80&auto=format&fit=crop",
-        chips: ["React", "Next.js", "TypeScript", "Python", "FastAPI"],
-      },
-      statistic: {
-        id: "about-slot-statistic",
-        title: "AI × Web",
-        subtitle: "Systems + UX",
-        description:
-          "Shipping practical AI—RAG, RL, GPU workflows—wrapped in interactive, accessible UX.",
-        image:
-          "https://images.unsplash.com/photo-1518779578993-ec3579fee39f?q=80&auto=format&fit=crop",
-        chips: ["NLP", "RAG", "RL", "GPU", "SB3"],
-      },
-      focus: {
-        id: "about-slot-focus",
-        title: "Current Focus",
-        subtitle: "ML Ops + UI",
-        description:
-          "RL experiments, contract analysis tooling, and refined motion patterns for production UIs.",
-        image:
-          "https://images.unsplash.com/photo-1526378722484-bd91ca387e72?q=80&auto=format&fit=crop",
-        chips: ["RL", "Contracts AI", "UI Motion", "Performance"],
-      },
-      productivity: {
-        id: "about-slot-productivity",
-        title: "Open Source",
-        subtitle: "Community",
-        description:
-          "Reusable UI and ML components with docs, examples, and pragmatic patterns.",
-        image:
-          "https://images.unsplash.com/photo-1498050108023-c5249f4df085?q=80&auto=format&fit=crop",
-        chips: ["LegalMind", "DebateBot", "UI Kits"],
-      },
-      shortcuts: {
-        id: "about-slot-shortcuts",
-        title: "Quick Actions",
-        subtitle: "Let's collaborate",
-        description:
-          "Get the resume, browse the code, or reach out for scoped projects and consulting.",
-        image:
-          "https://images.unsplash.com/photo-1498050108023-c5249f4df085?q=80&auto=format&fit=crop",
-        chips: ["Resume", "GitHub", "Email"],
-      },
-    }),
-    []
-  );
+        const paragraphs = block.querySelectorAll<HTMLParagraphElement>("p");
 
-  useGSAP(
-    () => {
-      const heading = sectionRef.current?.querySelector("h1");
-      const para = sectionRef.current?.querySelector("p");
-      const gridItems = gsap.utils.toArray(".grid-item");
+        paragraphs.forEach((p: HTMLParagraphElement) => {
+          const split = new SplitText(p, {
+            type: "lines,words",
+            linesClass: "line-wrapper",
+            wordsClass: "word",
+          });
 
-      if (!heading || !para) return;
+          gsap.set(split.lines, { overflow: "hidden" });
 
-      // Initial states
-      gsap.set([heading, para], { y: 50, opacity: 0 });
-      gsap.set(gridItems, { y: 60, opacity: 0 });
-
-      const tl = gsap.timeline({
-        scrollTrigger: {
-          trigger: sectionRef.current,
-          start: "top 75%", // Animation starts when top of section hits 75% of viewport height
-          end: "bottom 20%",
-          toggleActions: "play none none reverse", // Reverses when scrolling back up
-        },
-        defaults: { ease: "power3.out" },
+          gsap.from(split.words, {
+            scrollTrigger: {
+              trigger: block,
+              start: "top 80%",
+              end: "top 20%",
+              toggleActions: "play none none reverse",
+            },
+            yPercent: 100,
+            opacity: 0,
+            rotationX: -45,
+            transformOrigin: "50% 100%",
+            stagger: {
+              amount: 0.5,
+              from: "start",
+            },
+            duration: 0.8,
+            ease: "power3.out",
+            clearProps: "all",
+            onComplete: () => split.revert(),
+          });
+        });
       });
 
-      tl.to(heading, {
-        opacity: 1,
-        y: 0,
-        duration: 1,
-      })
-        .to(
-          para,
-          {
-            opacity: 1,
-            y: 0,
-            duration: 1,
-          },
-          "-=0.8"
-        )
-        .to(
-          gridItems,
-          {
-            opacity: 1,
-            y: 0,
-            duration: 0.8,
-            stagger: 0.1, // Stagger the bento grid items
-          },
-          "-=0.6"
-        );
-    },
-    { scope: sectionRef }
-  );
+      // --- IMAGE REVEAL + ZOOM WITH TIMELINE ---
+      if (imageRef.current) {
+        const imageWrapper = imageRef.current;
+        const imageElement =
+          imageWrapper.querySelector<HTMLImageElement>("img");
 
-  const CardShell = ({
-    data,
-    children,
-    className = "h-full",
-  }: {
-    data: SlotData;
-    children: React.ReactNode;
-    className?: string;
-  }) => (
-    <div className={`grid-item ${className}`} onClick={() => setSelected(data)}>
-      {children}
-    </div>
-  );
+        const tl = gsap.timeline({
+          scrollTrigger: {
+            trigger: imageWrapper,
+            start: "top 80%",
+            end: "top 30%",
+            scrub: 1,
+          },
+        });
+
+        tl.from(
+          imageWrapper,
+          {
+            clipPath: "inset(0% 0% 100% 0%)",
+            ease: "none",
+          },
+          0
+        ); // Start at time 0
+
+        //   if (imageElement) {
+        //     tl.fromTo(
+        //       imageElement,
+        //       { scale: 1.5 },
+        //       { scale: 1, ease: "none" },
+        //       0 // Start at same time
+        //     );
+        //   }
+      }
+
+      // --- STATUS SECTION REVEAL ---
+      if (sectionRef.current) {
+        const statusSection = sectionRef.current.querySelector<HTMLDivElement>(
+          "[data-status-section]"
+        );
+        if (statusSection) {
+          gsap.from(statusSection, {
+            scrollTrigger: {
+              trigger: statusSection,
+              start: "top 85%",
+              toggleActions: "play none none reverse",
+            },
+            y: 60,
+            opacity: 0,
+            duration: 1,
+            ease: "power3.out",
+          });
+
+          const borderLine =
+            statusSection.querySelector<HTMLElement>(".border-t");
+          if (borderLine) {
+            gsap.from(borderLine, {
+              scrollTrigger: {
+                trigger: statusSection,
+                start: "top 85%",
+                toggleActions: "play none none reverse",
+              },
+              scaleX: 0,
+              transformOrigin: "left",
+              duration: 1.2,
+              ease: "power2.inOut",
+            });
+          }
+        }
+      }
+
+      // --- CTA BUTTON HOVER ENHANCEMENT ---
+      if (sectionRef.current) {
+        const ctaButton =
+          sectionRef.current.querySelector<HTMLButtonElement>(
+            "[data-cta-button]"
+          );
+        if (ctaButton) {
+          ctaButton.addEventListener("mouseenter", () => {
+            gsap.to(ctaButton, {
+              y: -2,
+              duration: 0.3,
+              ease: "power2.out",
+            });
+          });
+
+          ctaButton.addEventListener("mouseleave", () => {
+            gsap.to(ctaButton, {
+              y: 0,
+              duration: 0.3,
+              ease: "power2.inOut",
+            });
+          });
+        }
+      }
+    }, sectionRef);
+
+    const handleResize = () => ScrollTrigger.refresh();
+    window.addEventListener("resize", handleResize);
+
+    return () => {
+      ctx.revert();
+      window.removeEventListener("resize", handleResize);
+    };
+  }, []);
 
   return (
-    <section
+    <div
       ref={sectionRef}
-      className="container mx-auto pt-24 pb-16 px-6 bento-about"
+      className="min-h-screen bg-[#EBEAE5] text-[#1A1A1A] font-mono selection:bg-black selection:text-white overflow-hidden py-24 px-6 md:px-12 lg:px-24"
     >
-      <h1
-        // ref={headingRef}
-        className="font-SpaceGroteskVariable text-3xl md:text-5xl tracking-tight bg-clip-text text-transparent bg-linear-to-r from-gray-900/90 to-gray-500/40 dark:from-white dark:to-white/40"
-      >
-        About Me
-      </h1>
-      <p
-        // ref={paraRef}
-        className="mt-3 mb-8 max-w-2xl text-lg md:text-xl font-medium tracking-tight bg-linear-to-br from-black/90 to-gray-400/20 bg-clip-text text-transparent dark:from-white dark:to-white/40 font-SpaceGroteskVariable"
-      >
-        Building legal technology, AI automation, and elegant UIs, with an
-        iterative, performance‑minded approach.
-      </p>
+      <style>
+        {`
+          @import url('https://fonts.googleapis.com/css2?family=Anton&display=swap');
+          .font-display { font-family: 'Anton', 'Impact', sans-serif; }
+          
+          .char, .word, .line-wrapper {
+            display: inline-block;
+            will-change: transform, opacity;
+          }
+          
+          .line-wrapper {
+            overflow: hidden;
+            padding: 2px 0;
+          }
+        `}
+      </style>
 
-      <BentoGridShowcase
-        integration={
-          <CardShell data={SLOTS.integration}>
-            <CardCurtainReveal className={cardChrome}>
-              <CardCurtainRevealBody className="p-6 md:p-8">
-                <CardCurtainRevealTitle className="text-2xl md:text-3xl font-semibold tracking-tight">
-                  {SLOTS.integration.title}
-                </CardCurtainRevealTitle>
-                <CardCurtainRevealDescription className="mt-3 text-sm md:text-base text-neutral-700 dark:text-neutral-300">
-                  <p>{SLOTS.integration.description}</p>
-                </CardCurtainRevealDescription>
-                <CardCurtain className="bg-neutral-50 dark:bg-neutral-900" />
-              </CardCurtainRevealBody>
-              <CardCurtainRevealFooter className="mt-auto">
-                <img
-                  width="100%"
-                  height="100%"
-                  alt="About"
-                  className="h-48 w-full object-cover"
-                  src={SLOTS.integration.image!}
-                />
-              </CardCurtainRevealFooter>
-            </CardCurtainReveal>
-          </CardShell>
-        }
-        trackers={
-          <CardShell data={SLOTS.trackers}>
-            <CardCurtainReveal className={cardChrome}>
-              <CardCurtainRevealBody className="p-6">
-                <CardCurtainRevealTitle className="text-xl md:text-2xl font-semibold">
-                  {SLOTS.trackers.title}
-                </CardCurtainRevealTitle>
-                <CardCurtainRevealDescription className="mt-2 text-sm text-neutral-700 dark:text-neutral-300">
-                  <p>{SLOTS.trackers.description}</p>
-                </CardCurtainRevealDescription>
-                <CardCurtain className="bg-neutral-50 dark:bg-neutral-900" />
-              </CardCurtainRevealBody>
-              <CardCurtainRevealFooter>
-                <img
-                  width="100%"
-                  height="100%"
-                  alt="Core stack"
-                  className="h-36 w-full object-cover"
-                  src={SLOTS.trackers.image!}
-                />
-              </CardCurtainRevealFooter>
-            </CardCurtainReveal>
-          </CardShell>
-        }
-        statistic={
-          <CardShell data={SLOTS.statistic}>
-            <CardCurtainReveal className={cardChrome}>
-              <CardCurtainRevealBody className="p-6">
-                <CardCurtainRevealTitle className="text-xl md:text-2xl font-semibold">
-                  {SLOTS.statistic.title}
-                </CardCurtainRevealTitle>
-                <CardCurtainRevealDescription className="mt-2 text-sm text-neutral-700 dark:text-neutral-300">
-                  <p>{SLOTS.statistic.description}</p>
-                </CardCurtainRevealDescription>
-                <CardCurtain className="bg-neutral-50 dark:bg-neutral-900" />
-              </CardCurtainRevealBody>
-              <CardCurtainRevealFooter>
-                <img
-                  width="100%"
-                  height="100%"
-                  alt="AI and web"
-                  className="h-36 w-full object-cover"
-                  src={SLOTS.statistic.image!}
-                />
-              </CardCurtainRevealFooter>
-            </CardCurtainReveal>
-          </CardShell>
-        }
-        focus={
-          <CardShell data={SLOTS.focus}>
-            <CardCurtainReveal className={cardChrome}>
-              <CardCurtainRevealBody className="p-6">
-                <CardCurtainRevealTitle className="text-xl md:text-2xl font-semibold">
-                  {SLOTS.focus.title}
-                </CardCurtainRevealTitle>
-                <CardCurtainRevealDescription className="mt-2 text-sm text-neutral-700 dark:text-neutral-300">
-                  <p>{SLOTS.focus.description}</p>
-                </CardCurtainRevealDescription>
-                <CardCurtain className="bg-neutral-50 dark:bg-neutral-900" />
-              </CardCurtainRevealBody>
-              <CardCurtainRevealFooter>
-                <img
-                  width="100%"
-                  height="100%"
-                  alt="Focus"
-                  className="h-36 w-full object-cover"
-                  src={SLOTS.focus.image!}
-                />
-              </CardCurtainRevealFooter>
-            </CardCurtainReveal>
-          </CardShell>
-        }
-        productivity={
-          <CardShell data={SLOTS.productivity}>
-            <CardCurtainReveal className={cardChrome}>
-              <CardCurtainRevealBody className="p-6">
-                <CardCurtainRevealTitle className="text-xl md:text-2xl font-semibold">
-                  {SLOTS.productivity.title}
-                </CardCurtainRevealTitle>
-                <CardCurtainRevealDescription className="mt-2 text-sm text-neutral-700 dark:text-neutral-300">
-                  <p>{SLOTS.productivity.description}</p>
-                </CardCurtainRevealDescription>
-                <CardCurtain className="bg-neutral-50 dark:bg-neutral-900" />
-              </CardCurtainRevealBody>
-              <CardCurtainRevealFooter>
-                <img
-                  width="100%"
-                  height="100%"
-                  alt="Open source"
-                  className="h-36 w-full object-cover"
-                  src={SLOTS.productivity.image!}
-                />
-              </CardCurtainRevealFooter>
-            </CardCurtainReveal>
-          </CardShell>
-        }
-        shortcuts={
-          <CardShell data={SLOTS.shortcuts}>
-            <CardCurtainReveal className={cardChrome}>
-              <CardCurtainRevealBody className="p-6 md:p-8">
-                <CardCurtainRevealTitle className="text-2xl font-semibold">
-                  {SLOTS.shortcuts.title}
-                </CardCurtainRevealTitle>
-                <CardCurtainRevealDescription className="mt-3 text-sm md:text-base text-neutral-700 dark:text-neutral-300">
-                  <p>{SLOTS.shortcuts.description}</p>
-                </CardCurtainRevealDescription>
-                <CardCurtain className="bg-neutral-50 dark:bg-neutral-900" />
-              </CardCurtainRevealBody>
-              <CardCurtainRevealFooter>
-                <img
-                  width="100%"
-                  height="100%"
-                  alt="Shortcuts"
-                  className="h-40 w-full object-cover"
-                  src={SLOTS.shortcuts.image!}
-                />
-              </CardCurtainRevealFooter>
-            </CardCurtainReveal>
-          </CardShell>
-        }
-      />
-      {/* Morph dialog for card expansion */}
-      <AdaptiveMorphDialog
-        open={!!selected}
-        onOpenChange={(v) => !v && setSelected(null)}
-        layoutId={selected?.id ?? "about-slot-integration"}
-        title={selected?.title}
-        subtitle={selected?.subtitle}
-        description={
-          <div className="space-y-3">
-            <p className="text-sm text-muted-foreground">
-              {selected?.description}
+      <div className="max-w-[1000px] mx-auto flex flex-col items-center">
+        <div className="w-full text-center mb-16 md:mb-24">
+          <h1
+            ref={headingRef}
+            className="font-display text-[15vw] md:text-[12rem] leading-[0.8] tracking-tighter uppercase cursor-default"
+          >
+            About Me
+          </h1>
+        </div>
+
+        <div className="w-full grid grid-cols-1 md:grid-cols-12 gap-6 mb-20 md:mb-32">
+          <div className="hidden md:block md:col-span-2 lg:col-span-3"></div>
+
+          <div
+            className="md:col-span-8 lg:col-span-6"
+            ref={(el) => {
+              textBlocksRef.current[0] = el;
+            }}
+          >
+            <p className="text-sm md:text-base leading-relaxed tracking-wide uppercase mb-8">
+              I am a digital artisan obsessed with the space between silence and
+              noise. Based in the digital ether, I construct systems that value
+              function as the highest form of beauty. My work is a rejection of
+              the decorative—stripping away the non-essential to reveal the raw
+              structural integrity of the web.
             </p>
-            {!!selected?.chips?.length && (
-              <div className="flex flex-wrap gap-2 pt-2">
-                {selected!.chips!.map((s, i) => (
-                  <span
-                    key={i}
-                    className="px-3 py-1 rounded-full border border-white/20 bg-white/10 text-white text-xs md:text-sm"
-                  >
-                    {s}
-                  </span>
-                ))}
-              </div>
-            )}
+
+            <p className="text-sm md:text-base leading-relaxed tracking-wide uppercase text-gray-600">
+              I don't just write code; I curate interactions. Working with
+              ambitious brands to forge identities that demand attention through
+              subtlety, not volume.
+            </p>
           </div>
-        }
-        image={selected?.image}
-      />
-    </section>
+        </div>
+
+        <div className="w-full flex justify-center mb-20 md:mb-32">
+          <div
+            ref={imageRef}
+            className="relative group w-full max-w-md md:max-w-lg aspect-3/4 overflow-hidden bg-gray-300"
+          >
+            <img
+              src="https://images.unsplash.com/photo-1764197944498-476aca304de5?q=80&w=1992&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
+              alt="Portrait of the developer"
+              className="w-full h-full object-cover grayscale brightness-95 contrast-110 transition-all duration-700 ease-in-out group-hover:scale-105 group-hover:contrast-125"
+            />
+          </div>
+        </div>
+
+        <div className="w-full grid grid-cols-1 md:grid-cols-12 gap-6">
+          <div className="hidden md:block md:col-span-2 lg:col-span-3"></div>
+
+          <div
+            className="md:col-span-8 lg:col-span-6"
+            ref={(el) => {
+              textBlocksRef.current[1] = el;
+            }}
+          >
+            <p className="text-sm md:text-base leading-relaxed tracking-wide uppercase mb-8">
+              To me, the browser is a canvas that breathes. I have a deep
+              aversion to static, empty experiences. I strive to evoke feeling
+              through motion, typography, and negative space.
+            </p>
+
+            <p className="text-sm md:text-base leading-relaxed tracking-wide uppercase mb-12">
+              My approach is rooted in the belief that technology should feel
+              organic. It should respond, adapt, and age gracefully.
+            </p>
+
+            <div className="border-t border-black pt-6" data-status-section>
+              <p className="text-xs font-bold tracking-widest uppercase mb-2">
+                Current Status
+              </p>
+              <p className="text-sm leading-relaxed tracking-wide uppercase text-gray-600">
+                Accepting select freelance commissions for Q4 2025.
+                <br />
+                Open to collaborations with visionaries.
+              </p>
+              <div className="mt-8">
+                <button
+                  data-cta-button
+                  className="text-sm font-bold uppercase tracking-widest border-b border-transparent hover:border-black transition-colors duration-300"
+                >
+                  Get in Touch
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
   );
-}
+};
+
+export default AboutSection;

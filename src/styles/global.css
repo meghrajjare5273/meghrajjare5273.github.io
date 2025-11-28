@@ -1,7 +1,6 @@
 @import "tailwindcss";
 @import "tw-animate-css";
 @import "@fontsource-variable/space-grotesk";
-@import "./electric-card.css";
 
 @custom-variant dark (&:is(.dark *));
 
@@ -161,6 +160,8 @@ html {
 
 .font-handwriting {
   font-family: "Handwritten Font";
+<<<<<<< HEAD
+=======
 }
 
 @keyframes signature-intro-fade-out {
@@ -175,4 +176,5 @@ html {
 
 .animate-fade-out {
   animation: signature-intro-fade-out 2.8s ease forwards;
+>>>>>>> 8bc16ff8e8950495245ed5d7f9d7fda83af3358d
 }

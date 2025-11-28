@@ -1,4 +1,19 @@
 ---
+<<<<<<< HEAD
+import Layout from "../layouts/Layout.astro";
+import { PageOrchestrator } from "@/components/landing/PageOrchestrator";
+import { HeroSection } from "@/components/landing/Hero";
+import About from "@/components/landing/About";
+import ImageCarousel from "@/components/landing/Projects";
+---
+
+<Layout>
+  <PageOrchestrator client:load>
+    <HeroSection client:load />
+    <About client:load />
+    <ImageCarousel client:load />
+  </PageOrchestrator>
+=======
 import Layout from '../layouts/Layout.astro';
 import Hero from "@/components/landing/Hero"
 import About from '@/components/landing/About';
@@ -12,4 +27,5 @@ import SignatureIntro from '@/components/loading/signature-intro';
   <Hero client:load />
   <About client:load />
   <ImageCarousel client:load />
+>>>>>>> 8bc16ff8e8950495245ed5d7f9d7fda83af3358d
 </Layout>
