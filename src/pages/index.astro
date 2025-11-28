@@ -1,27 +1,15 @@
 ---
-import Layout from '../layouts/Layout.astro';
-import Hero from "@/components/landing/Hero"
-import About from '@/components/landing/About';
-import ImageCarousel from '@/components/landing/Projects';
-import SignatureIntro from '@/components/loading/signature-intro';
+import Layout from "../layouts/Layout.astro";
+import { PageOrchestrator } from "@/components/landing/PageOrchestrator";
+import { HeroSection } from "@/components/landing/Hero";
+import About from "@/components/landing/About";
+import ImageCarousel from "@/components/landing/Projects";
 ---
 
 <Layout>
-  <SignatureIntro client:load />
-  <Hero client:load />
-  <About client:load />
-  <ImageCarousel client:load />
+  <PageOrchestrator client:load>
+    <HeroSection client:load />
+    <About client:load />
+    <ImageCarousel client:load />
+  </PageOrchestrator>
 </Layout>
-
-<script>
-  // Coordinate animations between components
-  let introComplete = false;
-
-  document.addEventListener('astro:page-load', () => {
-    // Listen for intro completion
-    window.addEventListener('signature-intro-complete', () => {
-      introComplete = true;
-      document.dispatchEvent(new CustomEvent('start-hero-animation'));
-    });
-  });
-</script>
