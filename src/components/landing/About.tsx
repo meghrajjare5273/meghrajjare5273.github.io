@@ -75,43 +75,38 @@ const AboutSection = () => {
         });
       });
 
-      // --- IMAGE PARALLAX & REVEAL ---
+      // --- IMAGE REVEAL + ZOOM WITH TIMELINE ---
       if (imageRef.current) {
         const imageWrapper = imageRef.current;
         const imageElement =
           imageWrapper.querySelector<HTMLImageElement>("img");
 
-        gsap.from(imageWrapper, {
+        const tl = gsap.timeline({
           scrollTrigger: {
             trigger: imageWrapper,
             start: "top 80%",
             end: "top 30%",
             scrub: 1,
           },
-          clipPath: "inset(0% 0% 100% 0%)",
-          ease: "none",
         });
 
-        if (imageElement) {
-          gsap.fromTo(
-            imageElement,
-            {
-              scale: 1.3,
-              yPercent: -10,
-            },
-            {
-              scrollTrigger: {
-                trigger: imageWrapper,
-                start: "top bottom",
-                end: "bottom top",
-                scrub: 1.5,
-              },
-              scale: 1,
-              yPercent: 10,
-              ease: "none",
-            }
-          );
-        }
+        tl.from(
+          imageWrapper,
+          {
+            clipPath: "inset(0% 0% 100% 0%)",
+            ease: "none",
+          },
+          0
+        ); // Start at time 0
+
+        //   if (imageElement) {
+        //     tl.fromTo(
+        //       imageElement,
+        //       { scale: 1.5 },
+        //       { scale: 1, ease: "none" },
+        //       0 // Start at same time
+        //     );
+        //   }
       }
 
       // --- STATUS SECTION REVEAL ---
