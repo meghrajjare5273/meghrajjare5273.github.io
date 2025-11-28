@@ -3,7 +3,7 @@
 import React, { useEffect, useState } from "react";
 import SignatureLogo from "./signature-logo";
 
-const INTRO_DURATION_MS = 3000;
+const INTRO_DURATION_MS = 3500;
 
 const SignatureIntro: React.FC = () => {
   const [visible, setVisible] = useState(true);
