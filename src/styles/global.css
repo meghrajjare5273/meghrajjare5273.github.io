@@ -160,21 +160,4 @@ html {
 
 .font-handwriting {
   font-family: "Handwritten Font";
-<<<<<<< HEAD
-=======
-}
-
-@keyframes signature-intro-fade-out {
-  0%,
-  70% {
-    opacity: 1;
-  }
-  100% {
-    opacity: 0;
-  }
-}
-
-.animate-fade-out {
-  animation: signature-intro-fade-out 2.8s ease forwards;
->>>>>>> 8bc16ff8e8950495245ed5d7f9d7fda83af3358d
 }
