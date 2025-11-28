@@ -21,7 +21,7 @@ const SignatureIntro: React.FC = () => {
 
       // Fire the custom event for downstream entrance
       window.dispatchEvent(new CustomEvent("signature-intro-complete"));
-    }, INTRO_DURATION_MS); // runs after signature logo animation
+    }, INTRO_DURATION_MS);
 
     return () => {
       window.clearTimeout(timeout);
@@ -31,12 +31,12 @@ const SignatureIntro: React.FC = () => {
 
   if (!visible) return null;
 
-  // Optionally fade out the intro with GSAP or CSS transition at the end.
   return (
     <div className="fixed inset-0 z-9999 flex items-center justify-center bg-neutral-950 text-white transition-opacity duration-700">
-      <SignatureLogo className="w-[280px] md:w-[360px]" duration={2.2} />
+      <div className="flex items-center justify-center w-full h-full px-4">
+        <SignatureLogo className="w-[280px] md:w-[360px]" duration={2.2} />
+      </div>
     </div>
   );
 };
-
 export default SignatureIntro;
