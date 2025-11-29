@@ -14,6 +14,30 @@
     url("/fonts/nav/BrushScriptStd.otf") format("opentype");
 }
 
+@font-face {
+  font-family: "Betthany Elingston";
+  font-style: normal;
+  font-display: swap;
+  font-weight: 700;
+  src: url("/fonts/about/Bethany Elingston.otf") format("opentype");
+}
+
+/* @font-face {
+  font-family: "Vogue Heading";
+  font-style: normal;
+  font-weight: normal;
+  font-display: swap;
+  src: url("/public/fonts/general/Vogue.ttf") format("truetype");
+} */
+
+@font-face {
+  font-family: "Akira";
+  font-style: normal;
+  font-weight: normal;
+  font-display: swap;
+  src: url("/fonts/general/Akira.otf") format("opentype");
+}
+
 .font-space {
   font-family: "Space Grotesk Variable", ui-sans-serif, system-ui, sans-serif;
 }
@@ -160,4 +184,18 @@ html {
 
 .font-handwriting {
   font-family: "Handwritten Font";
+}
+
+.font-about {
+  font-family: "Betthany Elingston";
+}
+
+/* .font-vogue {
+  font-family: "Vogue Heading";
+} */
+
+.font-akira {
+  font-family: "Akira";
+  word-spacing: -15px;
+  letter-spacing: 2px;
 }

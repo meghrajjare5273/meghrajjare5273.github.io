@@ -8,86 +8,92 @@ import { GridBackground } from "@/components/ui/grid-background";
 
 export function HeroSection() {
   const containerRef = useRef<HTMLDivElement>(null);
+  const contentWrapperRef = useRef<HTMLDivElement>(null);
   const [canAnimate, setCanAnimate] = useState(false);
 
-  // Refs for elements we want to animate
-  const refs = useRef<{ [key: string]: HTMLElement | null }>({});
-  const addRef = (key: string) => (el: any) => {
-    if (el) refs.current[key] = el;
-  };
+  // Refs for specific animation targets
+  const titleRef = useRef<HTMLHeadingElement>(null);
+  const labelRef = useRef<HTMLParagraphElement>(null);
+  const profileImageRef = useRef<HTMLDivElement>(null);
+  const bioRef = useRef<HTMLDivElement>(null);
+  const ctaRef = useRef<HTMLDivElement>(null);
+  const portfolioRef = useRef<HTMLDivElement>(null);
 
-  // Listen for page intro completion
+  // Listen for the custom event from PageOrchestrator
   useEffect(() => {
-    const handleIntroComplete = () => {
-      setCanAnimate(true);
-    };
-
+    const handleIntroComplete = () => setCanAnimate(true);
     window.addEventListener("page-intro-complete", handleIntroComplete);
-
-    return () => {
+    return () =>
       window.removeEventListener("page-intro-complete", handleIntroComplete);
-    };
   }, []);
 
   useGSAP(
     () => {
-      // Don't start animation until page intro is complete
       if (!canAnimate) return;
 
-      const elements = [
-        refs.current.name,
-        refs.current.label,
-        refs.current.profile,
-        refs.current.bio,
-        refs.current.cta,
-        refs.current.portfolio,
-      ];
-
-      // Set initial state to prevent FOUC
-      gsap.set(elements, {
-        opacity: 0,
-        y: 40,
-      });
-
-      // Create hero animation timeline
       const tl = gsap.timeline({
         defaults: { ease: "power3.out" },
-        delay: 0.1, // Very small delay for smoothness
       });
 
-      tl.to(refs.current.name, {
+      // Initial States
+      gsap.set(contentWrapperRef.current, { scale: 1.1, opacity: 0 }); // Start slightly zoomed in
+
+      // 1. Container Parallax "Landing"
+      tl.to(contentWrapperRef.current, {
+        scale: 1,
         opacity: 1,
-        y: 0,
-        duration: 1.2,
-      })
-        .to(
-          refs.current.label,
-          {
-            opacity: 1,
-            y: 0,
-            duration: 1,
-          },
-          "-=0.8"
-        )
-        .to(
-          [refs.current.profile, refs.current.bio, refs.current.cta],
-          {
-            opacity: 1,
-            y: 0,
-            duration: 0.8,
-            stagger: 0.15,
-          },
-          "-=0.5"
-        )
-        .to(
-          refs.current.portfolio,
-          {
-            opacity: 1,
-            y: 0,
-            duration: 0.8,
-          },
-          "-=0.4"
-        );
+        duration: 1.5,
+        ease: "power4.out",
+      });
+
+      // 2. Title Reveal (Slide up + Fade)
+      tl.fromTo(
+        titleRef.current,
+        { y: 100, opacity: 0, rotateX: 10 },
+        { y: 0, opacity: 1, rotateX: 0, duration: 1.2, ease: "power4.out" },
+        "-=1.2"
+      );
+
+      // 3. Label "ENGINEER" Reveal (Staggered)
+      tl.fromTo(
+        labelRef.current,
+        { x: -50, opacity: 0 },
+        { x: 0, opacity: 1, duration: 1 },
+        "<+0.2"
+      );
+
+      // 4. Profile Image Wipe Reveal
+      // Using clip-path for a sharp, modern reveal
+      tl.fromTo(
+        profileImageRef.current,
+        { clipPath: "inset(100% 0% 0% 0%)", scale: 1.2 },
+        {
+          clipPath: "inset(0% 0% 0% 0%)",
+          scale: 1,
+          duration: 1.4,
+          ease: "expo.out",
+        },
+        "-=1.0"
+      );
+
+      // 5. Bio, CTA, Portfolio (Staggered Upward Motion)
+      const secondaryElements = [
+        bioRef.current,
+        ctaRef.current,
+        portfolioRef.current,
+      ];
+      tl.fromTo(
+        secondaryElements,
+        { y: 40, opacity: 0 },
+        {
+          y: 0,
+          opacity: 1,
+          duration: 0.8,
+          stagger: 0.15,
+          ease: "back.out(1.4)", // Subtle bounce for UI elements
+        },
+        "-=0.8"
+      );
     },
     { scope: containerRef, dependencies: [canAnimate] }
   );
@@ -95,129 +101,128 @@ export function HeroSection() {
   return (
     <section
       ref={containerRef}
-      className="min-h-screen overflow-hidden relative py-20"
+      className="relative min-h-screen overflow-hidden"
     >
-      {/* Reusable Background Component */}
       <GridBackground />
-
       <Navbar />
 
-      <div className="mx-auto max-w-7xl relative z-20 px-6">
-        <div className="relative pt-12 md:pt-20">
-          <h1
-            ref={addRef("name")}
-            className="z-20 text-primary relative font-bold text-center tracking-[-7px] text-7xl md:text-9xl xl:tracking-[-1rem] md:tracking-[-14px] xl:text-[10rem] will-change-transform"
-            style={{ opacity: 0 }}
-          >
-            Meghraj
-          </h1>
+      {/* This wrapper is crucial for the "Zoom Out" parallax effect 
+        during the curtain lift. 
+      */}
+      <div
+        ref={contentWrapperRef}
+        className="origin-top w-full h-full py-20 px-6 opacity-0"
+      >
+        <div className="mx-auto max-w-7xl relative z-20">
+          {/* HEADLINE SECTION */}
+          <div className="relative pt-12 md:pt-20 perspective-1000">
+            <h1
+              ref={titleRef}
+              className="z-20 text-primary relative font-bold text-center tracking-[-7px] text-7xl md:text-9xl xl:tracking-[-1rem] md:tracking-[-14px] xl:text-[10rem] will-change-transform origin-bottom"
+            >
+              Meghraj
+            </h1>
 
-          <p
-            ref={addRef("label")}
-            className="text-3xl md:text-4xl mt-4 md:mt-0 text-center md:text-left md:absolute md:-bottom-12 md:right-24 font-thin tracking-[6px]"
-            style={{ opacity: 0 }}
-          >
-            ENGINEER
-          </p>
-        </div>
-
-        <div
-          ref={addRef("profile")}
-          className="mt-24 md:mt-32 flex flex-col md:flex-row gap-8 md:gap-0 items-center md:items-start justify-center relative will-change-transform"
-          style={{ opacity: 0 }}
-        >
-          <div className="bg-secondary w-full max-w-xl p-8 md:p-10 space-y-4 shadow-lg">
-            <div className="font-semibold text-lg md:text-xl space-y-2">
-              <div>/ WEB DEVELOPMENT</div>
-              <div>/ MACHINE LEARNING</div>
-              <div>/ ARTIFICIAL INTELLIGENCE</div>
-            </div>
+            <p
+              ref={labelRef}
+              className="text-3xl md:text-4xl mt-4 md:mt-0 text-center md:text-left md:absolute md:-bottom-12 md:right-24 font-thin tracking-[6px]"
+            >
+              ENGINEER
+            </p>
           </div>
 
-          <div className="relative md:max-w-0.1 md:w-auto flex justify-center md:block md:absolute md:left-1/2 md:-translate-x-1/2 md:-top-16 group">
-            <div className="relative w-fit bg-secondary left-10 shadow-lg md:ml-36 overflow-hidden">
-              <img
-                src="./prof.jpeg"
-                alt="Meghraj - Full Stack Developer"
-                className="h-80 w-auto object-cover grayscale group-hover:grayscale-0 transition-all duration-500"
-              />
-              <div className="absolute top-0 left-0 bottom-0 bg-secondary text-left p-3 rotate-180 [writing-mode:vertical-rl] text-xs font-medium tracking-widest border-l border-border">
-                BASED IN PUNE MAHARASHTRA
+          {/* PROFILE IMAGE & SKILLS */}
+          <div className="mt-24 md:mt-32 flex flex-col md:flex-row gap-8 md:gap-0 items-center md:items-start justify-center relative">
+            <div
+              ref={bioRef}
+              className="bg-secondary/50 backdrop-blur-sm border border-border/50 w-full max-w-xl p-8 md:p-10 space-y-4 shadow-sm rounded-sm"
+            >
+              <div className="font-semibold text-lg md:text-xl space-y-2 text-foreground/80">
+                <div>/ WEB DEVELOPMENT</div>
+                <div>/ MACHINE LEARNING</div>
+                <div>/ ARTIFICIAL INTELLIGENCE</div>
+              </div>
+            </div>
+
+            <div className="relative md:max-w-0.1 md:w-auto flex justify-center md:block md:absolute md:left-1/2 md:-translate-x-1/2 md:-top-16 group z-30">
+              <div
+                ref={profileImageRef}
+                className="relative w-fit bg-secondary left-10 shadow-2xl md:ml-36 overflow-hidden will-change-transform"
+              >
+                <img
+                  src="./prof.jpeg"
+                  alt="Meghraj - Full Stack Developer"
+                  className="h-80 w-auto object-cover grayscale group-hover:grayscale-0 transition-all duration-700 ease-in-out"
+                />
+                <div className="absolute top-0 left-0 bottom-0 bg-secondary text-left p-3 rotate-180 [writing-mode:vertical-rl] text-xs font-medium tracking-widest border-l border-border">
+                  BASED IN PUNE MAHARASHTRA
+                </div>
               </div>
             </div>
           </div>
-        </div>
 
-        <div
-          ref={addRef("bio")}
-          className="mt-20 md:mt-32 will-change-transform"
-          style={{ opacity: 0 }}
-        >
-          <p className="mx-auto max-w-2xl font-mono text-center text-sm md:text-base font-medium tracking-wide leading-relaxed">
-            I'M A PASSIONATE ENGINEER
-            <br />
-            WHO BUILDS SCALABLE AND
-            <br />
-            DEPLOYMENT-READY APPLICATIONS
-          </p>
-        </div>
+          {/* BIO TEXT */}
+          <div ref={bioRef} className="mt-20 md:mt-32">
+            <p className="mx-auto max-w-2xl font-mono text-center text-sm md:text-base font-medium tracking-wide leading-relaxed text-foreground/70">
+              I'M A PASSIONATE ENGINEER
+              <br />
+              WHO BUILDS SCALABLE AND
+              <br />
+              DEPLOYMENT-READY APPLICATIONS
+            </p>
+          </div>
 
-        <div
-          ref={addRef("cta")}
-          className="flex justify-center pt-8 will-change-transform"
-          style={{ opacity: 0 }}
-        >
-          <Button
-            size="lg"
-            className="text-base px-8 hover:scale-105 transition-transform duration-300"
+          {/* CTA */}
+          <div ref={ctaRef} className="flex justify-center pt-8">
+            <Button
+              size="lg"
+              className="text-base px-8 py-6 rounded-full hover:scale-105 transition-transform duration-300 shadow-[0_0_20px_-5px_rgba(0,0,0,0.1)]"
+            >
+              Book a call
+            </Button>
+          </div>
+
+          {/* PORTFOLIO SNEAK PEEK */}
+          {/* <div
+            ref={portfolioRef}
+            className="mt-32 flex flex-col md:flex-row items-start md:items-end justify-between gap-12"
           >
-            Book a call
-          </Button>
-        </div>
+            <div className="relative w-full md:w-auto group perspective-1000">
+              <div className="w-72 h-40 shadow-xl border border-border bg-background rounded-md overflow-hidden transition-all duration-500 group-hover:-translate-x-4 group-hover:translate-y-4 group-hover:rotate-[-5deg]">
+                <img
+                  src="https://raw.githubusercontent.com/aliimam-in/aliimam/refs/heads/main/apps/www/public/templates/dalim-www.jpg"
+                  className="w-full h-full object-cover opacity-80"
+                />
+              </div>
+              <div className="w-72 h-40 absolute left-4 -top-4 shadow-xl border border-border bg-background rounded-md overflow-hidden transition-all duration-500 z-10 group-hover:-translate-x-2 group-hover:translate-y-2 group-hover:-rotate-2">
+                <img
+                  src="https://raw.githubusercontent.com/aliimam-in/aliimam/refs/heads/main/apps/www/public/templates/dalim-www.jpg"
+                  className="w-full h-full object-cover opacity-90"
+                />
+              </div>
+              <div className="w-72 h-40 absolute left-8 -top-8 shadow-2xl border border-border bg-background rounded-md overflow-hidden transition-all duration-500 z-20 group-hover:scale-105">
+                <img
+                  src="https://raw.githubusercontent.com/aliimam-in/aliimam/refs/heads/main/apps/www/public/templates/dalim-www.jpg"
+                  className="w-full h-full object-cover"
+                />
+              </div>
+            </div> */}
 
-        <div
-          ref={addRef("portfolio")}
-          className="mt-32 flex flex-col md:flex-row items-start md:items-end justify-between gap-12 will-change-transform"
-          style={{ opacity: 0 }}
-        >
-          <div className="relative w-full md:w-auto">
-            <div className="w-72 h-40 shadow-xl border border-border rounded-md overflow-hidden hover:scale-105 transition-transform duration-300">
-              <img
-                src="https://raw.githubusercontent.com/aliimam-in/aliimam/refs/heads/main/apps/www/public/templates/dalim-www.jpg"
-                alt="Portfolio Project 1"
-                className="w-full h-full object-cover"
-              />
-            </div>
-            <div className="w-72 h-40 absolute left-8 -top-8 shadow-xl border border-border rounded-md overflow-hidden hover:scale-105 transition-transform duration-300">
-              <img
-                src="https://raw.githubusercontent.com/aliimam-in/aliimam/refs/heads/main/apps/www/public/templates/dalim-www.jpg"
-                alt="Portfolio Project 2"
-                className="w-full h-full object-cover"
-              />
-            </div>
-            <div className="w-72 h-40 absolute left-16 -top-16 shadow-xl border border-border rounded-md overflow-hidden hover:scale-105 transition-transform duration-300">
-              <img
-                src="https://raw.githubusercontent.com/aliimam-in/aliimam/refs/heads/main/apps/www/public/templates/dalim-www.jpg"
-                alt="Portfolio Project 3"
-                className="w-full h-full object-cover"
-              />
-            </div>
-          </div>
+          {/* <div className="w-full md:w-auto">
+              <div className="flex items-center md:justify-end gap-2 text-muted-foreground group-hover:text-foreground transition-colors">
+                <span className="text-base md:text-lg font-medium tracking-wider">
+                  RECENT WORK
+                </span>
+                <ArrowDownRight className="size-5 md:size-6 animate-bounce" />
+              </div>
 
-          <div className="w-full md:w-auto">
-            <div className="flex items-center md:justify-end gap-2">
-              <span className="text-base md:text-lg font-medium tracking-wider">
-                RECENT WORK
-              </span>
-              <ArrowDownRight className="size-5 md:size-6" />
-            </div>
-
-            <div className="mt-4">
-              <h2 className="text-4xl md:text-5xl uppercase tracking-[-4px] md:text-right">
-                Design without Limits
-              </h2>
-            </div>
-          </div>
+              <div className="mt-4 overflow-hidden">
+                <h2 className="text-4xl md:text-5xl uppercase tracking-[-4px] md:text-right hover:text-primary transition-colors cursor-default">
+                  Design without Limits
+                </h2>
+              </div>
+            </div> */}
+          {/* </div> */}
         </div>
       </div>
     </section>

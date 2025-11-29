@@ -9,94 +9,103 @@ interface PageOrchestratorProps {
   children: React.ReactNode;
 }
 
-const SIGNATURE_DRAW_DURATION = 2.2; // SVG draw duration
-const SIGNATURE_FADE_DURATION = 0.7; // Fade out duration
-const HERO_DELAY = 0.2; // Small gap between intro fade and hero start
+const SIGNATURE_DRAW_DURATION = 2.5;
 
 export function PageOrchestrator({ children }: PageOrchestratorProps) {
-  const [introComplete, setIntroComplete] = useState(false);
-  const introRef = useRef<HTMLDivElement>(null);
+  const [introFinished, setIntroFinished] = useState(false);
+  const introContainerRef = useRef<HTMLDivElement>(null);
+  const signatureWrapperRef = useRef<HTMLDivElement>(null);
   const contentRef = useRef<HTMLDivElement>(null);
-  const masterTimelineRef = useRef<gsap.core.Timeline | null>(null);
 
   useGSAP(() => {
-    // Lock scroll during intro
+    // Lock body scroll initially
     const originalOverflow = document.body.style.overflow;
     document.body.style.overflow = "hidden";
 
-    // Create master timeline
-    const masterTl = gsap.timeline({
-      defaults: { ease: "power3.out" },
+    const tl = gsap.timeline({
       onComplete: () => {
+        setIntroFinished(true);
         document.body.style.overflow = originalOverflow;
       },
     });
 
-    masterTimelineRef.current = masterTl;
+    // Initial Setup
+    gsap.set(contentRef.current, {
+      zIndex: 1,
+      opacity: 1, // Content is visible underneath the curtain
+    });
 
-    // Initial states
-    gsap.set(contentRef.current, { opacity: 0 });
-    gsap.set(introRef.current, { opacity: 1 });
+    gsap.set(introContainerRef.current, {
+      zIndex: 50,
+      yPercent: 0,
+    });
 
-    // Timeline sequence:
-    // 1. SVG signature draws (handled by SignatureLogo internally)
-    // 2. Wait for signature to complete
-    // 3. Fade out intro screen
-    // 4. Dispatch event + show content
-    // 5. Hero section animates in (handled in Hero component)
+    // === ANIMATION SEQUENCE ===
 
-    masterTl
-      .to({}, { duration: SIGNATURE_DRAW_DURATION }) // Wait for SVG to draw
-      .to(
-        introRef.current,
-        {
-          opacity: 0,
-          duration: SIGNATURE_FADE_DURATION,
-          onComplete: () => {
-            setIntroComplete(true);
-            // Dispatch event for Hero to start animating
-            window.dispatchEvent(
-              new CustomEvent("page-intro-complete", {
-                detail: { timestamp: Date.now() },
-              })
-            );
-          },
+    // 1. Allow Signature to Draw (2.5s)
+    // Note: The internal animation of SignatureLogo runs automatically on mount.
+    // We just simply wait here for sync.
+    tl.to({}, { duration: SIGNATURE_DRAW_DURATION * 0.85 });
+
+    // 2. Cinematic Signature Exit (Float Up & Fade)
+    tl.to(
+      signatureWrapperRef.current,
+      {
+        y: -80,
+        opacity: 0,
+        duration: 0.8,
+        ease: "power2.in",
+      },
+      "exit"
+    );
+
+    // 3. Curtain Lift (The Reveal)
+    // We slide the black background up to reveal the content
+    tl.to(
+      introContainerRef.current,
+      {
+        yPercent: -100,
+        duration: 1.4,
+        ease: "power4.inOut", // Dramatic, premium ease
+        onStart: () => {
+          // Trigger the Hero animations just as the curtain starts moving fast
+          window.dispatchEvent(
+            new CustomEvent("page-intro-complete", {
+              detail: { timestamp: Date.now() },
+            })
+          );
         },
-        `+=${HERO_DELAY}` // Small pause after draw completes
-      )
-      .to(
-        contentRef.current,
-        {
-          opacity: 1,
-          duration: 0.01, // Instant visibility, animations handled by children
-        },
-        "-=0.3" // Start showing content slightly before intro fully fades
-      );
+      },
+      "exit+=0.4"
+    ); // Overlap slightly with signature fade
 
+    // Cleanup
     return () => {
       document.body.style.overflow = originalOverflow;
-      masterTl.kill();
+      tl.kill();
     };
   }, []);
 
   return (
     <>
-      {/* Intro Screen */}
-      {!introComplete && (
+      {/* Intro Curtain */}
+      {!introFinished && (
         <div
-          ref={introRef}
-          className="fixed inset-0 z-9999 flex items-center justify-center bg-neutral-950 text-white"
-          style={{ pointerEvents: introComplete ? "none" : "auto" }}
+          ref={introContainerRef}
+          className="fixed inset-0 w-full h-full bg-neutral-950 flex items-center justify-center will-change-transform"
+          style={{ zIndex: 9999 }} // Ensure it's on top
         >
-          <SignatureLogo
-            className="w-[280px] md:w-[360px]"
-            duration={SIGNATURE_DRAW_DURATION}
-          />
+          <div ref={signatureWrapperRef} className="relative z-10 p-4">
+            <SignatureLogo
+              className="w-[280px] md:w-[360px] text-white"
+              duration={SIGNATURE_DRAW_DURATION}
+            />
+          </div>
         </div>
       )}
 
-      {/* Main Content - Always mounted but initially hidden */}
-      <div ref={contentRef} style={{ opacity: 0 }}>
+      {/* Main Content */}
+      <div ref={contentRef} className="relative min-h-screen bg-background">
         {children}
       </div>
     </>
