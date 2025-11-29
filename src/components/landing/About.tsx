@@ -33,7 +33,7 @@ const AboutSection = () => {
           duration: 0.8,
           ease: "back.out(1.2)",
           clearProps: "all",
-          onComplete: () => headingSplit.revert(),
+          // onComplete: () => headingSplit.revert(),
         });
       }
 
@@ -62,7 +62,7 @@ const AboutSection = () => {
             yPercent: 100,
             opacity: 0,
             rotationX: -45,
-            transformOrigin: "50% 100%",
+            transformOrigin: "75% 100%",
             stagger: {
               amount: 0.5,
               from: "start",
@@ -70,7 +70,7 @@ const AboutSection = () => {
             duration: 0.8,
             ease: "power3.out",
             clearProps: "all",
-            onComplete: () => split.revert(),
+            // onComplete: () => split.revert(),
           });
         });
       });
@@ -120,11 +120,12 @@ const AboutSection = () => {
               trigger: statusSection,
               start: "top 85%",
               toggleActions: "play none none reverse",
+              invalidateOnRefresh: true,
             },
-            y: 60,
-            opacity: 0,
-            duration: 1,
-            ease: "power3.out",
+            autoAlpha: 0, // Instead of opacity: 0
+            y: 30,
+            duration: 0.6,
+            ease: "power2.out",
           });
 
           const borderLine =
@@ -140,6 +141,7 @@ const AboutSection = () => {
               transformOrigin: "left",
               duration: 1.2,
               ease: "power2.inOut",
+              delay: 0.2,
             });
           }
         }
@@ -244,6 +246,7 @@ const AboutSection = () => {
           >
             <img
               src="https://images.unsplash.com/photo-1764197944498-476aca304de5?q=80&w=1992&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
+              // src="./prof.jpeg"
               alt="Portrait of the developer"
               className="w-full h-full object-cover grayscale brightness-95 contrast-110 transition-all duration-700 ease-in-out group-hover:scale-105 group-hover:contrast-125"
             />
@@ -270,7 +273,10 @@ const AboutSection = () => {
               organic. It should respond, adapt, and age gracefully.
             </p>
 
-            <div className="border-t border-black pt-6" data-status-section>
+            <div
+              className="border-t border-black pt-6 visible min-h-fit transform-gpu"
+              data-status-section
+            >
               <p className="text-xs font-bold tracking-widest uppercase mb-2">
                 Current Status
               </p>
