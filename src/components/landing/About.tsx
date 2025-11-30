@@ -349,12 +349,13 @@ const AboutSection = () => {
           <div className="md:col-start-3 md:col-span-8 lg:col-start-4 lg:col-span-7">
             <div
               ref={imageRef}
-              className="relative w-full aspect-4/3 overflow-hidden rounded-4xl bg-gray-300"
+              className="relative w-full aspect-3/4 overflow-hidden rounded-4xl bg-gray-300"
             >
               <img
-                src="https://images.unsplash.com/photo-1764197944498-476aca304de5?q=80&w=1992&auto=format&fit=crop"
+                // src="https://images.unsplash.com/photo-1764197944498-476aca304de5?q=80&w=1992&auto=format&fit=crop"
+                src="/prof.jpeg"
                 alt="Developer workspace"
-                className="w-full h-full object-cover grayscale brightness-95 contrast-110 transition-all duration-700 ease-in-out hover:scale-105 hover:contrast-125"
+                className="w-full h-full object-cover grayscale brightness-95 contrast-110 transition-all duration-700 ease-in-out hover:scale-105 hover:contrast-100"
               />
             </div>
           </div>

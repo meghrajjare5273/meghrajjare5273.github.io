@@ -104,9 +104,9 @@ const SignatureLogo: React.FC<SignatureLogoProps> = ({
           width="656.513"
           height="239.312"
           filterUnits="userSpaceOnUse"
-          color-interpolation-filters="sRGB"
+          colorInterpolationFilters="sRGB"
         >
-          <feFlood flood-opacity="0" result="BackgroundImageFix" />
+          <feFlood floodOpacity="0" result="BackgroundImageFix" />
           <feColorMatrix
             in="SourceAlpha"
             type="matrix"
@@ -168,7 +168,7 @@ const SignatureLogo: React.FC<SignatureLogoProps> = ({
             in="coloredNoise2"
             result="noise2Clipped"
           />
-          <feFlood flood-color="rgba(0, 0, 0, 0.25)" result="color1Flood" />
+          <feFlood floodColor="rgba(0, 0, 0, 0.25)" result="color1Flood" />
           <feComposite
             operator="in"
             in2="noise1Clipped"
@@ -176,7 +176,7 @@ const SignatureLogo: React.FC<SignatureLogoProps> = ({
             result="color1"
           />
           <feFlood
-            flood-color="rgba(255, 255, 255, 0.25)"
+            floodColor="rgba(255, 255, 255, 0.25)"
             result="color2Flood"
           />
           <feComposite

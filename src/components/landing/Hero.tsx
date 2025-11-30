@@ -1,23 +1,14 @@
-import React, { useRef, useState, useEffect } from "react";
-import { ArrowDownRight } from "lucide-react";
-import { Button } from "@/components/ui/button";
+import { useRef, useState, useEffect } from "react";
+import { ArrowDown } from "lucide-react";
 import gsap from "gsap";
 import { useGSAP } from "@gsap/react";
-import Navbar from "../landing/Navbar";
-import { GridBackground } from "@/components/ui/grid-background";
+import Navbar from "@/components/landing/Navbar";
+// import { ParallaxDotsBackground } from "@/components/ui/grid-background";
+import { MacbookPro } from "../ui/macbook";
 
 export function HeroSection() {
   const containerRef = useRef<HTMLDivElement>(null);
-  const contentWrapperRef = useRef<HTMLDivElement>(null);
   const [canAnimate, setCanAnimate] = useState(false);
-
-  // Refs for specific animation targets
-  const titleRef = useRef<HTMLHeadingElement>(null);
-  const labelRef = useRef<HTMLParagraphElement>(null);
-  const profileImageRef = useRef<HTMLDivElement>(null);
-  const bioRef = useRef<HTMLDivElement>(null);
-  const ctaRef = useRef<HTMLDivElement>(null);
-  const portfolioRef = useRef<HTMLDivElement>(null);
 
   // Listen for the custom event from PageOrchestrator
   useEffect(() => {
@@ -30,69 +21,35 @@ export function HeroSection() {
   useGSAP(
     () => {
       if (!canAnimate) return;
+      // Ensure initial states are set before animation starts to prevent flashing
+      gsap.set(".animate-text-reveal", { y: "110%", rotateX: -20, opacity: 0 });
+      gsap.set(".animate-fade-in", { opacity: 0, y: 30 });
 
       const tl = gsap.timeline({
         defaults: { ease: "power3.out" },
+        delay: 0.2, // Slight delay before starting everything
       });
 
-      // Initial States
-      gsap.set(contentWrapperRef.current, { scale: 1.1, opacity: 0 }); // Start slightly zoomed in
-
-      // 1. Container Parallax "Landing"
-      tl.to(contentWrapperRef.current, {
-        scale: 1,
+      // 1. Enhanced Text Reveal (Staggered with slight 3D rotation)
+      tl.to(".animate-text-reveal", {
+        y: "0%",
+        rotateX: 0,
         opacity: 1,
-        duration: 1.5,
+        duration: 1.4,
+        stagger: 0.15, // Increased stagger for more drama
         ease: "power4.out",
       });
 
-      // 2. Title Reveal (Slide up + Fade)
-      tl.fromTo(
-        titleRef.current,
-        { y: 100, opacity: 0, rotateX: 10 },
-        { y: 0, opacity: 1, rotateX: 0, duration: 1.2, ease: "power4.out" },
-        "-=1.2"
-      );
-
-      // 3. Label "ENGINEER" Reveal (Staggered)
-      tl.fromTo(
-        labelRef.current,
-        { x: -50, opacity: 0 },
-        { x: 0, opacity: 1, duration: 1 },
-        "<+0.2"
-      );
-
-      // 4. Profile Image Wipe Reveal
-      // Using clip-path for a sharp, modern reveal
-      tl.fromTo(
-        profileImageRef.current,
-        { clipPath: "inset(100% 0% 0% 0%)", scale: 1.2 },
+      // 2. Secondary Elements Fade In
+      tl.to(
+        ".animate-fade-in",
         {
-          clipPath: "inset(0% 0% 0% 0%)",
-          scale: 1,
-          duration: 1.4,
-          ease: "expo.out",
-        },
-        "-=1.0"
-      );
-
-      // 5. Bio, CTA, Portfolio (Staggered Upward Motion)
-      const secondaryElements = [
-        bioRef.current,
-        ctaRef.current,
-        portfolioRef.current,
-      ];
-      tl.fromTo(
-        secondaryElements,
-        { y: 40, opacity: 0 },
-        {
-          y: 0,
           opacity: 1,
-          duration: 0.8,
-          stagger: 0.15,
-          ease: "back.out(1.4)", // Subtle bounce for UI elements
+          y: 0,
+          duration: 1,
+          stagger: 0.2,
         },
-        "-=0.8"
+        "-=1.0" // Overlap significantly with the main text reveal
       );
     },
     { scope: containerRef, dependencies: [canAnimate] }
@@ -101,128 +58,72 @@ export function HeroSection() {
   return (
     <section
       ref={containerRef}
-      className="relative min-h-screen overflow-hidden"
+      // Added significant top padding (pt-[25vh]) to push content down from navbar
+      className="relative min-h-screen w-full bg-[#f5f5f0] dark:bg-neutral-950 text-neutral-900 dark:text-white overflow-hidden"
     >
-      <GridBackground />
+      {/* <MacbookPro
+        src="https://utfs.io/f/6e654499-f7f4-4d5f-8a96-57255f6775e7-12vlav.jpg"
+        className="size-fit"
+      /> */}
       <Navbar />
-
-      {/* This wrapper is crucial for the "Zoom Out" parallax effect 
-        during the curtain lift. 
-      */}
-      <div
-        ref={contentWrapperRef}
-        className="origin-top w-full h-full py-20 px-6 opacity-0"
-      >
-        <div className="mx-auto max-w-7xl relative z-20">
-          {/* HEADLINE SECTION */}
-          <div className="relative pt-12 md:pt-20 perspective-1000">
-            <h1
-              ref={titleRef}
-              className="z-20 text-primary relative font-bold text-center tracking-[-7px] text-7xl md:text-9xl xl:tracking-[-1rem] md:tracking-[-14px] xl:text-[10rem] will-change-transform origin-bottom"
-            >
-              Meghraj
-            </h1>
-
-            <p
-              ref={labelRef}
-              className="text-3xl md:text-4xl mt-4 md:mt-0 text-center md:text-left md:absolute md:-bottom-12 md:right-24 font-thin tracking-[6px]"
-            >
-              ENGINEER
-            </p>
-          </div>
-
-          {/* PROFILE IMAGE & SKILLS */}
-          <div className="mt-24 md:mt-32 flex flex-col md:flex-row gap-8 md:gap-0 items-center md:items-start justify-center relative">
-            <div
-              ref={bioRef}
-              className="bg-secondary/50 backdrop-blur-sm border border-border/50 w-full max-w-xl p-8 md:p-10 space-y-4 shadow-sm rounded-sm"
-            >
-              <div className="font-semibold text-lg md:text-xl space-y-2 text-foreground/80">
-                <div>/ WEB DEVELOPMENT</div>
-                <div>/ MACHINE LEARNING</div>
-                <div>/ ARTIFICIAL INTELLIGENCE</div>
-              </div>
-            </div>
-
-            <div className="relative md:max-w-0.1 md:w-auto flex justify-center md:block md:absolute md:left-1/2 md:-translate-x-1/2 md:-top-16 group z-30">
-              <div
-                ref={profileImageRef}
-                className="relative w-fit bg-secondary left-10 shadow-2xl md:ml-36 overflow-hidden will-change-transform"
-              >
-                <img
-                  src="./prof.jpeg"
-                  alt="Meghraj - Full Stack Developer"
-                  className="h-80 w-auto object-cover grayscale group-hover:grayscale-0 transition-all duration-700 ease-in-out"
-                />
-                <div className="absolute top-0 left-0 bottom-0 bg-secondary text-left p-3 rotate-180 [writing-mode:vertical-rl] text-xs font-medium tracking-widest border-l border-border">
-                  BASED IN PUNE MAHARASHTRA
-                </div>
-              </div>
-            </div>
-          </div>
-
-          {/* BIO TEXT */}
-          <div ref={bioRef} className="mt-20 md:mt-32">
-            <p className="mx-auto max-w-2xl font-mono text-center text-sm md:text-base font-medium tracking-wide leading-relaxed text-foreground/70">
-              I'M A PASSIONATE ENGINEER
-              <br />
-              WHO BUILDS SCALABLE AND
-              <br />
-              DEPLOYMENT-READY APPLICATIONS
-            </p>
-          </div>
-
-          {/* CTA */}
-          <div ref={ctaRef} className="flex justify-center pt-8">
-            <Button
-              size="lg"
-              className="text-base px-8 py-6 rounded-full hover:scale-105 transition-transform duration-300 shadow-[0_0_20px_-5px_rgba(0,0,0,0.1)]"
-            >
-              Book a call
-            </Button>
-          </div>
-
-          {/* PORTFOLIO SNEAK PEEK */}
-          {/* <div
-            ref={portfolioRef}
-            className="mt-32 flex flex-col md:flex-row items-start md:items-end justify-between gap-12"
-          >
-            <div className="relative w-full md:w-auto group perspective-1000">
-              <div className="w-72 h-40 shadow-xl border border-border bg-background rounded-md overflow-hidden transition-all duration-500 group-hover:-translate-x-4 group-hover:translate-y-4 group-hover:rotate-[-5deg]">
-                <img
-                  src="https://raw.githubusercontent.com/aliimam-in/aliimam/refs/heads/main/apps/www/public/templates/dalim-www.jpg"
-                  className="w-full h-full object-cover opacity-80"
-                />
-              </div>
-              <div className="w-72 h-40 absolute left-4 -top-4 shadow-xl border border-border bg-background rounded-md overflow-hidden transition-all duration-500 z-10 group-hover:-translate-x-2 group-hover:translate-y-2 group-hover:-rotate-2">
-                <img
-                  src="https://raw.githubusercontent.com/aliimam-in/aliimam/refs/heads/main/apps/www/public/templates/dalim-www.jpg"
-                  className="w-full h-full object-cover opacity-90"
-                />
-              </div>
-              <div className="w-72 h-40 absolute left-8 -top-8 shadow-2xl border border-border bg-background rounded-md overflow-hidden transition-all duration-500 z-20 group-hover:scale-105">
-                <img
-                  src="https://raw.githubusercontent.com/aliimam-in/aliimam/refs/heads/main/apps/www/public/templates/dalim-www.jpg"
-                  className="w-full h-full object-cover"
-                />
-              </div>
-            </div> */}
-
-          {/* <div className="w-full md:w-auto">
-              <div className="flex items-center md:justify-end gap-2 text-muted-foreground group-hover:text-foreground transition-colors">
-                <span className="text-base md:text-lg font-medium tracking-wider">
-                  RECENT WORK
+      {/* Main Grid Container */}
+      {/* // Changed justify-end to justify-between to spread content vertically */}
+      <div className="relative z-10 flex flex-col justify-between min-h-screen pt-[25vh] pb-12 md:pb-24 px-6 md:px-12 max-w-[1920px] mx-auto">
+        {/* --- TOP ROW: ROLE TITLE --- */}
+        <div className="grid grid-cols-12 gap-x-5 w-fit">
+          <div className="col-span-12">
+            {/* Microinteraction: Group hover makes 'Developer' turn solid color */}
+            <h1 className="group font-space font-medium text-[11vw] md:text-[9vw] leading-[0.85] tracking-tight uppercase cursor-default">
+              <div className="overflow-hidden perspective-[1000px]">
+                <span className="block animate-text-reveal origin-top transform-gpu">
+                  Software
                 </span>
-                <ArrowDownRight className="size-5 md:size-6 animate-bounce" />
               </div>
+              {/* Added indent and color transition on hover */}
+              <div className="overflow-hidden perspective-[1000px] pl-[4vw] md:pl-[6vw]">
+                <span className="block animate-text-reveal origin-top transform-gpu text-neutral-400 dark:text-neutral-600 transition-colors duration-500 group-hover:text-neutral-900 dark:group-hover:text-white">
+                  Engineer
+                </span>
+              </div>
+            </h1>
+          </div>
+        </div>
 
-              <div className="mt-4 overflow-hidden">
-                <h2 className="text-4xl md:text-5xl uppercase tracking-[-4px] md:text-right hover:text-primary transition-colors cursor-default">
-                  Design without Limits
-                </h2>
+        {/* --- BOTTOM ROW: DETAILS & NAME --- */}
+        <div className="grid grid-cols-12 gap-x-5 w-full content-end mt-24 md:mt-0">
+          {/* Microinteraction: Hovering this block slides the text right */}
+          <div className="col-span-6 md:col-span-4 self-end group cursor-default">
+            <div className="flex flex-col gap-6 animate-fade-in">
+              {/* Arrow stops bouncing on hover */}
+              <div className="w-12 h-12 rounded-full border border-neutral-300 dark:border-neutral-700 flex items-center justify-center group-hover:animate-none transition-all">
+                <ArrowDown
+                  className="w-5 h-5 animate-caret-blink hover:transition-transform group-hover:animate-none"
+                  strokeWidth={1.5}
+                />
               </div>
-            </div> */}
-          {/* </div> */}
+              {/* Text slides right on hover */}
+              <p className="w-fit mr-auto font-space text-sm md:text-lg leading-relaxed max-w-[280px] uppercase tracking-wide transition-transform duration-500 ease-out group-hover:translate-x-4">
+                I support designers and agencies with creative development &amp;
+                AI Engineering.
+              </p>
+            </div>
+          </div>
+
+          {/* Microinteraction: Hovering name adds a subtle skew effect */}
+          <div className="col-span-6 md:col-start-7 md:col-end-13 self-end text-right">
+            <h2 className="w-fit ml-auto text-right font-space font-medium text-[8vw] md:text-[7vw] leading-[0.85] tracking-tighter uppercase transition-all duration-500 ease-out hover:-skew-x-6 cursor-default hover:text-neutral-700 dark:hover:text-neutral-300">
+              <div className="overflow-hidden perspective-[1000px]">
+                <span className="block animate-text-reveal origin-top transform-gpu">
+                  Meghraj
+                </span>
+              </div>
+              <div className="overflow-hidden perspective-[1000px]">
+                <span className="block animate-text-reveal origin-top transform-gpu">
+                  Jare
+                </span>
+              </div>
+            </h2>
+          </div>
         </div>
       </div>
     </section>
