@@ -211,7 +211,7 @@ const AboutSection = () => {
   return (
     <div
       ref={sectionRef}
-      className="min-h-screen bg-[#EBEAE5] text-[#1A1A1A] font-mono selection:bg-black selection:text-white overflow-hidden py-24 px-6 md:px-12 lg:px-20"
+      className="relative z-20 min-h-screen bg-[#EBEAE5] text-[#1A1A1A] font-mono selection:bg-black selection:text-white overflow-hidden py-24 px-6 md:px-12 lg:px-20"
     >
       <style>
         {`
