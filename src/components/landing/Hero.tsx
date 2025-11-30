@@ -275,7 +275,7 @@ export function HeroSection() {
       {/* Scroll Track Spacer */}
       <div
         ref={trackRef}
-        className="relative w-full h-[250vh] sm:h-[80vh] pointer-events-none z-10"
+        className="relative w-full h-[250vh] pointer-events-none z-10"
       />
     </div>
   );
