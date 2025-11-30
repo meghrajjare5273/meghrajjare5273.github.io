@@ -115,14 +115,14 @@ export function HeroSection() {
       */}
       <div
         ref={contentRef}
-        className="fixed top-0 left-0 h-svh w-full bg-[#f5f5f0] dark:bg-neutral-950 text-neutral-900 dark:text-white overflow-hidden z-0 flex flex-col"
+        className="fixed top-0 left-0 h-dvh w-full bg-[#f5f5f0] dark:bg-neutral-950 text-neutral-900 dark:text-white overflow-hidden z-0 flex flex-col"
       >
         <GridBackground />
 
         <Navbar />
 
         {/* Macbook - Centered */}
-        <div className="absolute inset-0 flex items-end justify-center pointer-events-none z-0 pb-16 md:pb-12">
+        <div className="absolute inset-0 flex items-end justify-center pointer-events-none z-0 pb-10 md:pb-12">
           <MacbookPro
             ref={macbookRef}
             // src="https://images.unsplash.com/photo-1661956602116-aa6865609028?q=80&w=1964&auto=format&fit=crop"
@@ -136,7 +136,7 @@ export function HeroSection() {
            - flex-col on mobile (better centering)
            - Stacked layout for bottom text 
         */}
-        <div className="relative z-10 flex-1 flex flex-col justify-between pt-32 md:pt-[25vh] pb-8 md:pb-24 px-6 md:px-12 max-w-[1920px] mx-auto w-full">
+        <div className="relative z-10 flex-1 flex flex-col justify-between pt-28 md:pt-[25vh] pb-8 md:pb-24 px-6 md:px-12 max-w-[1920px] mx-auto w-full">
           {/* Top Title - Scaled for mobile */}
           <div className="hero-text-container w-full">
             <h1 className="group font-space font-medium text-[13vw] md:text-[9vw] leading-[0.9] tracking-tight uppercase cursor-default">
@@ -197,7 +197,7 @@ export function HeroSection() {
       */}
       <div
         ref={trackRef}
-        className="relative w-full h-[250vh] pointer-events-none z-10"
+        className="relative w-full h-[180vh] pointer-events-none z-10"
       />
     </div>
   );
