@@ -5,6 +5,7 @@ import { useGSAP } from "@gsap/react";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import Navbar from "@/components/landing/Navbar";
 import { MacbookPro } from "../ui/macbook";
+import { GridBackground } from "../ui/grid-background";
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -107,7 +108,7 @@ export function HeroSection() {
   );
 
   return (
-    <div className="relative w-full">
+    <div className="relative w-full font-bromo">
       {/* 1. THE FIXED CONTENT
         This stays stuck to the screen while you scroll through the track.
         z-0 allows the next section (About) to slide OVER it (if About is z-10).
@@ -116,13 +117,16 @@ export function HeroSection() {
         ref={contentRef}
         className="fixed top-0 left-0 h-svh w-full bg-[#f5f5f0] dark:bg-neutral-950 text-neutral-900 dark:text-white overflow-hidden z-0 flex flex-col"
       >
+        <GridBackground />
+
         <Navbar />
 
         {/* Macbook - Centered */}
         <div className="absolute inset-0 flex items-end justify-center pointer-events-none z-0 pb-16 md:pb-12">
           <MacbookPro
             ref={macbookRef}
-            src="https://images.unsplash.com/photo-1661956602116-aa6865609028?q=80&w=1964&auto=format&fit=crop"
+            // src="https://images.unsplash.com/photo-1661956602116-aa6865609028?q=80&w=1964&auto=format&fit=crop"
+            src="/mac-bg.jpg"
             className="w-[90vw] md:w-[60vw] max-w-[1000px] h-auto drop-shadow-2xl will-change-transform"
           />
         </div>
@@ -137,11 +141,11 @@ export function HeroSection() {
           <div className="hero-text-container w-full">
             <h1 className="group font-space font-medium text-[13vw] md:text-[9vw] leading-[0.9] tracking-tight uppercase cursor-default">
               <div className="overflow-hidden perspective-[1000px]">
-                <span className="block animate-text-reveal origin-top transform-gpu">
+                <span className="block animate-text-reveal origin-top transform-gpu font-geo">
                   Software
                 </span>
               </div>
-              <div className="overflow-hidden perspective-[1000px] pl-[6vw] md:pl-[6vw]">
+              <div className="overflow-hidden perspective-[1000px] pl-[6vw] md:pl-[6vw] font-geo">
                 <span className="block animate-text-reveal origin-top transform-gpu text-neutral-400 dark:text-neutral-600 transition-colors duration-500 group-hover:text-neutral-900 dark:group-hover:text-white">
                   Engineer
                 </span>
@@ -161,8 +165,8 @@ export function HeroSection() {
                   />
                 </div>
                 <p className="w-full md:w-fit font-space text-base md:text-lg leading-relaxed max-w-[320px] uppercase tracking-wide transition-transform duration-500 ease-out group-hover:translate-x-4 backdrop-blur-sm md:backdrop-blur-none rounded-md p-2 md:p-0">
-                  I support designers and agencies with creative development
-                  &amp; AI Engineering.
+                  I build and design full stack web appplications using modern
+                  tech &amp; AI.
                 </p>
               </div>
             </div>
@@ -171,12 +175,12 @@ export function HeroSection() {
             <div className="order-1 md:order-2 md:col-start-7 md:col-end-13 self-end text-left md:text-right">
               <h2 className="w-full md:w-fit ml-auto font-space font-medium text-[13vw] md:text-[7vw] leading-[0.85] tracking-tighter uppercase transition-all duration-500 ease-out hover:-skew-x-6 cursor-default hover:text-neutral-700 dark:hover:text-neutral-300">
                 <div className="overflow-hidden perspective-[1000px]">
-                  <span className="block animate-text-reveal origin-top transform-gpu">
+                  <span className="block animate-text-reveal origin-top transform-gpu font-geo">
                     Meghraj
                   </span>
                 </div>
                 <div className="overflow-hidden perspective-[1000px]">
-                  <span className="block animate-text-reveal origin-top transform-gpu">
+                  <span className="block animate-text-reveal origin-top transform-gpu font-geo">
                     Jare
                   </span>
                 </div>

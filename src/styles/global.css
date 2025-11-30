@@ -22,13 +22,13 @@
   src: url("/fonts/about/Bethany Elingston.otf") format("opentype");
 }
 
-/* @font-face {
-  font-family: "Vogue Heading";
+@font-face {
+  font-family: "Geometos";
   font-style: normal;
   font-weight: normal;
   font-display: swap;
-  src: url("/public/fonts/general/Vogue.ttf") format("truetype");
-} */
+  src: url("/fonts/Hero/Moonrising.ttf") format("truetype");
+}
 
 @font-face {
   font-family: "Akira";
@@ -190,9 +190,9 @@ html {
   font-family: "Betthany Elingston";
 }
 
-/* .font-vogue {
-  font-family: "Vogue Heading";
-} */
+.font-geo {
+  font-family: "Geometos";
+}
 
 .font-akira {
   font-family: "Akira";
