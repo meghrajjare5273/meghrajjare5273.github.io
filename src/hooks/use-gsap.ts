@@ -7,7 +7,7 @@ let gsapInitialized = false;
 
 export function initGSAP() {
   if (typeof window !== "undefined" && !gsapInitialized) {
-    gsap.registerPlugin(ScrollTrigger);
+    gsap.registerPlugin(ScrollTrigger, );
     gsapInitialized = true;
   }
 }

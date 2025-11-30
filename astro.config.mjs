@@ -13,8 +13,8 @@ export default defineConfig({
 
   vite: {
     plugins: [tailwindcss()],
-    // ssr: {
-    //   noExternal: ["motion"],
-    // },
+    ssr: {
+      noExternal: ["gsap"],
+    },
   },
 });
