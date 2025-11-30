@@ -69,14 +69,20 @@ export function HeroSection() {
           trigger: trackRef.current, // Animate based on the invisible track's position
           start: "top top",
           end: "bottom bottom",
-          scrub: 1,
+          scrub: 0.5,
         },
       });
 
       // 1. Text Exits
       scrollTl.to(
         [".hero-text-container", ".hero-sub-text"],
-        { y: -150, opacity: 0, duration: 0.4, ease: "power1.in" },
+        {
+          y: -150,
+          opacity: 0,
+          duration: 0.4,
+          ease: "power1.in",
+          force3D: true, // Force hardware acceleration
+        },
         0
       );
 
@@ -136,7 +142,7 @@ export function HeroSection() {
            - flex-col on mobile (better centering)
            - Stacked layout for bottom text 
         */}
-        <div className="relative z-10 flex-1 flex flex-col justify-between pt-28 md:pt-[25vh] pb-8 md:pb-24 px-6 md:px-12 max-w-[1920px] mx-auto w-full">
+        <div className="relative z-10 flex-1 flex flex-col justify-between pt-28 md:pt-[25vh] pb-8 md:pb-24 px-6 md:px-12 max-w-[1920px] mx-auto w-full min-h-dvh">
           {/* Top Title - Scaled for mobile */}
           <div className="hero-text-container w-full">
             <h1 className="group font-space font-medium text-[13vw] md:text-[9vw] leading-[0.9] tracking-tight uppercase cursor-default">
@@ -154,9 +160,9 @@ export function HeroSection() {
           </div>
 
           {/* Bottom Details - Stacked on Mobile, Grid on Desktop */}
-          <div className="hero-sub-text flex flex-col md:grid md:grid-cols-12 gap-y-8 md:gap-y-0 w-full content-end">
+          <div className="hero-sub-text flex flex-col md:grid md:grid-cols-12 gap-y-8 md:gap-y-0 w-full content-end min-h-[280px] md:min-h-0 will-change-transform">
             {/* Description (Mobile: Order 2, Desktop: Order 1) */}
-            <div className="order-2 md:order-1 md:col-span-4 self-end group cursor-default">
+            <div className="order-2 md:order-1 md:col-span-4 self-end group cursor-default min-h-40 md:min-h-0">
               <div className="flex flex-col gap-6 animate-fade-in">
                 <div className="w-12 h-12 rounded-full border border-neutral-300 dark:border-neutral-700 flex items-center justify-center group-hover:animate-none transition-all">
                   <ArrowDown
@@ -197,7 +203,7 @@ export function HeroSection() {
       */}
       <div
         ref={trackRef}
-        className="relative w-full h-[180vh] pointer-events-none z-10"
+        className="relative w-full h-[150vh] pointer-events-none z-10"
       />
     </div>
   );
