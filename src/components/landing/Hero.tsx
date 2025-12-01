@@ -42,18 +42,22 @@ export function HeroSection() {
       });
 
       entranceTl
-        .to(".animate-text-reveal", {
-          y: "0%",
-          rotateX: 0,
-          opacity: 1,
-          duration: 1.4,
-          stagger: 0.15,
-          ease: "power4.out",
-        })
+        .to(
+          ".animate-text-reveal",
+          {
+            y: "0%",
+            rotateX: 0,
+            opacity: 1,
+            duration: 1.4,
+            stagger: 0.15,
+            ease: "power4.out",
+          },
+          "start+=0.9"
+        )
         .to(
           ".animate-fade-in",
           { opacity: 1, y: 0, duration: 1, stagger: 0.2 },
-          "-=1.0"
+          "-=1.2"
         );
 
       // --- 1. DESKTOP ANIMATION (>768px) ---
@@ -70,7 +74,7 @@ export function HeroSection() {
         entranceTl.to(
           macbookRef.current,
           { y: "10vh", scale: 1, duration: 1.5, ease: "expo.out" },
-          "-=1.2"
+          "start"
         );
 
         const scrollTl = gsap.timeline({
@@ -153,7 +157,7 @@ export function HeroSection() {
             duration: 1.5,
             ease: "expo.out",
           },
-          "-=1.2"
+          "start"
         );
 
         const scrollTl = gsap.timeline({
@@ -180,7 +184,7 @@ export function HeroSection() {
         scrollTl.to(
           iphoneRef.current,
           {
-            y: "5vh",
+            y: "5dvh",
             scale: 1.1, // REDUCED: Was 1.35, now 1.1 to fit screen edges
             duration: 0.3,
             ease: "power1.inOut",
@@ -209,7 +213,7 @@ export function HeroSection() {
     <div className="relative w-full font-bromo">
       <div
         ref={contentRef}
-        className="fixed top-0 left-0 h-svh w-full bg-[#f5f5f0] dark:bg-neutral-950 text-neutral-900 dark:text-white overflow-hidden z-0 flex flex-col"
+        className="fixed top-0 left-0 h-svh w-full bg-background text-neutral-900 dark:text-white overflow-hidden z-0 flex flex-col"
       >
         <GridBackground />
         <Navbar />

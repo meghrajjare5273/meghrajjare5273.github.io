@@ -2,7 +2,7 @@ import { Briefcase, Code2, ExternalLink, MapPin } from "lucide-react";
 
 const StatusCard = () => (
   <div className="w-full h-full flex items-center justify-center bg-neutral-950 relative overflow-hidden pointer-events-auto">
-    <div className="absolute inset-0 bg-linear-to-tr from-indigo-950/30 to-purple-950/30 opacity-50 z-0" />
+    <div className="absolute inset-0 bg-linear-to-tr from-neutral-900/30 to-neutral-800/30 opacity-50 z-0" />
 
     <div className="relative z-20 flex flex-col gap-4 md:gap-6 p-5 md:p-10 max-w-lg w-full h-full md:h-auto justify-center md:justify-start">
       <div className="flex items-center gap-3 text-neutral-400 text-xs md:text-sm font-mono uppercase tracking-widest border-b border-neutral-800 pb-4">
