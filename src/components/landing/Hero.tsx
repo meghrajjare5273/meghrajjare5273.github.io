@@ -214,16 +214,15 @@ export function HeroSection() {
         <GridBackground />
         <Navbar />
 
-        <div className="absolute inset-0 flex items-end justify-center pointer-events-none z-0 pb-[15vh] md:pb-[10vh]">
-          {/* Mobile Component (iPhone) - Initial wrapper class tuned */}
+        {/* Device Container - REMOVED pointer-events-none */}
+        <div className="absolute inset-0 flex items-end justify-center z-0 pb-[15vh] md:pb-[10vh]">
+          {/* Mobile Component (iPhone) */}
           <div className="block md:hidden transform-gpu origin-bottom">
             <IPhoneMockup
               ref={iphoneRef}
               className="drop-shadow-2xl will-change-transform"
             >
-              <div className="iphone-content-mask w-full h-full">
-                <StatusCard />
-              </div>
+              <StatusCard />
             </IPhoneMockup>
           </div>
 
@@ -233,7 +232,7 @@ export function HeroSection() {
               ref={macbookRef}
               className="drop-shadow-2xl will-change-transform"
             >
-              <StatusCard/>
+              <StatusCard />
             </Macbook>
           </div>
         </div>
@@ -290,7 +289,7 @@ export function HeroSection() {
 
       <div
         ref={trackRef}
-        className="relative w-full h-[150vh] md:h-[200vh] pointer-events-none z-10"
+        className="relative w-full h-[150vh] md:h-[200vh] z-10"
       />
     </div>
   );

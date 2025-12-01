@@ -7,7 +7,7 @@ interface GridBackgroundProps {
 
 export function GridBackground({ className }: GridBackgroundProps) {
   return (
-    <div className={cn("absolute inset-0 z-0 pointer-events-none", className)}>
+    <div className={cn("absolute inset-0 z-0 pointer-events-autos", className)}>
       {/* Light Mode Grid */}
       <div
         className="absolute inset-0 block dark:hidden"
