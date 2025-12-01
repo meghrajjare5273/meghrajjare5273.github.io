@@ -204,6 +204,10 @@ html {
 
 .font-akira {
   font-family: "LemonMilk";
-  word-spacing: -10px;
-  letter-spacing: -8px;
+  word-spacing: -2px;
+  letter-spacing: -2px;
+  @media (width >= 48rem /* 768px */) {
+    word-spacing: -10px;
+    letter-spacing: -8px;
+  }
 }

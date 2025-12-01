@@ -44,7 +44,7 @@ export const Macbook = forwardRef<HTMLDivElement, MacbookProps>(
           .macbook-screen {
             height: 580px;
             position: relative;
-            transform-style: preserve-3d;
+            // transform-style: preserve-3d;
             perspective: 2500px;
             perspective-origin: center bottom;
           }
