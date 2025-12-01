@@ -3,17 +3,11 @@ import Layout from "../layouts/Layout.astro";
 import { PageOrchestrator } from "@/components/landing/PageOrchestrator";
 import HeroSection  from "@/components/landing/Hero";
 import About from "@/components/landing/About";
-import ImageCarousel from "@/components/landing/Projects";
-import MacbookScroll from "@/components/temporary/imp (do not delete)/hero/Macbook";
-import IPhoneMockup from "@/components/temporary/imp (do not delete)/hero/iPhone";
 ---
 
 <Layout>
   <PageOrchestrator client:load>
     <HeroSection client:load />
     <About client:load />
-    <!-- <ImageCarousel client:load /> -->
-    <!-- <MacbookScroll client:load/> -->
-    <IPhoneMockup  client:load />
   </PageOrchestrator>
 </Layout>

@@ -22,7 +22,7 @@
   src: url("/fonts/about/Bethany Elingston.otf") format("opentype");
 }
 
-@font-face {
+/* @font-face {
   font-family: "Geometos";
   font-style: normal;
   font-weight: normal;
@@ -36,8 +36,15 @@
   font-weight: normal;
   font-display: swap;
   src: url("/fonts/general/Akira.otf") format("opentype");
-}
+} */
+@font-face {
+  font-family: "LemonMilk";
+  font-style: normal;
+  font-weight: normal;
+  font-display: swap;
 
+  src: url("/fonts/Hero/Lemonmilk.otf") format("opentype");
+}
 .font-space {
   font-family: "Space Grotesk Variable", ui-sans-serif, system-ui, sans-serif;
 }
@@ -191,11 +198,12 @@ html {
 }
 
 .font-geo {
-  font-family: "Geometos";
+  font-family: "LemonMilk";
+  letter-spacing: 0.5px;
 }
 
 .font-akira {
-  font-family: "Akira";
-  word-spacing: -15px;
-  letter-spacing: 2px;
+  font-family: "LemonMilk";
+  word-spacing: -10px;
+  letter-spacing: -8px;
 }
