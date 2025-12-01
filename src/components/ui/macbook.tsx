@@ -23,7 +23,7 @@ export const Macbook = forwardRef<HTMLDivElement, MacbookProps>(
 
           <div className="macbook-screen-open">
             {/* Logic: Render Children if present, otherwise render Image */}
-            <div className="macbook-content-mask absolute inset-0 overflow-hidden bg-[#151515] w-[94%] h-[88%] left-[3%] top-[6%]">
+            <div className="macbook-content-mask absolute inset-0 overflow-hidden rounded-md bg-[#151515] w-[96%] h-[88%] left-[2%] top-[5%]">
               {children ? (
                 <div className="w-full h-full text-white">{children}</div>
               ) : (
