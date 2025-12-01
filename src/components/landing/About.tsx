@@ -211,7 +211,7 @@ const AboutSection = () => {
   return (
     <div
       ref={sectionRef}
-      className="relative z-20 min-h-screen bg-background text-foreground font-mono selection:bg-black selection:text-white overflow-hidden py-24 px-6 md:px-12 lg:px-20"
+      className="relative z-20 min-h-screen bg-[#e8e5e2] dark:bg-[#181818] text-foreground font-mono selection:bg-black selection:text-white overflow-hidden py-24 px-6 md:px-12 lg:px-20"
     >
       <style>
         {`          
@@ -358,80 +358,6 @@ const AboutSection = () => {
           </div>
         </div>
 
-        {/* Contact Section */}
-        <div className="grid grid-cols-1 md:grid-cols-12 gap-6 md:gap-8 mb-32 md:mb-40 font-about">
-          <div className="md:col-start-3 md:col-span-8 lg:col-start-4 lg:col-span-7">
-            <h3 className="text-[7vw] md:text-[2rem] lg:text-[2.5rem] leading-[1.1] mb-10">
-              <span className="ml-[15%] md:ml-[20%]">Want</span> to reach out
-              about a project, collaboration, or just want to say a friendly
-              hello?
-            </h3>
-
-            <ul className="grid grid-cols-2 justify-center md:items-center md:justify-around md:flex md:flex-wrap gap-6 md:gap-12 text-lg md:text-xl lg:text-2xl mt-8 md:mt-12">
-              <li data-contact-link>
-                <a
-                  href="mailto:meghrajjare77@gmail.com"
-                  className="underline-link"
-                >
-                  Email ↗
-                </a>
-              </li>
-              <li data-contact-link>
-                <a
-                  href="https://www.instagram.com/meghrajjare/"
-                  target="_blank"
-                  rel="noreferrer"
-                  className="underline-link"
-                >
-                  Instagram ↗
-                </a>
-              </li>
-              <li data-contact-link>
-                <a
-                  href="https://linkedin.com/in/meghrajjare5273"
-                  target="_blank"
-                  rel="noreferrer"
-                  className="underline-link"
-                >
-                  LinkedIn ↗
-                </a>
-              </li>
-              <li data-contact-link>
-                <a
-                  href="https://github.com/meghrajjare5273"
-                  target="_blank"
-                  rel="noreferrer"
-                  className="underline-link"
-                >
-                  GitHub ↗
-                </a>
-              </li>
-            </ul>
-          </div>
-        </div>
-
-        <div className="grid grid-cols-1 md:grid-cols-12 gap-6 md:gap-8 mb-32 md:mb-40 font-about">
-          <div className="md:col-start-3 md:col-span-8 lg:col-start-4 lg:col-span-7">
-            <h3 className="text-[7vw] md:text-[2rem] lg:text-[2.5rem] leading-[1.1] mb-10">
-              <span className="ml-[15%] md:ml-[20%]">Here's</span> a link to my
-              résumé.
-            </h3>
-
-            <ul className="grid grid-cols-2 justify-center md:flex md:flex-wrap gap-6 md:gap-12 text-lg md:text-xl lg:text-2xl mt-8 md:mt-12">
-              <li data-contact-link>
-                <a
-                  href="/Meghraj Jare.pdf"
-                  target="_blank"
-                  rel="noreferrer"
-                  className="underline-link"
-                >
-                  My Résumé ↗
-                </a>
-              </li>
-            </ul>
-          </div>
-        </div>
-
         {/* Awards & Recognition Section */}
         <div className="mb-32 md:mb-40 font-about">
           <div
@@ -510,9 +436,9 @@ const AboutSection = () => {
           <div className="grid grid-cols-1 md:grid-cols-12 gap-6 md:gap-8">
             <div className="md:col-start-3 md:col-span-8 lg:col-start-4 lg:col-span-7 grid grid-cols-2 md:grid-cols-3 gap-x-6 gap-y-6 md:gap-x-8 md:gap-y-8">
               {[
-                "LegalMind – AI Legal Assistant",
-                "ProjecTree – Collaboration Platform",
-                "GreyMatter – RAG Debate Bot",
+                "LegalMind",
+                "ProjecTree",
+                "GreyMatter",
                 "No-Code ML Model Builder",
                 // "NeuralSafe – Women Safety App",
                 // "Academic Event Platforms",
@@ -527,7 +453,7 @@ const AboutSection = () => {
                   }}
                   className="text-lg md:text-xl lg:text-2xl"
                 >
-                  {project}
+                  {project} ↗
                 </div>
               ))}
             </div>
@@ -580,6 +506,79 @@ const AboutSection = () => {
             </div>
           </div>
         </div> */}
+        {/* Contact Section */}
+        <div className="grid grid-cols-1 md:grid-cols-12 gap-6 md:gap-8 mb-32 md:mb-40 font-about">
+          <div className="md:col-start-3 md:col-span-8 lg:col-start-4 lg:col-span-7">
+            <h3 className="text-[7vw] md:text-[2rem] lg:text-[2.5rem] leading-[1.1] mb-10">
+              <span className="ml-[15%] md:ml-[20%]">Want</span> to reach out
+              about a project, collaboration, or just want to say a friendly
+              hello?
+            </h3>
+
+            <ul className="grid grid-cols-2 justify-center md:items-center md:justify-around md:flex md:flex-wrap gap-6 md:gap-12 text-lg md:text-xl lg:text-2xl mt-8 md:mt-12">
+              <li data-contact-link>
+                <a
+                  href="mailto:meghrajjare77@gmail.com"
+                  className="underline-link"
+                >
+                  Email ↗
+                </a>
+              </li>
+              <li data-contact-link>
+                <a
+                  href="https://www.instagram.com/meghrajjare/"
+                  target="_blank"
+                  rel="noreferrer"
+                  className="underline-link"
+                >
+                  Instagram ↗
+                </a>
+              </li>
+              <li data-contact-link>
+                <a
+                  href="https://linkedin.com/in/meghrajjare5273"
+                  target="_blank"
+                  rel="noreferrer"
+                  className="underline-link"
+                >
+                  LinkedIn ↗
+                </a>
+              </li>
+              <li data-contact-link>
+                <a
+                  href="https://github.com/meghrajjare5273"
+                  target="_blank"
+                  rel="noreferrer"
+                  className="underline-link"
+                >
+                  GitHub ↗
+                </a>
+              </li>
+            </ul>
+          </div>
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-12 gap-6 md:gap-8 mb-32 md:mb-40 font-about">
+          <div className="md:col-start-3 md:col-span-8 lg:col-start-4 lg:col-span-7">
+            <h3 className="text-[7vw] md:text-[2rem] lg:text-[2.5rem] leading-[1.1] mb-10">
+              <span className="ml-[15%] md:ml-[20%]">Here's</span> a link to my
+              résumé.
+            </h3>
+
+            <ul className="grid grid-cols-2 justify-center md:flex md:flex-wrap gap-6 md:gap-12 text-lg md:text-xl lg:text-2xl mt-8 md:mt-12">
+              <li data-contact-link>
+                <a
+                  href="/Meghraj Jare.pdf"
+                  target="_blank"
+                  rel="noreferrer"
+                  className="underline-link"
+                >
+                  My Résumé ↗
+                </a>
+              </li>
+            </ul>
+          </div>
+        </div>
       </div>
     </div>
   );

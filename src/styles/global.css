@@ -38,13 +38,23 @@
   src: url("/fonts/general/Akira.otf") format("opentype");
 } */
 @font-face {
-  font-family: "LemonMilk";
+  font-family: "Edges";
   font-style: normal;
   font-weight: normal;
   font-display: swap;
 
-  src: url("/fonts/Hero/Lemonmilk.otf") format("opentype");
+  src: url("/fonts/general/Edges.ttf") format("truetype");
 }
+
+@font-face {
+  font-family: "Galderglynn Titling";
+  font-style: normal;
+  font-weight: normal;
+  font-display: swap;
+
+  src: url("/fonts/Hero/Galderglynn Titling Rg.otf") format("opentype");
+}
+
 .font-space {
   font-family: "Space Grotesk Variable", ui-sans-serif, system-ui, sans-serif;
 }
@@ -198,20 +208,20 @@ html {
 }
 
 .font-about {
-  font-family: "Betthany Elingston";
+  font-family: "Space Grotesk Variable";
 }
 
 .font-geo {
-  font-family: "LemonMilk";
+  font-family: "Galderglynn Titling";
   letter-spacing: 0.5px;
 }
 
 .font-akira {
-  font-family: "LemonMilk";
+  font-family: "Edges";
   word-spacing: -2px;
-  letter-spacing: -2px;
+  letter-spacing: 1px;
   @media (width >= 48rem /* 768px */) {
     word-spacing: -10px;
-    letter-spacing: -8px;
+    letter-spacing: -4px;
   }
 }
