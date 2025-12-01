@@ -178,7 +178,7 @@ const StatusCard = () => {
       onMouseMove={handleMouseMove}
       onMouseEnter={handleMouseEnter}
       onMouseLeave={handleMouseLeave}
-      className="group relative w-full h-[560px] max-h-[560px] md:min-h-80 lg:min-h-[360px] flex flex-col justify-between overflow-hidden rounded-2xl bg-neutral-950 border border-neutral-800/50 p-4 md:p-6 lg:p-8 pointer-events-auto select-none touch-none md:touch-auto"
+      className="group relative w-full h-[560px] max-h-[560px] md:min-h-80 lg:min-h-[360px] flex flex-col justify-between overflow-hidden rounded-2xl bg-neutral-950 border border-neutral-800/50 p-4 md:p-6 lg:p-8 pointer-events-auto select-none touch-auto md:touch-auto"
       style={{
         boxShadow: "inset 0 1px 0 0 rgba(255,255,255,0.05)",
       }}

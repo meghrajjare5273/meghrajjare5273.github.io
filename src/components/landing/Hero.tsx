@@ -32,9 +32,18 @@ export function HeroSection() {
       const q = gsap.utils.selector(contentRef);
       const mm = gsap.matchMedia();
 
+      ScrollTrigger.normalizeScroll(true);
+      ScrollTrigger.config({ ignoreMobileResize: true });
+
       // --- SHARED INITIAL STATES ---
       gsap.set(".animate-text-reveal", { y: "110%", rotateX: -20, opacity: 0 });
       gsap.set(".animate-fade-in", { opacity: 0, y: 30 });
+
+      // Force hardware acceleration on moving parts
+      gsap.set([macbookRef.current, iphoneRef.current], {
+        force3D: true,
+        backfaceVisibility: "hidden",
+      });
 
       const entranceTl = gsap.timeline({
         defaults: { ease: "power3.out" },
@@ -165,7 +174,7 @@ export function HeroSection() {
             trigger: trackRef.current,
             start: "top top",
             end: "bottom bottom",
-            scrub: 1.5,
+            scrub: 0.5,
           },
         });
 
@@ -204,16 +213,19 @@ export function HeroSection() {
       });
 
       ScrollTrigger.refresh();
-      return () => mm.revert();
+      return () => {
+        ScrollTrigger.normalizeScroll(false);
+        mm.revert();
+      };
     },
     { scope: contentRef, dependencies: [canAnimate] }
   );
 
   return (
-    <div className="relative w-full font-bromo">
+    <div className="relative w-full font-bromo bg-[#eceae8] dark:bg-[#101010]">
       <div
         ref={contentRef}
-        className="fixed top-0 left-0 h-svh w-full bg-[#eceae8] dark:bg-[#101010] text-neutral-900 dark:text-white overflow-hidden z-0 flex flex-col"
+        className="fixed top-0 left-0 h-svh w-full  text-neutral-900 dark:text-white overflow-hidden z-0 flex flex-col"
       >
         <GridBackground />
         <Navbar />
@@ -221,10 +233,7 @@ export function HeroSection() {
         <div className="absolute inset-0 flex items-end justify-center z-0 pb-[15vh] md:pb-[10vh]">
           {/* Mobile Component (iPhone) - Initial wrapper class tuned */}
           <div className="block md:hidden transform-gpu origin-bottom">
-            <IPhoneMockup
-              ref={iphoneRef}
-              className="drop-shadow-2xl will-change-transform"
-            >
+            <IPhoneMockup ref={iphoneRef} className="will-change-transform">
               <div className="iphone-content-mask w-full h-full">
                 <StatusCard />
               </div>
@@ -294,7 +303,7 @@ export function HeroSection() {
 
       <div
         ref={trackRef}
-        className="relative w-full h-[180vh] md:h-[25 0vh] pointer-events-none z-10"
+        className="relative w-full h-[150vh] md:h-[250vh] pointer-events-none z-10"
       />
     </div>
   );
