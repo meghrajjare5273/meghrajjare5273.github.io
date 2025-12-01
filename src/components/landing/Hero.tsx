@@ -180,7 +180,7 @@ export function HeroSection() {
         scrollTl.to(
           iphoneRef.current,
           {
-            y: "-4vh",
+            y: "5vh",
             scale: 1.1, // REDUCED: Was 1.35, now 1.1 to fit screen edges
             duration: 0.3,
             ease: "power1.inOut",
@@ -209,7 +209,7 @@ export function HeroSection() {
     <div className="relative w-full font-bromo">
       <div
         ref={contentRef}
-        className="fixed top-0 left-0 h-dvh w-full bg-[#f5f5f0] dark:bg-neutral-950 text-neutral-900 dark:text-white overflow-hidden z-0 flex flex-col"
+        className="fixed top-0 left-0 h-svh w-full bg-[#f5f5f0] dark:bg-neutral-950 text-neutral-900 dark:text-white overflow-hidden z-0 flex flex-col"
       >
         <GridBackground />
         <Navbar />
@@ -238,7 +238,7 @@ export function HeroSection() {
           </div>
         </div>
 
-        <div className="relative z-10 flex-1 flex flex-col justify-between pt-28 md:pt-[25vh] pb-8 md:pb-24 px-6 md:px-12 max-w-[1920px] mx-auto w-full min-h-dvh pointer-events-none">
+        <div className="relative z-10 flex-1 flex flex-col justify-between pt-28 md:pt-[25vh] pb-8 md:pb-24 px-6 md:px-12 max-w-[1920px] mx-auto w-full min-h-svh pointer-events-none">
           <div className="hero-text-container w-full">
             <h1 className="group font-space font-medium text-[13vw] md:text-[9vw] leading-[0.9] tracking-tight uppercase cursor-default w-fit pointer-events-auto">
               <div className="overflow-hidden perspective-[1000px]">
