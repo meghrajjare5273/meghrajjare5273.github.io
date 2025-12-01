@@ -370,7 +370,7 @@ const AboutSection = () => {
               hello?
             </h3>
 
-            <ul className="grid grid-cols-2 md:flex md:flex-wrap gap-6 md:gap-12 text-lg md:text-xl lg:text-2xl mt-8 md:mt-12">
+            <ul className="grid grid-cols-2 justify-center md:items-center md:justify-around md:flex md:flex-wrap gap-6 md:gap-12 text-lg md:text-xl lg:text-2xl mt-8 md:mt-12">
               <li data-contact-link>
                 <a
                   href="mailto:meghrajjare77@gmail.com"
@@ -407,6 +407,28 @@ const AboutSection = () => {
                   className="underline-link"
                 >
                   GitHub ↗
+                </a>
+              </li>
+            </ul>
+          </div>
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-12 gap-6 md:gap-8 mb-32 md:mb-40 font-about">
+          <div className="md:col-start-3 md:col-span-8 lg:col-start-4 lg:col-span-7">
+            <h3 className="text-[7vw] md:text-[2rem] lg:text-[2.5rem] leading-[1.1] mb-10">
+              <span className="ml-[15%] md:ml-[20%]">Here's</span> a link to my
+              résumé.
+            </h3>
+
+            <ul className="grid grid-cols-2 justify-center md:flex md:flex-wrap gap-6 md:gap-12 text-lg md:text-xl lg:text-2xl mt-8 md:mt-12">
+              <li data-contact-link>
+                <a
+                  href="/Meghraj Jare.pdf"
+                  target="_blank"
+                  rel="noreferrer"
+                  className="underline-link"
+                >
+                  My Résumé ↗
                 </a>
               </li>
             </ul>

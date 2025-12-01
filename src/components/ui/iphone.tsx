@@ -102,7 +102,7 @@ export const IPhoneMockup = forwardRef<HTMLDivElement, IPhoneMockupProps>(
             width: 100%;
             height: 100%;
             z-index: 1;
-            background: #ffffff;
+            background: rgb(16, 16, 16);
             border-radius: 45px;
             overflow: hidden;
             border: 7px solid #000000;
