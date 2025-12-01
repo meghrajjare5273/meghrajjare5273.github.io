@@ -42,18 +42,22 @@ export function HeroSection() {
       });
 
       entranceTl
-        .to(".animate-text-reveal", {
-          y: "0%",
-          rotateX: 0,
-          opacity: 1,
-          duration: 1.4,
-          stagger: 0.15,
-          ease: "power4.out",
-        })
+        .to(
+          ".animate-text-reveal",
+          {
+            y: "0%",
+            rotateX: 0,
+            opacity: 1,
+            duration: 1.4,
+            stagger: 0.15,
+            ease: "power4.out",
+          },
+          "start+=0.9"
+        )
         .to(
           ".animate-fade-in",
           { opacity: 1, y: 0, duration: 1, stagger: 0.2 },
-          "-=1.0"
+          "-=1.2"
         );
 
       // --- 1. DESKTOP ANIMATION (>768px) ---
@@ -70,7 +74,7 @@ export function HeroSection() {
         entranceTl.to(
           macbookRef.current,
           { y: "10vh", scale: 1, duration: 1.5, ease: "expo.out" },
-          "-=1.2"
+          "start"
         );
 
         const scrollTl = gsap.timeline({
@@ -153,7 +157,7 @@ export function HeroSection() {
             duration: 1.5,
             ease: "expo.out",
           },
-          "-=1.2"
+          "start"
         );
 
         const scrollTl = gsap.timeline({
@@ -180,7 +184,7 @@ export function HeroSection() {
         scrollTl.to(
           iphoneRef.current,
           {
-            y: "-4vh",
+            y: "5dvh",
             scale: 1.1, // REDUCED: Was 1.35, now 1.1 to fit screen edges
             duration: 0.3,
             ease: "power1.inOut",
@@ -209,12 +213,12 @@ export function HeroSection() {
     <div className="relative w-full font-bromo">
       <div
         ref={contentRef}
-        className="fixed top-0 left-0 h-dvh w-full bg-[#f5f5f0] dark:bg-neutral-950 text-neutral-900 dark:text-white overflow-hidden z-0 flex flex-col"
+        className="fixed top-0 left-0 h-svh w-full bg-background text-neutral-900 dark:text-white overflow-hidden z-0 flex flex-col"
       >
         <GridBackground />
         <Navbar />
 
-        <div className="absolute inset-0 flex items-end justify-center pointer-events-none z-0 pb-[15vh] md:pb-[10vh]">
+        <div className="absolute inset-0 flex items-end justify-center z-0 pb-[15vh] md:pb-[10vh]">
           {/* Mobile Component (iPhone) - Initial wrapper class tuned */}
           <div className="block md:hidden transform-gpu origin-bottom">
             <IPhoneMockup
@@ -233,14 +237,14 @@ export function HeroSection() {
               ref={macbookRef}
               className="drop-shadow-2xl will-change-transform"
             >
-              <StatusCard/>
+              <StatusCard />
             </Macbook>
           </div>
         </div>
 
-        <div className="relative z-10 flex-1 flex flex-col justify-between pt-28 md:pt-[25vh] pb-8 md:pb-24 px-6 md:px-12 max-w-[1920px] mx-auto w-full min-h-dvh">
+        <div className="relative z-10 flex-1 flex flex-col justify-between pt-28 md:pt-[25vh] pb-8 md:pb-24 px-6 md:px-12 max-w-[1920px] mx-auto w-full min-h-svh pointer-events-none">
           <div className="hero-text-container w-full">
-            <h1 className="group font-space font-medium text-[13vw] md:text-[9vw] leading-[0.9] tracking-tight uppercase cursor-default w-fit">
+            <h1 className="group font-space font-medium text-[13vw] md:text-[9vw] leading-[0.9] tracking-tight uppercase cursor-default w-fit pointer-events-auto">
               <div className="overflow-hidden perspective-[1000px]">
                 <span className="block animate-text-reveal origin-top transform-gpu font-geo">
                   Software
@@ -263,7 +267,7 @@ export function HeroSection() {
                     strokeWidth={1.5}
                   />
                 </div>
-                <p className="w-full md:w-fit font-space text-base md:text-lg leading-relaxed max-w-[320px] uppercase tracking-wide transition-transform duration-500 ease-out group-hover:translate-x-4 backdrop-blur-sm md:backdrop-blur-none rounded-md p-2 md:p-0">
+                <p className="w-full md:w-fit font-space text-base md:text-lg leading-relaxed max-w-[320px] uppercase tracking-wide transition-transform duration-500 ease-out group-hover:translate-x-4 backdrop-blur-sm md:backdrop-blur-none rounded-md p-2 md:p-0 pointer-events-auto">
                   I build and design full stack web appplications using modern
                   tech &amp; AI.
                 </p>
@@ -271,7 +275,7 @@ export function HeroSection() {
             </div>
 
             <div className="order-1 md:order-2 md:col-start-7 md:col-end-13 self-end text-left md:text-right">
-              <h2 className="w-full md:w-fit ml-auto font-medium text-[13vw] md:text-[7vw] leading-[0.85] tracking-tighter uppercase transition-all duration-500 ease-out hover:-skew-x-6 cursor-default hover:text-neutral-700 dark:hover:text-neutral-300">
+              <h2 className="w-full md:w-fit ml-auto font-medium text-[13vw] md:text-[7vw] leading-[0.85] tracking-tighter uppercase transition-all duration-500 ease-out hover:-skew-x-6 cursor-default hover:text-neutral-700 dark:hover:text-neutral-300 pointer-events-auto">
                 <div className="overflow-hidden perspective-[1000px]">
                   <span className="block animate-text-reveal origin-top transform-gpu font-geo">
                     Meghraj

@@ -92,12 +92,12 @@ export function PageOrchestrator({ children }: PageOrchestratorProps) {
       {!introFinished && (
         <div
           ref={introContainerRef}
-          className="fixed inset-0 w-full h-full bg-neutral-950 flex items-center justify-center will-change-transform"
+          className="fixed inset-0 w-full h-full bg-background text-foreground flex items-center justify-center will-change-transform"
           style={{ zIndex: 9999 }} // Ensure it's on top
         >
           <div ref={signatureWrapperRef} className="relative z-10 p-4">
             <SignatureLogo
-              className="w-[280px] md:w-[360px] text-white"
+              className="w-[280px] md:w-[360px] text-foreground"
               duration={SIGNATURE_DRAW_DURATION}
             />
           </div>

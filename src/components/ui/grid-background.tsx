@@ -7,17 +7,18 @@ interface GridBackgroundProps {
 
 export function GridBackground({ className }: GridBackgroundProps) {
   return (
-    <div className={cn("absolute inset-0 z-0 pointer-events-none", className)}>
-      {/* Light Mode Grid */}
+    <div className={cn("absolute inset-0 z-0 pointer-events-auto", className)}>
+      {/* Light Mode Grid - Updated color for visibility */}
       <div
         className="absolute inset-0 block dark:hidden"
         style={{
           backgroundImage: `
-            linear-gradient(to right, #e5e5e5 1px, transparent 1px),
-            linear-gradient(to bottom, #e5e5e5 1px, transparent 1px)
+            linear-gradient(to right, rgba(0, 0, 0, 0.25) 1px, transparent 1px),
+            linear-gradient(to bottom, rgba(0, 0, 0, 0.25) 1px, transparent 1px)
           `,
           backgroundSize: "20px 20px",
           backgroundPosition: "0 0, 0 0",
+          /* Mask ensures the grid fades out at the edges/bottom, same as dark mode */
           maskImage: `
             repeating-linear-gradient(to right, black 0px, black 3px, transparent 3px, transparent 8px),
             repeating-linear-gradient(to bottom, black 0px, black 3px, transparent 3px, transparent 8px),

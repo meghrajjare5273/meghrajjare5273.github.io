@@ -211,13 +211,10 @@ const AboutSection = () => {
   return (
     <div
       ref={sectionRef}
-      className="relative z-20 min-h-screen bg-[#EBEAE5] text-[#1A1A1A] font-mono selection:bg-black selection:text-white overflow-hidden py-24 px-6 md:px-12 lg:px-20"
+      className="relative z-20 min-h-screen bg-background text-foreground font-mono selection:bg-black selection:text-white overflow-hidden py-24 px-6 md:px-12 lg:px-20"
     >
       <style>
-        {`
-          @import url('https://fonts.googleapis.com/css2?family=Anton&display=swap');
-          .font-display { font-family: 'Anton', 'Impact', sans-serif; }
-          
+        {`          
           .char, .word, .line-wrapper {
             display: inline-block;
             will-change: transform, opacity;
