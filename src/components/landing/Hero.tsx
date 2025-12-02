@@ -174,7 +174,7 @@ export function HeroSection() {
             trigger: trackRef.current,
             start: "top top",
             end: "bottom bottom",
-            scrub: 0.5,
+            scrub: true,
           },
         });
 
@@ -195,7 +195,7 @@ export function HeroSection() {
           {
             y: "5dvh",
             scale: 1.1, // REDUCED: Was 1.35, now 1.1 to fit screen edges
-            duration: 0.3,
+            duration: 0.5,
             ease: "power1.inOut",
           },
           0

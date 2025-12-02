@@ -181,7 +181,7 @@
 
 /* Smooth scrolling enhancement */
 html {
-  scroll-behavior: smooth;
+  scroll-behavior: auto;
   overscroll-behavior: none;
 }
 
@@ -224,5 +224,11 @@ html {
     word-spacing: -10px;
     letter-spacing: -4px;
   }
-  
+}
+
+.animate-text-reveal,
+.animate-fade-in,
+.hero-text-container,
+.hero-sub-text {
+  will-change: transform, opacity;
 }

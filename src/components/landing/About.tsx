@@ -5,6 +5,8 @@ import { SplitText } from "gsap/SplitText";
 
 gsap.registerPlugin(ScrollTrigger, SplitText);
 
+ScrollTrigger.config({ ignoreMobileResize: true });
+
 const AboutSection = () => {
   const sectionRef = useRef<HTMLDivElement>(null);
   const headingRef = useRef<HTMLHeadingElement>(null);
@@ -15,170 +17,221 @@ const AboutSection = () => {
   const clientsRef = useRef<(HTMLDivElement | null)[]>([]);
 
   useEffect(() => {
+    // 1. Detect Mobile
+    const isMobile = window.innerWidth < 768;
+
     const ctx = gsap.context(() => {
       // --- SECTION HEADING ANIMATION ---
       if (headingRef.current) {
-        const headingSplit = new SplitText(headingRef.current, {
-          type: "chars",
-          charsClass: "char",
-        });
+        // PERFORMANCE FIX: Only use SplitText on Desktop
+        if (!isMobile) {
+          const headingSplit = new SplitText(headingRef.current, {
+            type: "chars",
+            charsClass: "char",
+          });
 
-        gsap.from(headingSplit.chars, {
-          opacity: 0,
-          yPercent: 100,
-          rotationX: -90,
-          transformOrigin: "50% 100%",
-          stagger: {
-            each: 0.02,
-            from: "center",
+          gsap.from(headingSplit.chars, {
+            opacity: 0,
+            yPercent: 100,
+            rotationX: -90,
+            transformOrigin: "50% 100%",
+            stagger: {
+              each: 0.02,
+              from: "center",
+              ease: "power2.out",
+            },
+            duration: 0.8,
+            ease: "back.out(1.2)",
+            clearProps: "all", // Clean up DOM after animation
+          });
+        } else {
+          // Mobile Fallback: Simple Fade Up (Very cheap for CPU)
+          gsap.from(headingRef.current, {
+            scrollTrigger: {
+              trigger: headingRef.current,
+              start: "top 85%",
+            },
+            opacity: 0,
+            y: 50,
+            duration: 0.8,
             ease: "power2.out",
-          },
-          duration: 0.8,
-          ease: "back.out(1.2)",
-          clearProps: "all",
-        });
+          });
+        }
       }
 
       // --- HERO TEXT ANIMATION ---
       if (heroTextRef.current) {
-        const heroSplit = new SplitText(heroTextRef.current, {
-          type: "lines,words",
-          linesClass: "line-wrapper",
-          wordsClass: "word",
-        });
-
-        gsap.set(heroSplit.lines, { overflow: "hidden" });
-
-        gsap.from(heroSplit.words, {
-          scrollTrigger: {
-            trigger: heroTextRef.current,
-            start: "top 80%",
-            end: "top 30%",
-            toggleActions: "play none none reverse",
-          },
-          yPercent: 100,
-          opacity: 0,
-          rotationX: -45,
-          transformOrigin: "75% 100%",
-          stagger: {
-            amount: 0.6,
-            from: "start",
-          },
-          duration: 0.9,
-          ease: "power3.out",
-          clearProps: "all",
-        });
-      }
-
-      // --- TEXT BLOCK ANIMATIONS ---
-      textBlocksRef.current.forEach((block) => {
-        if (!block) return;
-
-        const paragraphs = block.querySelectorAll<HTMLParagraphElement>("p");
-
-        paragraphs.forEach((p: HTMLParagraphElement) => {
-          const split = new SplitText(p, {
+        if (!isMobile) {
+          const heroSplit = new SplitText(heroTextRef.current, {
             type: "lines,words",
             linesClass: "line-wrapper",
             wordsClass: "word",
           });
+          gsap.set(heroSplit.lines, { overflow: "hidden" });
 
-          gsap.set(split.lines, { overflow: "hidden" });
-
-          gsap.from(split.words, {
+          gsap.from(heroSplit.words, {
             scrollTrigger: {
-              trigger: block,
+              trigger: heroTextRef.current,
               start: "top 80%",
-              end: "top 20%",
+              end: "top 30%",
               toggleActions: "play none none reverse",
             },
             yPercent: 100,
             opacity: 0,
             rotationX: -45,
             transformOrigin: "75% 100%",
-            stagger: {
-              amount: 0.5,
-              from: "start",
-            },
-            duration: 0.8,
+            stagger: { amount: 0.6, from: "start" },
+            duration: 0.9,
             ease: "power3.out",
-            clearProps: "all",
           });
-        });
+        } else {
+          // Mobile Fallback: Animate the whole block
+          gsap.from(heroTextRef.current, {
+            scrollTrigger: {
+              trigger: heroTextRef.current,
+              start: "top 85%",
+            },
+            opacity: 0,
+            y: 30,
+            duration: 0.8,
+            ease: "power2.out",
+          });
+        }
+      }
+
+      // --- TEXT BLOCK ANIMATIONS ---
+      textBlocksRef.current.forEach((block) => {
+        if (!block) return;
+
+        // Mobile Optimization: Animate entire block instead of words
+        if (isMobile) {
+          gsap.from(block, {
+            scrollTrigger: {
+              trigger: block,
+              start: "top 85%",
+            },
+            opacity: 0,
+            y: 30,
+            duration: 0.8,
+            ease: "power2.out",
+          });
+        } else {
+          const paragraphs = block.querySelectorAll<HTMLParagraphElement>("p");
+          paragraphs.forEach((p) => {
+            const split = new SplitText(p, {
+              type: "lines,words",
+              linesClass: "line-wrapper",
+              wordsClass: "word",
+            });
+            gsap.set(split.lines, { overflow: "hidden" });
+            gsap.from(split.words, {
+              scrollTrigger: {
+                trigger: block,
+                start: "top 80%",
+                end: "top 20%",
+                toggleActions: "play none none reverse",
+              },
+              yPercent: 100,
+              opacity: 0,
+              rotationX: -45,
+              transformOrigin: "75% 100%",
+              stagger: { amount: 0.5, from: "start" },
+              duration: 0.8,
+              ease: "power3.out",
+            });
+          });
+        }
       });
 
-      // --- IMAGE REVEAL WITH CLIP PATH ---
+      // --- IMAGE REVEAL ---
       if (imageRef.current) {
-        const imageWrapper = imageRef.current;
-
-        gsap.from(imageWrapper, {
+        gsap.from(imageRef.current, {
           scrollTrigger: {
-            trigger: imageWrapper,
+            trigger: imageRef.current,
             start: "top 80%",
             end: "top 30%",
-            scrub: 1,
+            scrub: true,
+            fastScrollEnd: false, // Prevents calculation lag on fast swipes
           },
           clipPath: "inset(0% 0% 100% 0%)",
           ease: "none",
         });
       }
 
-      // --- AWARDS GRID STAGGER ---
-      awardsRef.current.forEach((item, index) => {
-        if (!item) return;
-        gsap.from(item, {
-          scrollTrigger: {
-            trigger: item,
-            start: "top 85%",
-            toggleActions: "play none none reverse",
-          },
-          opacity: 0,
-          y: 30,
-          duration: 0.6,
-          delay: index * 0.08,
-          ease: "power2.out",
-        });
-      });
+      // --- AWARDS & CLIENTS (BATCHING) ---
+      // Batching is much more performant than forEach loop for lists
+      const animateList = (refs: any[], delayStep: number) => {
+        // Filter out nulls
+        const targets = refs.filter((r) => r);
 
-      // --- CLIENTS GRID STAGGER ---
-      clientsRef.current.forEach((item, index) => {
-        if (!item) return;
-        gsap.from(item, {
-          scrollTrigger: {
-            trigger: item,
-            start: "top 85%",
-            toggleActions: "play none none reverse",
-          },
-          opacity: 0,
-          y: 20,
-          duration: 0.5,
-          delay: index * 0.05,
-          ease: "power2.out",
-        });
-      });
+        if (isMobile) {
+          // Simple batch fade on mobile
+          ScrollTrigger.batch(targets, {
+            start: "top 90%",
+            onEnter: (batch) =>
+              gsap.to(batch, {
+                opacity: 1,
+                y: 0,
+                stagger: 0.1,
+                overwrite: true,
+              }),
+          });
+          // Set initial state
+          gsap.set(targets, { opacity: 0, y: 30 });
+        } else {
+          // Your original staggered animation for desktop
+          targets.forEach((item, index) => {
+            gsap.from(item, {
+              scrollTrigger: {
+                trigger: item,
+                start: "top 85%",
+                toggleActions: "play none none reverse",
+              },
+              opacity: 0,
+              y: 30,
+              duration: 0.6,
+              delay: index * delayStep,
+              ease: "power2.out",
+            });
+          });
+        }
+      };
 
-      // --- CONTACT LINKS ANIMATION ---
+      animateList(awardsRef.current, 0.08);
+      animateList(clientsRef.current, 0.05);
+
+      // --- CONTACT LINKS ---
       if (sectionRef.current) {
         const contactLinks = sectionRef.current.querySelectorAll(
           "[data-contact-link]"
         );
-        contactLinks.forEach((link, index) => {
-          gsap.from(link, {
-            scrollTrigger: {
-              trigger: link,
-              start: "top 90%",
-              toggleActions: "play none none reverse",
-            },
-            opacity: 0,
-            y: 20,
-            duration: 0.5,
-            delay: index * 0.1,
-            ease: "power2.out",
+
+        if (isMobile) {
+          ScrollTrigger.batch(contactLinks, {
+            start: "top 90%",
+            onEnter: (batch) =>
+              gsap.to(batch, { opacity: 1, y: 0, stagger: 0.1 }),
           });
-        });
+          gsap.set(contactLinks, { opacity: 0, y: 20 });
+        } else {
+          contactLinks.forEach((link, index) => {
+            gsap.from(link, {
+              scrollTrigger: {
+                trigger: link,
+                start: "top 90%",
+                toggleActions: "play none none reverse",
+              },
+              opacity: 0,
+              y: 20,
+              duration: 0.5,
+              delay: index * 0.1,
+              ease: "power2.out",
+            });
+          });
+        }
       }
 
-      // --- SECTION HEADERS FADE IN ---
+      // --- SECTION HEADERS ---
       if (sectionRef.current) {
         const sectionHeaders = sectionRef.current.querySelectorAll(
           "[data-section-header]"
@@ -194,6 +247,7 @@ const AboutSection = () => {
             y: 30,
             duration: 0.7,
             ease: "power2.out",
+            force3D: true, // Force GPU acceleration
           });
         });
       }
@@ -217,7 +271,7 @@ const AboutSection = () => {
         {`          
           .char, .word, .line-wrapper {
             display: inline-block;
-            will-change: transform, opacity;
+            // will-change: transform, opacity;
           }
           
           .line-wrapper {
