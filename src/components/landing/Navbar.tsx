@@ -1,130 +1,217 @@
+// Navbar.tsx
+"use client";
+
 import React, { useEffect, useRef, useState } from "react";
-import { Menu, X } from "lucide-react";
-import { toggleTheme, initTheme } from "@/lib/theme";
+import { MenuToggleIcon } from "@/components/ui/menu-toggle";
+import { initTheme } from "@/lib/theme";
+import { Skiper58 } from "@/components/ui/menu";
+import { VerticalThemeWipeToggle } from "@/components/ui/theme-toggle";
+import gsap from "gsap";
+import { useGSAP } from "@gsap/react";
+
+// Register GSAP plugin
+gsap.registerPlugin(useGSAP);
 
 export default function Navbar() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const [isDark, setIsDark] = useState(false);
-  const menuRef = useRef<HTMLDivElement>(null);
-  const buttonRef = useRef<HTMLButtonElement>(null);
 
+  // Refs for GSAP
+  const menuContainerRef = useRef<HTMLDivElement>(null);
+  const timeline = useRef<gsap.core.Timeline | null>(null);
+
+  // Initialize theme on mount
   useEffect(() => {
-    // Initialize theme on mount
-    const theme = initTheme();
-    setIsDark(theme === "dark");
-
-    // Listen for theme changes
-    const handleThemeChange = (e: CustomEvent) => {
-      setIsDark(e.detail === "dark");
-    };
-
-    window.addEventListener("theme-change", handleThemeChange as EventListener);
-
-    return () => {
-      window.removeEventListener(
-        "theme-change",
-        handleThemeChange as EventListener
-      );
-    };
+    initTheme();
   }, []);
 
+  // GSAP Animation Logic
+  useGSAP(
+    () => {
+      // 1. Set initial state: hidden and visibility:hidden (autoAlpha handles both)
+      gsap.set(menuContainerRef.current, {
+        autoAlpha: 0,
+      });
+
+      // 2. Create the timeline (paused by default)
+      const tl = gsap.timeline({ paused: true });
+
+      tl.to(menuContainerRef.current, {
+        autoAlpha: 1,
+        duration: 0.3,
+        ease: "power2.inOut",
+      }).fromTo(
+        ".menu-content",
+        { y: 20, opacity: 0 },
+        { y: 0, opacity: 1, duration: 0.4, ease: "power3.out" },
+        "-=0.1" // Stagger the start slightly
+      );
+
+      timeline.current = tl;
+    },
+    { scope: menuContainerRef }
+  ); // Scope allows us to use selector strings like ".menu-content"
+
+  // Control Timeline based on state
   useEffect(() => {
-    const handleClickOutside = (event: MouseEvent) => {
-      if (
-        isMenuOpen &&
-        menuRef.current &&
-        buttonRef.current &&
-        !menuRef.current.contains(event.target as Node) &&
-        !buttonRef.current.contains(event.target as Node)
-      ) {
+    if (timeline.current) {
+      if (isMenuOpen) {
+        timeline.current.play();
+      } else {
+        timeline.current.reverse();
+      }
+    }
+  }, [isMenuOpen]);
+
+  // Scroll lock implementation
+  useEffect(() => {
+    if (isMenuOpen) {
+      const originalOverflow = document.documentElement.style.overflow;
+      const originalBodyOverflow = document.body.style.overflow;
+
+      document.documentElement.style.overflow = "hidden";
+      document.body.style.overflow = "hidden";
+
+      return () => {
+        document.documentElement.style.overflow = originalOverflow;
+        document.body.style.overflow = originalBodyOverflow;
+      };
+    }
+  }, [isMenuOpen]);
+
+  // Keyboard accessibility: close on Escape
+  useEffect(() => {
+    const handleEscape = (e: KeyboardEvent) => {
+      if (e.key === "Escape" && isMenuOpen) {
         setIsMenuOpen(false);
       }
     };
 
-    document.addEventListener("mousedown", handleClickOutside);
-    return () => document.removeEventListener("mousedown", handleClickOutside);
+    if (isMenuOpen) {
+      document.addEventListener("keydown", handleEscape);
+      return () => document.removeEventListener("keydown", handleEscape);
+    }
   }, [isMenuOpen]);
 
-  const handleToggleTheme = () => {
-    const newTheme = toggleTheme();
-    setIsDark(newTheme === "dark");
-  };
-
-  const menuItems = [
-    { label: "HOME", href: "#", highlight: true },
-    { label: "ABOUT", href: "#" },
-    { label: "PROJECTS", href: "#" },
-    { label: "EXPERIENCE", href: "#" },
-    { label: "EDUCATION", href: "#" },
-    { label: "WRITING", href: "#" },
-    { label: "CONTACT", href: "#" },
-  ];
-
   return (
-    <header className="fixed top-0 left-0 right-0 z-50 px-6 py-6">
-      <nav className="flex items-center justify-between max-w-screen-2xl mx-auto">
-        <div className="relative">
-          <button
-            ref={buttonRef}
-            type="button"
-            className="p-2 transition-colors duration-300 z-50 text-neutral-500 hover:text-black dark:hover:text-white"
-            aria-label={isMenuOpen ? "Close menu" : "Open menu"}
-            onClick={() => setIsMenuOpen(!isMenuOpen)}
-          >
-            {isMenuOpen ? (
-              <X
-                className="w-8 h-8 transition-colors duration-300"
-                strokeWidth={2}
-              />
-            ) : (
-              <Menu
-                className="w-8 h-8 transition-colors duration-300"
-                strokeWidth={2}
-              />
-            )}
-          </button>
+    <>
+      <header className="fixed top-0 left-0 right-0 z-50 px-6 py-6 md:px-12 lg:px-24 w-full">
+        <nav className="relative flex items-center justify-between max-w-screen-2xl mx-auto min-h-12">
+          {/* 1. Left: Logo Section */}
+          <div className="flex-1 flex justify-start z-10">
+            <a href="#" aria-label="Home" className="hidden md:block">
+              <div className="text-2xl font-bold tracking-tighter text-foreground">
+                LOGO
+              </div>
+            </a>
+          </div>
 
-          {isMenuOpen && (
-            <div
-              ref={menuRef}
-              className="absolute top-full left-0 w-[200px] md:w-60 border-none shadow-2xl mt-2 ml-4 p-4 rounded-lg z-100 bg-background"
+          {/* 2. Center: Name */}
+          <div className="absolute left-1/2 top-1/2 transform -translate-x-1/2 -translate-y-1/2 z-0">
+            <div className="text-2xl md:text-4xl text-foreground font-handwriting whitespace-nowrap">
+              Meghraj Jare
+            </div>
+          </div>
+
+          {/* 3. Right: Menu Toggle */}
+          <div className="flex-1 flex justify-end z-10 relative">
+            <button
+              type="button"
+              className="p-2 text-neutral-500 hover:text-black dark:hover:text-white transition-colors duration-300 focus:outline-none"
+              aria-label={isMenuOpen ? "Close menu" : "Open menu"}
+              aria-expanded={isMenuOpen}
+              aria-controls="fullscreen-menu"
+              onClick={() => setIsMenuOpen(!isMenuOpen)}
             >
-              {menuItems.map((item) => (
-                <a
-                  key={item.label}
-                  href={item.href}
-                  className={`block text-lg md:text-xl font-bold tracking-tight py-1.5 px-2 cursor-pointer transition-colors duration-300 ${
-                    item.highlight
-                      ? "text-[#C3E41D]"
-                      : "text-foreground hover:text-[#C3E41D]"
-                  }`}
+              <MenuToggleIcon
+                open={isMenuOpen}
+                className="w-8 h-8 md:w-10 md:h-10"
+                strokeWidth={2}
+              />
+            </button>
+          </div>
+        </nav>
+      </header>
+
+      {/* Full-Screen Overlay Menu - Always mounted, visibility controlled by GSAP */}
+      <div
+        ref={menuContainerRef}
+        id="fullscreen-menu"
+        role="dialog"
+        aria-modal="true"
+        aria-label="Navigation menu"
+        className="fixed inset-0 z-60 bg-background invisible opacity-0" // Default CSS hidden state
+        onClick={(e) => {
+          // Close menu when clicking backdrop (not menu content)
+          if (e.target === e.currentTarget) {
+            setIsMenuOpen(false);
+          }
+        }}
+      >
+        {/* Overlay Container Content */}
+        <div className="menu-content relative w-full h-full flex flex-col">
+          {/* Top Bar: Theme Toggle + Close Button */}
+          <div className="absolute top-0 left-0 right-0 z-10 px-6 py-6 md:px-12 lg:px-24">
+            <div className="flex items-center justify-between max-w-screen-2xl mx-auto">
+              <div className="md:flex-1" />
+
+              <div className="flex items-center gap-4">
+                <VerticalThemeWipeToggle
+                  className="text-foreground hover:text-[#C3E41D] transition-colors duration-300"
+                  direction="top"
+                />
+
+                <button
+                  type="button"
+                  className="p-2 text-neutral-500 hover:text-foreground transition-colors duration-300 focus:outline-none"
+                  aria-label="Close menu"
                   onClick={() => setIsMenuOpen(false)}
                 >
-                  {item.label}
-                </a>
-              ))}
+                  <MenuToggleIcon
+                    open={true}
+                    className="w-8 h-8 md:w-10 md:h-10"
+                    strokeWidth={2}
+                  />
+                </button>
+              </div>
             </div>
-          )}
-        </div>
+          </div>
 
-        <div className="text-4xl text-foreground font-handwriting">
-          Meghraj Jare
-        </div>
+          {/* Main Navigation Content - Centered */}
+          <div className="flex-1 flex items-center justify-center px-6 py-20 md:py-24">
+            <div className="w-full max-w-4xl">
+              <Skiper58 className="bg-transparent backdrop-blur-none" />
+            </div>
+          </div>
 
-        <button
-          type="button"
-          onClick={handleToggleTheme}
-          className="relative w-16 h-8 rounded-full bg-neutral-200 dark:bg-neutral-800 hover:opacity-80 transition-opacity"
-          aria-label="Toggle theme"
-        >
-          <div
-            className="absolute top-1 left-1 w-6 h-6 rounded-full bg-neutral-900 dark:bg-white transition-transform duration-300"
-            style={{
-              transform: isDark ? "translateX(2rem)" : "translateX(0)",
-            }}
-          />
-        </button>
-      </nav>
-    </header>
+          {/* Bottom Meta Section */}
+          <div className="absolute bottom-0 left-0 right-0 px-6 py-6 md:px-12 lg:px-24">
+            <div className="flex items-center justify-between max-w-screen-2xl mx-auto text-xs md:text-sm text-neutral-500 tracking-wider uppercase">
+              <div className="hidden md:block">
+                <span className="text-[#C3E41D] font-bold">
+                  AVAILABLE FOR WORK
+                </span>
+              </div>
+
+              <div className="flex items-center gap-6 md:gap-8">
+                {/* Navigation Links */}
+                {["GITHUB", "LINKEDIN", "TWITTER"].map((item) => (
+                  <a
+                    key={item}
+                    href="#"
+                    className="hover:text-foreground transition-colors duration-300"
+                    onClick={(e) => {
+                      e.preventDefault();
+                      setIsMenuOpen(false);
+                    }}
+                  >
+                    {item}
+                  </a>
+                ))}
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </>
   );
 }
