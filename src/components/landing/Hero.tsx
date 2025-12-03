@@ -222,7 +222,7 @@ export function HeroSection() {
   );
 
   return (
-    <div className="relative w-full font-bromo bg-[#eceae8] dark:bg-[#101010]">
+    <div className="relative w-full font-bromo bg-[#eceae8] dark:bg-[#0e0e0e]">
       <div
         ref={contentRef}
         className="fixed top-0 left-0 h-svh w-full  text-neutral-900 dark:text-white overflow-hidden z-0 flex flex-col"
