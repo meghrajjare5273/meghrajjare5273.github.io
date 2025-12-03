@@ -1,5 +1,3 @@
-"use client";
-
 import React, { useRef } from "react";
 import gsap from "gsap";
 import { useGSAP } from "@gsap/react";
@@ -10,6 +8,8 @@ interface SignatureLogoProps {
   color?: string;
   strokeWidth?: number;
   onComplete?: () => void;
+  height?: number | null;
+  width?: number | null;
 }
 
 const SignatureLogo: React.FC<SignatureLogoProps> = ({
@@ -18,6 +18,8 @@ const SignatureLogo: React.FC<SignatureLogoProps> = ({
   color = "currentColor",
   strokeWidth = 1,
   onComplete,
+  height,
+  width,
 }) => {
   const containerRef = useRef<SVGSVGElement>(null);
 
@@ -71,8 +73,8 @@ const SignatureLogo: React.FC<SignatureLogoProps> = ({
     <svg
       ref={containerRef}
       className={className}
-      width="657"
-      height="240"
+      width={width ? width : "657"}
+      height={height ? height : "240"}
       viewBox="0 0 657 240"
       fill="none"
       xmlns="http://www.w3.org/2000/svg"

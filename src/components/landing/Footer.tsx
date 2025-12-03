@@ -2,6 +2,7 @@ import React, { useRef } from "react";
 import { gsap } from "gsap";
 import { useGSAP } from "@gsap/react";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
+import SignatureLogo from "../loading/signature-logo";
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -49,7 +50,7 @@ const NAV_GROUPS = [
     links: [
       { label: "Blog", href: "/blog" },
       { label: "Documentation", href: "/docs" },
-      { label: "Brand Kit", href: "/brand" },
+      // { label: "Brand Kit", href: "/brand" },
     ],
   },
   // Add more groups here if needed to scale the grid
@@ -146,15 +147,10 @@ export default function Footer() {
         </div>
 
         {/* --- Main Navigation Grid --- */}
-        {/* Defined as 'Custom Footer Navigation Section' in prompt */}
         <nav className="mb-[clamp(3.75rem,3.125vw+2.8125rem,5.625rem)]">
           <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-[clamp(0.9375rem,1.5625vw+0.46875rem,1.875rem)]">
-            {/* Add navigation items here */}
             {NAV_GROUPS.map((group, idx) => (
               <div key={idx} className="footer-reveal flex flex-col gap-6">
-                {/* Optional Category Title if desired, otherwise remove */}
-                {/* <h4 className="font-mono opacity-50 text-xs uppercase tracking-widest">{group.title}</h4> */}
-
                 <ul className="flex flex-col gap-4">
                   {group.links.map((link) => (
                     <li key={link.label}>
@@ -170,51 +166,26 @@ export default function Footer() {
               </div>
             ))}
 
-            {/* Empty column spacers for desktop layout to match reference whitespace if needed */}
             <div className="hidden lg:block"></div>
           </div>
         </nav>
 
         {/* --- Bottom Section --- */}
-        <div className="relative flex flex-col-reverse lg:flex-row justify-between items-start lg:items-end pt-8 border-t border-current border-opacity-10">
-          {/* Left: Secondary/Legal Menu + Copyright */}
-          <div className="w-full lg:w-auto flex flex-col md:flex-row gap-6 md:gap-12 items-start md:items-center mt-8 lg:mt-0">
-            {/* Legal Links */}
-            <nav>
-              <ul className="flex flex-col md:flex-row gap-4 md:gap-8">
-                {LEGAL_LINKS.map((link) => (
-                  <li key={link.label} className="footer-reveal">
-                    <a
-                      href={link.href}
-                      className="font-about text-sm opacity-60 hover:opacity-100 transition-opacity"
-                    >
-                      {link.label}
-                    </a>
-                  </li>
-                ))}
-              </ul>
-            </nav>
-
-            {/* Copyright */}
-            <div className="footer-reveal flex flex-col md:flex-row gap-1 md:gap-6 font-about text-sm opacity-60">
-              <span>© {currentYear} Meghraj Jare</span>
-              <span className="hidden md:inline">•</span>
-            </div>
+        <div className="relative flex flex-col-reverse lg:flex-row justify-center items-start lg:items-end pt-8 border-t border-current border-opacity-10">
+          {/* Copyright */}
+          <div className="footer-reveal font-about text-sm opacity-60">
+            <span>© {currentYear} Meghraj Jare</span>
           </div>
+        </div>
 
-          {/* Right: Reserved SVG Signature Animation Area */}
-          {/* Insert SVG signature animation here */}
-          <div className="footer-reveal relative w-[120px] h-[60px] md:w-[150px] md:mb-18 md:h-[80px] lg:absolute lg:bottom-0 lg:right-0 opacity-50 hover:opacity-100 transition-opacity duration-500">
-            {/* TODO: Insert your GSAP Animated SVG Signature here.
-                The container is sized and positioned. 
-                Ensure your SVG has w-full h-full and preserveAspectRatio="xMidYMid meet"
-             */}
-            <div className="w-full h-full border border-dashed border-current border-opacity-20 flex items-center justify-center rounded-lg">
-              <span className="text-[10px] font-mono opacity-50">
-                Signature Slot
-              </span>
-            </div>
-          </div>
+        {/* SVG Signature - Positioned OUTSIDE bottom section to sit ON the line */}
+        <div className="footer-reveal absolute bottom-14 right-6 md:right-12 lg:right-20 -translate-y-1/2 w-[150px] h-20 md:w-[200px] md:h-[90px] md:mr-3 md:mb-2 z-20 opacity-50 hover:opacity-100 transition-opacity duration-500">
+          {/* <div className="w-full h-full border border-dashed border-current border-opacity-20 flex items-center justify-center rounded-lg bg-[#101010] dark:bg-[#eceae8]">
+            <span className="text-[10px] font-mono opacity-50">
+              Signature Slot
+            </span>
+          </div> */}
+          <SignatureLogo className="w-full h-full text-current" />
         </div>
       </div>
     </footer>
