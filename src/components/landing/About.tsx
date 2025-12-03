@@ -368,7 +368,7 @@ const AboutSection = () => {
         </div>
 
         {/* Resume Link */}
-        <div className="grid grid-cols-1 md:grid-cols-12 gap-6 md:gap-8 mb-32 md:mb-40 font-about">
+        <div className="grid grid-cols-1 md:grid-cols-12 gap-6 md:gap-8 mb-48 md:mb-56 font-about">
           <div className="md:col-start-3 md:col-span-8 lg:col-start-4 lg:col-span-7">
             <h3 className="text-[7vw] md:text-[2rem] lg:text-[2.5rem] leading-[1.1] mb-10">
               {/* Fixed typo: "ml:8%" -> "ml-[8%]" */}
