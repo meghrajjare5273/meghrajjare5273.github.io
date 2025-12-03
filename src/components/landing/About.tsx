@@ -252,7 +252,7 @@ const AboutSection = () => {
   return (
     <div
       ref={sectionRef}
-      className="relative z-20 min-h-screen bg-[#e8e5e2] dark:bg-[#181818] text-foreground font-mono selection:bg-black selection:text-white overflow-hidden py-24 px-6 md:px-12 lg:px-20"
+      className="relative z-20 min-h-screen bg-[#9f9a95] dark:bg-[#1d1d1d] text-foreground font-mono selection:bg-black selection:text-white overflow-hidden py-24 px-6 md:px-12 lg:px-20"
     >
       <style>
         {`          
@@ -295,7 +295,7 @@ const AboutSection = () => {
         <div className="w-full text-center mb-20 md:mb-32">
           <h1
             ref={headingRef}
-            className="font-akira text-[12vw] md:text-[10rem] lg:text-[12rem] leading-[0.8] tracking-tighter uppercase cursor-default"
+            className="font-akira text-[16vw] md:text-[10rem] lg:text-[12rem] leading-[0.8] tracking-tighter uppercase cursor-default"
           >
             About Me
           </h1>
