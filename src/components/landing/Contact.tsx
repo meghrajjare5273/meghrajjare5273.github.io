@@ -166,7 +166,7 @@ const Contact = () => {
         <div className="mb-12 md:mb-20">
           <h1
             ref={headingRef}
-            className="font-akira text-[13vw] md:text-8xl lg:text-9xl leading-[0.8] tracking-tighter uppercase cursor-default break-words"
+            className="font-akira text-[13vw] md:text-8xl lg:text-9xl leading-[0.8] tracking-tighter uppercase cursor-default wrap-break-word"
           >
             Let's Talk
           </h1>
