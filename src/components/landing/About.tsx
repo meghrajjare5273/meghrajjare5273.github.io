@@ -249,10 +249,40 @@ const AboutSection = () => {
     };
   }, []);
 
+  // --- NEW: Dynamic Sticky Offset Logic ---
+  useEffect(() => {
+    const updateStickyPosition = () => {
+      if (!sectionRef.current) return;
+
+      const viewportHeight = window.innerHeight;
+      const sectionHeight = sectionRef.current.offsetHeight;
+
+      // Calculate the offset:
+      // If section is taller than screen, stick so the bottom is visible (negative top).
+      // If section is shorter, stick to the top (0).
+      const topOffset = Math.min(0, viewportHeight - sectionHeight);
+
+      sectionRef.current.style.top = `${topOffset}px`;
+    };
+
+    // Run on mount and resize
+    updateStickyPosition();
+    const handleResize = () => {
+      updateStickyPosition();
+      ScrollTrigger.refresh(); // Ensure GSAP stays in sync
+    };
+
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
+
   return (
     <div
       ref={sectionRef}
-      className="relative z-20 min-h-screen bg-[#9f9a95] dark:bg-[#1d1d1d] text-foreground font-mono selection:bg-black selection:text-white overflow-hidden py-24 px-6 md:px-12 lg:px-20"
+      // CHANGE: 'relative' -> 'sticky'
+      // CHANGE: 'z-20' ensures it is below Contact (z-30)
+      // REMOVE: 'bottom-0' (we set 'top' via JS above)
+      className="sticky z-20 min-h-screen bg-[#9f9a95] dark:bg-[#1d1d1d] text-foreground font-mono selection:bg-black selection:text-white overflow-hidden py-24 px-6 md:px-12 lg:px-20"
     >
       <style>
         {`          

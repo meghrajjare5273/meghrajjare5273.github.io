@@ -144,7 +144,8 @@ const Contact = () => {
   return (
     <div
       ref={sectionRef}
-      className="relative z-50 w-full bg-[#b3ada6] dark:bg-[#313131] text-foreground font-mono overflow-hidden py-16 md:py-24 px-4 md:px-8"
+      // Ensure this is sticky top-0 and z-30 (Higher than About's z-20)
+      className="sticky top-0 z-30 w-full bg-[#b3ada6] dark:bg-[#313131] text-foreground font-mono overflow-hidden py-16 md:py-24 px-4 md:px-8"
     >
       <style>
         {`
