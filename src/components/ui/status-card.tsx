@@ -13,7 +13,7 @@ const SectionLabel = ({
   className?: string;
 }) => (
   <span
-    className={`block text-[10px] md:text-[11px] uppercase tracking-[0.16em] text-neutral-500 dark:text-neutral-500 font-medium mb-2 ${className}`}
+    className={`block text-[12px] md:text-[16px] uppercase tracking-[0.16em] text-neutral-800 dark:text-neutral-800 font-medium mb-0 ${className}`}
   >
     {children}
   </span>
@@ -123,12 +123,12 @@ const StatusCard = () => {
           </p>
         </div>
 
-        <div className="flex flex-col md:items-end gap-1 md:gap-0 mt-2 md:mt-0">
-          <SectionLabel className="mb-1!">Last Updated</SectionLabel>
-          <span className="text-xs font-mono text-neutral-800 dark:text-neutral-300">
+        <div className="flex flex-col md:items-end gap-1 md:gap-0 mt-4 md:mt-0">
+          <SectionLabel className="mb-0">Last Updated</SectionLabel>
+          <span className="text-xs md:text-sm font-sans text-neutral-800 dark:text-neutral-300">
             DEC 2025
           </span>
-          <span className="text-[10px] text-neutral-400 dark:text-neutral-600">
+          <span className="text-[12px] md:text-[14px] text-neutral-400 font-sans dark:text-neutral-600">
             PUNE, MH
           </span>
         </div>

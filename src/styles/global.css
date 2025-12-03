@@ -222,7 +222,7 @@ html {
   letter-spacing: 1px;
   @media (width >= 48rem /* 768px */) {
     word-spacing: -10px;
-    letter-spacing: -4px;
+    letter-spacing: 1px;
   }
 }
 

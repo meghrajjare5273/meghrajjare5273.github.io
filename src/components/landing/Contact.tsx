@@ -1,5 +1,5 @@
 // src/components/landing/Contact.tsx
-import React, { useEffect, useRef } from "react";
+import { useEffect, useRef } from "react";
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { SplitText } from "gsap/SplitText";
@@ -212,9 +212,7 @@ const Contact = () => {
         {/* FOOTER LINKS */}
         <div className="border-t border-black/10 dark:border-white/10 pt-8 mt-8">
           <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
-            <p className="text-[10px] font-about uppercase tracking-widest opacity-60">
-              Find Me Online
-            </p>
+            <p className="text-[10px] text-transparent pointer-events-none touch-none font-about uppercase tracking-widest opacity-60"></p>
 
             <div className="flex flex-wrap gap-6 md:gap-10">
               <a
