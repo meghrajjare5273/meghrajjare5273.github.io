@@ -10,8 +10,7 @@
   font-style: normal;
   font-display: block;
   font-weight: normal;
-  src: url("/fonts/nav/BRUSHSCI.TTF") format("truetype"),
-    url("/fonts/nav/BrushScriptStd.otf") format("opentype");
+  src: url("/fonts/nav/Signatura Monoline.ttf") format("truetype");
 }
 
 @font-face {

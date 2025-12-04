@@ -134,7 +134,7 @@ export default function Navbar() {
 
           {/* 2. Center: Name */}
           <div className="absolute left-1/2 top-1/2 transform -translate-x-1/2 -translate-y-1/2 z-0">
-            <div className="text-4xl md:text-5xl text-foreground font-handwriting whitespace-nowrap">
+            <div className="text-4xl font-stretch-condensed md:text-5xl text-foreground font-handwriting whitespace-nowrap">
               Meghraj Jare
             </div>
           </div>
