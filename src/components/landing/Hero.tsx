@@ -255,11 +255,11 @@ export function HeroSection() {
           <div className="hero-text-container w-full">
             <h1 className="group font-space font-medium text-[10vw] md:text-[6vw] leading-[0.9] tracking-tight uppercase cursor-default w-fit pointer-events-auto">
               <div className="overflow-hidden perspective-[1000px]">
-                <span className="block animate-text-reveal origin-top transform-gpu font-geo">
+                <span className="block animate-text-reveal origin-top transform-gpu font-about">
                   Software
                 </span>
               </div>
-              <div className="overflow-hidden perspective-[1000px] pl-[6vw] md:pl-[6vw] font-geo">
+              <div className="overflow-hidden perspective-[1000px] pl-[6vw] md:pl-[6vw] font-about">
                 <span className="block animate-text-reveal origin-top transform-gpu text-neutral-400 dark:text-neutral-600 transition-colors duration-500 group-hover:text-neutral-900 dark:group-hover:text-white w-fit">
                   Engineer
                 </span>
@@ -286,12 +286,12 @@ export function HeroSection() {
             <div className="order-1 md:order-2 md:col-start-7 md:col-end-13 self-end text-left md:text-right">
               <h2 className="w-full md:w-fit ml-auto font-medium text-[10vw] md:text-[6vw] leading-[0.85] tracking-tighter uppercase transition-all duration-500 ease-out hover:-skew-x-6 cursor-default hover:text-neutral-700 dark:hover:text-neutral-300 pointer-events-auto">
                 <div className="overflow-hidden perspective-[1000px]">
-                  <span className="block animate-text-reveal origin-top transform-gpu font-geo">
+                  <span className="block animate-text-reveal origin-top transform-gpu font-about ">
                     Meghraj
                   </span>
                 </div>
                 <div className="overflow-hidden perspective-[1000px]">
-                  <span className="block animate-text-reveal origin-top transform-gpu font-geo">
+                  <span className="block animate-text-reveal origin-top transform-gpu font-about">
                     Jare
                   </span>
                 </div>

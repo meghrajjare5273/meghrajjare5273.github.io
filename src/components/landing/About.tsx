@@ -427,18 +427,18 @@ const AboutSection = () => {
             className="grid grid-cols-6 md:grid-cols-12 gap-4 md:gap-8 mb-12"
             data-section-header
           >
-            {/* <span className="col-start-1 md:col-start-2 text-xs pt-2 opacity-60"></span> */}
-            <h3 className="col-start-2 col-span-5 md:col-start-3 md:col-span-4 text-[7vw] md:text-3xl leading-tight">
+            {/* FIX APPLIED HERE: Added lg:col-start-4 lg:col-span-7 to align with the skills grid below */}
+            <h3 className="col-start-1 col-span-5 md:col-start-3 md:col-span-8 lg:col-start-4 lg:col-span-7 text-[7vw] md:text-[2rem] lg:text-[2.5rem]  leading-tight">
               Skills &<br />
               Technologies
             </h3>
           </div>
 
-          {/* FIX START: Wrapped in grid container & added animation attribute */}
           <div
             className="grid grid-cols-6 md:grid-cols-12 gap-4 md:gap-8"
             data-section-header
           >
+            {/* Subtext stays at col-3 creating the staggered effect if intended, or you can add lg:col-start-4 here too if needed */}
             <h5 className="col-start-1 col-span-15 md:col-start-3 md:col-span-24 mb-12 text-lg md:text-xl">
               <span className="ml-[5%] md:ml-[15%]">Here's</span> a brief
               overview of the technologies I am familiar with in the domains I
@@ -447,6 +447,7 @@ const AboutSection = () => {
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-12 gap-6 md:gap-8">
+            {/* This is the "Lower Text" referenced - it starts at col-4 on lg */}
             <div className="ml-[5%] md:col-start-3 md:col-span-8 lg:col-start-4 lg:col-span-7 grid grid-cols-2 md:grid-cols-3 gap-x-6 gap-y-12 md:gap-x-8 md:gap-y-16">
               {[
                 {
@@ -473,15 +474,11 @@ const AboutSection = () => {
                   category: "Cloud & DevOps",
                   count: "Microsoft Azure, Github Pages",
                 },
-                // {
-                //   category: "Version Control",
-                //   count: "Git",
-                // },
               ].map((item, index) => (
                 <div
                   key={index}
                   ref={(el) => {
-                    awardsRef.current[index] = el;
+                    if (awardsRef.current) awardsRef.current[index] = el;
                   }}
                   className="text-base md:text-lg lg:text-xl"
                 >
@@ -491,6 +488,54 @@ const AboutSection = () => {
                   <div className="font-medium">{item.count}</div>
                 </div>
               ))}
+            </div>
+          </div>
+        </div>
+
+        <div className="mb-24 md:mb-40 font-about mt-32 md:mt-48">
+          <div className="grid grid-cols-1 md:grid-cols-12 gap-6 md:gap-8">
+            {/* Section 2: This remains as it was in your original code (starts at col-4 on lg) */}
+            <div className="md:col-start-3 md:col-span-8 lg:col-start-4 lg:col-span-7">
+              <h3
+                className="text-[7vw] md:text-[2rem] lg:text-[2.5rem] leading-[1.1] mb-6"
+                data-section-header
+              >
+                Want to see <br />
+                <span className="opacity-50">what I've built?</span>
+              </h3>
+
+              <p
+                className="text-sm md:text-base leading-relaxed opacity-80 max-w-xl mb-12"
+                data-section-header
+              >
+                I believe in learning by doing. Dive into my portfolio to see
+                real-world applications of the technologies listed above, from
+                RAG agents to responsive web apps.
+              </p>
+
+              <div className="flex flex-col md:flex-row gap-8 md:gap-12 md:items-center">
+                <a
+                  href="/projects"
+                  className="underline-link text-lg md:text-xl font-medium w-fit"
+                  data-contact-link
+                >
+                  All Projects ↗
+                </a>
+                <a
+                  href="/projects/web"
+                  className="underline-link text-lg md:text-xl font-medium w-fit"
+                  data-contact-link
+                >
+                  Web Dev ↗
+                </a>
+                <a
+                  href="/projects/ai"
+                  className="underline-link text-lg md:text-xl font-medium w-fit"
+                  data-contact-link
+                >
+                  AI Experiments ↗
+                </a>
+              </div>
             </div>
           </div>
         </div>
