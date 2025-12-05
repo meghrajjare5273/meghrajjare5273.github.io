@@ -428,7 +428,7 @@ const AboutSection = () => {
             data-section-header
           >
             {/* FIX APPLIED HERE: Added lg:col-start-4 lg:col-span-7 to align with the skills grid below */}
-            <h3 className="col-start-1 col-span-5 md:col-start-3 md:col-span-8 lg:col-start-4 lg:col-span-7 text-[7vw] md:text-[2rem] lg:text-[2.5rem]  leading-tight">
+            <h3 className="col-start-1 col-span-5 md:col-start-3 md:col-span-8 lg:col-start-4 lg:col-span-7 text-[7vw] md:text-[2rem] lg:text-[2.5rem] font-bold leading-tight">
               Skills &<br />
               Technologies
             </h3>
@@ -492,25 +492,23 @@ const AboutSection = () => {
           </div>
         </div>
 
-        <div className="mb-24 md:mb-40 font-about mt-32 md:mt-48">
+        <div className="mb-24 md:mb-40 font-about mt-60 md:mt-80">
           <div className="grid grid-cols-1 md:grid-cols-12 gap-6 md:gap-8">
             {/* Section 2: This remains as it was in your original code (starts at col-4 on lg) */}
             <div className="md:col-start-3 md:col-span-8 lg:col-start-4 lg:col-span-7">
               <h3
-                className="text-[7vw] md:text-[2rem] lg:text-[2.5rem] leading-[1.1] mb-6"
+                className="text-[7vw] font-bold md:text-[2rem] lg:text-[2.5rem] leading-[1.1] mb-6"
                 data-section-header
               >
-                Want to see <br />
-                <span className="opacity-50">what I've built?</span>
+                Want to see  <br />
+               <p className="opacity-50">what I've been up to.?</p>
               </h3>
 
               <p
                 className="text-sm md:text-base leading-relaxed opacity-80 max-w-xl mb-12"
                 data-section-header
               >
-                I believe in learning by doing. Dive into my portfolio to see
-                real-world applications of the technologies listed above, from
-                RAG agents to responsive web apps.
+                I believe in learning by doing. The links attached below cover my journey over the past few years.
               </p>
 
               <div className="flex flex-col md:flex-row gap-8 md:gap-12 md:items-center">
@@ -519,21 +517,21 @@ const AboutSection = () => {
                   className="underline-link text-lg md:text-xl font-medium w-fit"
                   data-contact-link
                 >
-                  All Projects ↗
+                  Projects ↗
                 </a>
                 <a
-                  href="/projects/web"
+                  href="/awards"
                   className="underline-link text-lg md:text-xl font-medium w-fit"
                   data-contact-link
                 >
-                  Web Dev ↗
+                  Awards and Recognition ↗
                 </a>
                 <a
-                  href="/projects/ai"
+                  href="/blogs"
                   className="underline-link text-lg md:text-xl font-medium w-fit"
                   data-contact-link
                 >
-                  AI Experiments ↗
+                  Blogs ↗
                 </a>
               </div>
             </div>
