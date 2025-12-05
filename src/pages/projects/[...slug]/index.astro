@@ -1,0 +1,50 @@
+---
+import Layout from "@/layouts/Layout.astro";
+import ProjectDetailView from "@/components/projects/ProjectDetailView";
+import { getCollection } from "astro:content";
+import type { CollectionEntry } from "astro:content";
+
+export async function getStaticPaths() {
+  const projects = await getCollection("projects");
+  return projects.map((entry: { slug: string }) => ({
+    params: { slug: entry.slug },
+    props: { entry },
+  }));
+}
+
+type Props = {
+  entry: CollectionEntry<"projects">;
+};
+
+const { entry } = Astro.props;
+const { Content } = await entry.render();
+
+const schema = {
+  "@context": "https://schema.org",
+  "@type": "SoftwareSourceCode",
+  name: entry.data.title,
+  description: entry.data.summary,
+  author: {
+    "@type": "Person",
+    name: "Meghraj Jare",
+  },
+  datePublished: entry.data.date.toISOString(),
+  image: entry.data.coverImage,
+};
+---
+
+<Layout>
+  <Fragment slot="head">
+    <title>{entry.data.title} - Project Case Study</title>
+    <meta name="description" content={entry.data.summary} />
+    <meta
+      property="og:image"
+      content={entry.data.ogImage || entry.data.coverImage}
+    />
+    <script type="application/ld+json" set:html={JSON.stringify(schema)} />
+  </Fragment>
+
+  <ProjectDetailView client:load project={{ ...entry.data, slug: entry.slug }}>
+    <Content />
+  </ProjectDetailView>
+</Layout>

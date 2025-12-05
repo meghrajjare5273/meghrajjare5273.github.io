@@ -4,7 +4,7 @@
 import React, { useEffect, useRef, useState } from "react";
 import { MenuToggleIcon } from "@/components/ui/menu-toggle";
 import { initTheme } from "@/lib/theme";
-import { Skiper58 } from "@/components/ui/menu";
+import  MenuComponent from "@/components/ui/menu";
 import { VerticalThemeWipeToggle } from "@/components/ui/theme-toggle";
 import gsap from "gsap";
 import { useGSAP } from "@gsap/react";
@@ -134,7 +134,7 @@ export default function Navbar() {
 
           {/* 2. Center: Name */}
           <div className="absolute left-1/2 top-1/2 transform -translate-x-1/2 -translate-y-1/2 z-0">
-            <div className="text-4xl font-stretch-condensed md:text-5xl text-foreground font-handwriting whitespace-nowrap">
+            <div className="text-4xl font-stretch-condensed md:text-5xl text-foreground font-handwriting whitespace-nowrap" style={{fontWeight:"bold"}}>
               Meghraj Jare
             </div>
           </div>
@@ -204,9 +204,9 @@ export default function Navbar() {
           </div>
 
           {/* Main Navigation Content - Centered */}
-          <div className="flex-1 flex items-center justify-center px-6 py-20 md:py-24">
-            <div className="w-full max-w-4xl">
-              <Skiper58 className="bg-transparent backdrop-blur-none" />
+          <div className="flex-1 flex items-center justify-center px-6 py-10 md:py-12">
+            <div className="w-full max-w-4xl h-full">
+              <MenuComponent className="bg-transparent backdrop-blur-none" />
             </div>
           </div>
 

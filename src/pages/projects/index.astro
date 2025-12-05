@@ -1,0 +1,20 @@
+---
+import Layout from "@/layouts/Layout.astro";
+import ProjectsGrid from "@/components/projects/ProjectsGrid";
+import { getAllProjects, getUniqueTags } from "@/lib/projects";
+
+const projects = await getAllProjects();
+const tags = await getUniqueTags();
+
+const metadata = {
+  title: "Projects | Meghraj Jare",
+  description:
+    "A collection of software engineering projects, case studies, and experiments.",
+};
+---
+
+<Layout>
+  <main class="bg-background min-h-screen pt-20">
+    <ProjectsGrid client:load initialProjects={projects} allTags={tags} />
+  </main>
+</Layout>

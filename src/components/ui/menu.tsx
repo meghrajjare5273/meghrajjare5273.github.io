@@ -1,157 +1,66 @@
-// Menu-Component.tsx
 "use client";
 
-import React, { useRef } from "react";
-import gsap from "gsap";
-import { useGSAP } from "@gsap/react";
+import React, { useState } from "react";
+import { cn } from "@/lib/utils";
 
-gsap.registerPlugin(useGSAP);
-
-const cn = (...arr: Array<string | false | null | undefined>) =>
-  arr.filter(Boolean).join(" ");
-
-// Update the navigationItems array in Menu-Component.tsx to match your Navbar structure:
 const navigationItems = [
-  { name: "Home", href: "#", description: "Start here" },
-  { name: "About", href: "#", description: "Who I am" },
-  { name: "Projects", href: "#", description: "What I build" },
-  { name: "Experience", href: "#", description: "Where I worked" },
-  { name: "Education", href: "#", description: "What I learned" },
-  { name: "Writing", href: "#", description: "What I think" },
-  { name: "Contact", href: "#", description: "Let's talk" },
+  { name: "Home", href: "/" },
+  { name: "About", href: "/#about" },
+  { name: "Projects", href: "/projects" },
+  { name: "Blogs", href: "/blog" },
+  { name: "Contact", href: "/#contact" },
+  // { name: "Test", href: "/#xx" },
+
 ];
 
-const STAGGER = 0.035;
-
-export const TextRoll: React.FC<{
-  children: string;
-  className?: string;
-  center?: boolean;
-}> = ({ children, className, center = false }) => {
-  const containerRef = useRef<HTMLSpanElement>(null);
-  const letters = children.split("");
-
-  const { contextSafe } = useGSAP(
-    () => {
-      // Set initial state for the bottom row
-      gsap.set(".letter-bottom", { y: "100%" });
-    },
-    { scope: containerRef }
-  );
-
-  const handleMouseEnter = contextSafe(() => {
-    gsap.to(".letter-top", {
-      y: "-100%",
-      duration: 0.4,
-      ease: "power2.inOut",
-      stagger: {
-        each: STAGGER,
-        from: center ? "center" : "start",
-      },
-      overwrite: true,
-    });
-
-    gsap.to(".letter-bottom", {
-      y: "0%",
-      duration: 0.4,
-      ease: "power2.inOut",
-      stagger: {
-        each: STAGGER,
-        from: center ? "center" : "start",
-      },
-      overwrite: true,
-    });
-  });
-
-  const handleMouseLeave = contextSafe(() => {
-    gsap.to(".letter-top", {
-      y: "0%",
-      duration: 0.4,
-      ease: "power2.inOut",
-      stagger: {
-        each: STAGGER,
-        from: center ? "center" : "start",
-      },
-      overwrite: true,
-    });
-
-    gsap.to(".letter-bottom", {
-      y: "100%",
-      duration: 0.4,
-      ease: "power2.inOut",
-      stagger: {
-        each: STAGGER,
-        from: center ? "center" : "start",
-      },
-      overwrite: true,
-    });
-  });
+export const MenuComponent: React.FC<{ className?: string }> = ({ className }) => {
+  const [hoveredIndex, setHoveredIndex] = useState<number | null>(null);
 
   return (
-    <span
-      ref={containerRef}
-      className={cn("relative block overflow-hidden cursor-pointer", className)}
-      style={{ lineHeight: 0.75 }}
-      onMouseEnter={handleMouseEnter}
-      onMouseLeave={handleMouseLeave}
-      aria-label={children}
+    <nav
+      className={cn(
+        // CHANGED: "h-screen" -> "h-full". 
+        // This allows it to fit inside the Navbar's flex container without overflowing.
+        "flex max-h-screen w-full flex-col items-center justify-center", 
+        className
+      )}
     >
-      {/* Top Row (Initially Visible) */}
-      <div>
-        {letters.map((l, i) => (
-          <span key={`top-${i}`} className="letter-top inline-block relative">
-            {l === " " ? "\u00A0" : l}
-          </span>
-        ))}
-      </div>
-
-      {/* Bottom Row (Initially Hidden below) */}
-      <div className="absolute inset-0">
-        {letters.map((l, i) => (
-          <span
-            key={`bot-${i}`}
-            className="letter-bottom inline-block relative"
+      <ul className="flex flex-col items-center gap-4 sm:gap-6 md:gap-8 lg:gap-8 xl:gap-10">
+        {navigationItems.map((item, index) => (
+          <li
+            key={index}
+            className="group relative flex items-center justify-center p-2" // Added padding for hover targets
+            onMouseEnter={() => setHoveredIndex(index)}
+            onMouseLeave={() => setHoveredIndex(null)}
           >
-            {l === " " ? "\u00A0" : l}
-          </span>
+            <a
+              href={item.href}
+              className={cn(
+                "relative transition-all duration-500 ease-in-out",
+                // Hover Logic: Blur non-active items
+                hoveredIndex !== null && hoveredIndex !== index
+                  ? "blur-[3px] scale-90 opacity-40"
+                  : "scale-100 opacity-100"
+              )}
+            >
+              <span
+                className="block font-black uppercase tracking-tighter text-foreground transition-transform duration-300
+                leading-[0.85] /* Tighter line height for better vertical fit */
+                text-4xl       /* Mobile */
+                sm:text-5xl    /* Large Phones */
+                md:text-6xl    /* Tablets */
+                lg:text-7xl    /* Laptops */
+                xl:text-8xl    /* Large Desktop */
+                group-hover:-skew-x-12"
+              >
+                {item.name}
+              </span>
+            </a>
+          </li>
         ))}
-      </div>
-    </span>
+      </ul>
+    </nav>
   );
 };
 
-export const Skiper58: React.FC<{ className?: string }> = ({ className }) => (
-  <ul
-    className={cn(
-      "flex min-h-full w-full flex-1 flex-col items-center justify-center gap-1.5 rounded-2xl px-7 py-3 backdrop-blur-sm",
-      className
-    )}
-  >
-    {navigationItems.map((item, index) => (
-      <li className="relative flex flex-col items-center" key={index}>
-        <a
-          href={item.href}
-          className="group relative block cursor-pointer select-none"
-          aria-label={item.name}
-        >
-          <TextRoll
-            center
-            className="text-4xl font-extrabold uppercase leading-[0.8] tracking-[-0.03em] transition-colors lg:text-5xl"
-          >
-            {item.name}
-          </TextRoll>
-
-          <div className="mt-1 flex items-center justify-center">
-            <span className="text-xs text-neutral-400 group-hover:text-neutral-300 transition-colors">
-              {item.description}
-            </span>
-          </div>
-
-          {/* Underline effect - keeping as pure CSS for simple hover states is often cleaner, 
-              but could be GSAP'd if complex timing is needed */}
-          <span className="absolute -bottom-1 left-1/2 h-px w-0 -translate-x-1/2 bg-current transition-all duration-300 group-hover:w-full" />
-        </a>
-      </li>
-    ))}
-  </ul>
-);
+export default MenuComponent;
