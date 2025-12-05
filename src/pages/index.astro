@@ -1,10 +1,8 @@
 ---
 import Layout from "../layouts/Layout.astro";
 import { PageOrchestrator } from "@/components/landing/PageOrchestrator";
-import HeroSection  from "@/components/landing/Hero";
+import HeroSection from "@/components/landing/Hero";
 import About from "@/components/landing/About";
-import Projects from "@/components/landing/Projects";
-// import { Contact } from "lucide-react";
 import Footer from "@/components/landing/Footer";
 import Contact from "@/components/landing/Contact";
 ---
@@ -13,8 +11,7 @@ import Contact from "@/components/landing/Contact";
   <PageOrchestrator client:load>
     <HeroSection client:load />
     <About client:load />
-    <!-- <Projects client:load /> -->
     <Contact client:load />
-    <Footer client:load/>
+    <Footer client:load />
   </PageOrchestrator>
 </Layout>
