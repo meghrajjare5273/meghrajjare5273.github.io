@@ -1,9 +1,8 @@
 ---
-import Layout from "@/layouts/Layout.astro";
-import Dude from "@/components/404/Dude";
 import ErrorPage from "@/components/404/Page";
+import ErrorLayout from "@/layouts/ErrorLayout.astro";
 ---
 
-<Layout>
-    <ErrorPage client:load />
-</Layout>
+<ErrorLayout>
+  <ErrorPage client:load />
+</ErrorLayout>

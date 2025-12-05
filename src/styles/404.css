@@ -1,24 +1,26 @@
 /* WorkingOnLaptop404.css */
-.container {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  height: 100vh;
+
+/* Add these Animation Keyframes at the top or bottom */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
-body {
-  background-color: white;
-  overflow: hidden;
+.animate-fade-in {
+  animation: fadeIn 0.8s ease-out forwards;
 }
 
+/* Rest of your existing CSS... */
 .error404page {
   width: 400px;
   height: 800px;
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
+  position: relative;
 }
 
 .body404,
@@ -31,7 +33,7 @@ body {
 .rightshoe404,
 .legs404,
 .laptop404 {
-  background: url("/Dude-Enhanced-1.png") 0 0 no-repeat;
+  background: url("/Dude-Enhanced.webp") 0 0 no-repeat;
   width: 200px;
   height: 200px;
 }
@@ -57,7 +59,7 @@ body {
   width: 400px;
   height: 800px;
   left: 50%;
-  top: 20px;
+  top: 0;
   margin-left: -200px;
 }
 

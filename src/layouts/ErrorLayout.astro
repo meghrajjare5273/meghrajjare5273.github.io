@@ -9,16 +9,7 @@ import "@/styles/global.css";
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <meta name="generator" content="{Astro.generator}" />
-    <title>Meghraj Jare - Portfolio</title>
-
-    <!-- Preload font with font-display swap -->
-    <link
-      rel="preload"
-      href="https://cdn.jsdelivr.net/npm/@fontsource-variable/space-grotesk@5.2.10/files/space-grotesk-latin-wght-normal.woff2"
-      as="font"
-      type="font/woff2"
-      crossorigin
-    />
+    <title>404 - Page Not Found</title>
 
     <script is:inline>
       // Prevent FOUC (Flash of Unstyled Content)
@@ -35,11 +26,8 @@ import "@/styles/global.css";
     </script>
   </head>
   <body>
-    <div
-      class="fixed inset-0 z-9999 pointer-events-none opacity-[0.03] mix-blend-overlay"
-      style="background-image: url('https://grainy-gradients.vercel.app/noise.svg');"
-    >
+    <div>
+      <slot />
     </div>
-    <slot />
   </body>
 </html>
