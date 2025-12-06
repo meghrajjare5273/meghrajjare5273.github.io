@@ -9,6 +9,7 @@
     "astro": "astro"
   },
   "dependencies": {
+    "@astrojs/mdx": "^4.3.12",
     "@astrojs/react": "^4.4.2",
     "@fontsource-variable/space-grotesk": "^5.2.10",
     "@gsap/react": "^2.1.2",

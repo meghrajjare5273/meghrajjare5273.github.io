@@ -1,0 +1,9 @@
+---
+// src/pages/projects.astro
+import Layout from "@/layouts/Layout.astro";
+import { ProjectsList } from "@/components/projects/ProjectsList";
+---
+
+<Layout title="Projects | Meghraj Jare">
+  <ProjectsList client:load />
+</Layout>

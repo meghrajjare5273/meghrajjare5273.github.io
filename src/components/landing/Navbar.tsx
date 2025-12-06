@@ -1,10 +1,9 @@
-// Navbar.tsx
 "use client";
 
 import React, { useEffect, useRef, useState } from "react";
 import { MenuToggleIcon } from "@/components/ui/menu-toggle";
 import { initTheme } from "@/lib/theme";
-import { Skiper58 } from "@/components/ui/menu";
+import MenuComponent from "@/components/ui/menu";
 import { VerticalThemeWipeToggle } from "@/components/ui/theme-toggle";
 import gsap from "gsap";
 import { useGSAP } from "@gsap/react";
@@ -27,29 +26,57 @@ export default function Navbar() {
   // GSAP Animation Logic
   useGSAP(
     () => {
-      // 1. Set initial state: hidden and visibility:hidden (autoAlpha handles both)
+      // 1. Set initial state
       gsap.set(menuContainerRef.current, {
+        autoAlpha: 0,
+      });
+      // Set initial state for animated children
+      gsap.set(".menu-link-item, .menu-meta", {
+        y: 40,
         autoAlpha: 0,
       });
 
       // 2. Create the timeline (paused by default)
       const tl = gsap.timeline({ paused: true });
 
-      tl.to(menuContainerRef.current, {
-        autoAlpha: 1,
-        duration: 0.3,
-        ease: "power2.inOut",
-      }).fromTo(
-        ".menu-content",
-        { y: 20, opacity: 0 },
-        { y: 0, opacity: 1, duration: 0.4, ease: "power3.out" },
-        "-=0.1" // Stagger the start slightly
-      );
+      tl
+        // Fade in overlay
+        .to(menuContainerRef.current, {
+          autoAlpha: 1,
+          duration: 0.4,
+          ease: "power2.inOut",
+        })
+        // Stagger in menu links
+        .to(
+          ".menu-link-item",
+          {
+            y: 0,
+            autoAlpha: 1,
+            duration: 0.5,
+            stagger: 0.05,
+            ease: "power3.out",
+          },
+          "-=0.1"
+        )
+        // Fade in bottom meta
+        .to(
+          ".menu-meta",
+          {
+            y: 0,
+            autoAlpha: 1,
+            duration: 0.5,
+            stagger: 0.1,
+            ease: "power3.out",
+          },
+          "<+=0.2"
+        );
 
       timeline.current = tl;
-    },
+    }
+    ,
     { scope: menuContainerRef }
-  ); // Scope allows us to use selector strings like ".menu-content"
+ 
+  );
 
   // Control Timeline based on state
   useEffect(() => {
@@ -94,13 +121,17 @@ export default function Navbar() {
 
   return (
     <>
-      <header className="fixed top-0 left-0 right-0 z-50 px-6 py-6 md:px-12 lg:px-24 w-full">
+      {/* -------------------------------------------
+        CLOSED STATE NAVBAR (Unchanged)
+        -------------------------------------------
+      */}
+      <header className="fixed top-0 left-0 right-0 z-50 px-6 py-6 md:px-12 lg:px-24 w-full mix-blend-difference text-white">
         <nav className="relative flex items-center justify-between max-w-screen-2xl mx-auto min-h-12">
-          {/* 1. Left: Logo Section */}
+          {/* Left: Logo */}
           <div className="flex-1 flex justify-start z-10">
-            <a href="#" aria-label="Home" className="hidden md:block">
+            <a href="/" aria-label="Home" className="hidden md:block">
               <div className="text-2xl font-bold tracking-tighter text-foreground">
-                <svg
+ <svg
                   width="33.93"
                   height="45"
                   viewBox="0 0 172.25571 228.51735"
@@ -132,14 +163,14 @@ export default function Navbar() {
             </a>
           </div>
 
-          {/* 2. Center: Name */}
+          {/* Center: Name */}
           <div className="absolute left-1/2 top-1/2 transform -translate-x-1/2 -translate-y-1/2 z-0">
-            <div className="text-4xl font-stretch-condensed md:text-5xl text-foreground font-handwriting whitespace-nowrap">
+            <div className="text-4xl font-stretch-condensed md:text-5xl text-foreground font-handwriting whitespace-nowrap" style={{ fontWeight: "bold" }}>
               Meghraj Jare
             </div>
           </div>
 
-          {/* 3. Right: Menu Toggle */}
+          {/* Right: Menu Toggle */}
           <div className="flex-1 flex justify-end z-10 relative">
             <button
               type="button"
@@ -159,81 +190,78 @@ export default function Navbar() {
         </nav>
       </header>
 
-      {/* Full-Screen Overlay Menu - Always mounted, visibility controlled by GSAP */}
+      {/* -------------------------------------------
+        OPEN STATE OVERLAY
+        -------------------------------------------
+      */}
       <div
         ref={menuContainerRef}
         id="fullscreen-menu"
         role="dialog"
         aria-modal="true"
         aria-label="Navigation menu"
-        className="fixed inset-0 z-60 bg-[#eceae8] dark:bg-[#101010] invisible opacity-0" // Default CSS hidden state
+        className="fixed inset-0 z-[60] bg-[#eceae8] dark:bg-[#101010] invisible opacity-0 text-foreground"
         onClick={(e) => {
-          // Close menu when clicking backdrop (not menu content)
           if (e.target === e.currentTarget) {
             setIsMenuOpen(false);
           }
         }}
       >
-        {/* Overlay Container Content */}
-        <div className="menu-content relative w-full h-full flex flex-col">
+        <div className="relative w-full h-full flex flex-col justify-between">
+          
           {/* Top Bar: Theme Toggle + Close Button */}
-          <div className="absolute top-0 left-0 right-0 z-10 px-6 py-6 md:px-12 lg:px-24">
-            <div className="flex items-center justify-between max-w-screen-2xl mx-auto">
-              <div className="md:flex-1" />
-
-              <div className="flex items-center gap-4">
-                <VerticalThemeWipeToggle
-                  className="text-foreground hover:text-[#C3E41D] transition-colors duration-300"
-                  direction="top"
-                />
-
-                <button
-                  type="button"
-                  className="p-2 text-neutral-500 hover:text-foreground transition-colors duration-300 focus:outline-none"
-                  aria-label="Close menu"
-                  onClick={() => setIsMenuOpen(false)}
-                >
+          <div className="w-full flex justify-end items-center px-6 py-6 md:px-12 lg:px-24">
+            <div className="flex items-center gap-6">
+              <VerticalThemeWipeToggle
+                className="text-foreground hover:opacity-70 transition-opacity duration-300"
+                direction="top"
+              />
+              
+              <button
+                type="button"
+                className="group relative flex items-center justify-center p-2 rounded-full border border-transparent hover:border-foreground/10 transition-all duration-300"
+                aria-label="Close menu"
+                onClick={() => setIsMenuOpen(false)}
+              >
+                <div className="relative z-10">
                   <MenuToggleIcon
                     open={true}
-                    className="w-8 h-8 md:w-10 md:h-10"
+                    className="w-8 h-8 md:w-10 md:h-10 text-foreground"
                     strokeWidth={2}
                   />
-                </button>
-              </div>
+                </div>
+              </button>
             </div>
           </div>
 
-          {/* Main Navigation Content - Centered */}
-          <div className="flex-1 flex items-center justify-center px-6 py-20 md:py-24">
-            <div className="w-full max-w-4xl">
-              <Skiper58 className="bg-transparent backdrop-blur-none" />
+          {/* Main Navigation Content 
+            - Changed to justify-center to handle vertical alignment better 
+            - Added explicit horizontal padding matching top/bottom bars (px-6 md:px-12 lg:px-24)
+            - items-start ensures left alignment of the menu block
+          */}
+          <div className="flex-1 flex flex-col justify-center px-6 md:px-12 lg:px-24 w-full">
+            <div className="w-full max-w-screen-2xl mx-auto flex justify-start">
+               <MenuComponent className="font-about" />
             </div>
           </div>
 
           {/* Bottom Meta Section */}
-          <div className="absolute bottom-0 left-0 right-0 px-6 py-6 md:px-12 lg:px-24">
-            <div className="flex items-center justify-between max-w-screen-2xl mx-auto text-xs md:text-sm text-neutral-500 tracking-wider uppercase">
-              <div className="hidden md:block">
-                <span className="text-[#C3E41D] font-bold">
-                  AVAILABLE FOR WORK
-                </span>
+          <div className="w-full px-6 py-6 md:px-12 lg:px-24 pb-10">
+            <div className="max-w-screen-2xl mx-auto flex flex-col md:flex-row items-center md:items-end justify-between gap-6 text-center md:text-left text-xs md:text-sm font-medium tracking-wide uppercase text-neutral-500 dark:text-neutral-400">
+              
+              {/* Left Side: Copyright */}
+              <div className="menu-meta order-2 md:order-1">
+                <span className="block md:inline">©2025 Meghraj Jare</span>
+                <span className="hidden md:inline mx-2">|</span>
+                <a href="#" className="hover:text-foreground transition-colors">Privacy Policy</a>
               </div>
 
-              <div className="flex items-center gap-6 md:gap-8">
-                {/* Navigation Links */}
-                {["GITHUB", "LINKEDIN", "TWITTER"].map((item) => (
-                  <a
-                    key={item}
-                    href="#"
-                    className="hover:text-foreground transition-colors duration-300"
-                    onClick={(e) => {
-                      e.preventDefault();
-                      setIsMenuOpen(false);
-                    }}
-                  >
-                    {item}
-                  </a>
-                ))}
+              {/* Right Side: Contact Info */}
+              <div className="menu-meta order-1 md:order-2 flex flex-col md:items-end gap-1">
+                <a href="mailto:meghrajjare77@gmail.com" className="hover:text-foreground transition-colors text-foreground md:text-base font-normal normal-case tracking-normal">
+                  meghrajjare77@gmail.com
+                </a>
+                <span className="opacity-60">Pune, Maharashtra, India</span>
               </div>
             </div>
           </div>

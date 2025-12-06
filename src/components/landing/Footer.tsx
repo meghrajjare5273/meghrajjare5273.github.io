@@ -104,6 +104,9 @@ export default function Footer() {
           }
         );
       });
+      return () => {
+        mm.revert();
+      }
     },
     { scope: footerRef }
   );

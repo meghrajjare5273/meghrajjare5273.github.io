@@ -1,5 +1,7 @@
 ---
 import "@/styles/global.css";
+import { ClientRouter } from "astro:transitions";
+import { TransitionMaster } from "@/components/orchestrators/TransitionMaster";
 ---
 
 <!doctype html>
@@ -11,6 +13,8 @@ import "@/styles/global.css";
     <meta name="generator" content="{Astro.generator}" />
     <title>Meghraj Jare - Portfolio</title>
 
+    <ClientRouter />
+
     <!-- Preload font with font-display swap -->
     <link
       rel="preload"
@@ -20,7 +24,7 @@ import "@/styles/global.css";
       crossorigin
     />
 
-    <script is:inline>
+    <script is:inline transition:persist>
       // Prevent FOUC (Flash of Unstyled Content)
       (function () {
         const theme =
@@ -28,10 +32,39 @@ import "@/styles/global.css";
           (window.matchMedia("(prefers-color-scheme: dark)").matches
             ? "dark"
             : "light");
+
         if (theme === "dark") {
           document.documentElement.classList.add("dark");
         }
       })();
+
+      // Reapply theme after view transitions
+      document.addEventListener("astro:after-swap", () => {
+        const theme =
+          localStorage.getItem("theme") ||
+          (window.matchMedia("(prefers-color-scheme: dark)").matches
+            ? "dark"
+            : "light");
+
+        if (theme === "dark") {
+          document.documentElement.classList.add("dark");
+        } else {
+          document.documentElement.classList.remove("dark");
+        }
+      });
+
+      let navigating = false;
+      document.addEventListener("astro:before-preparation", () => {
+        navigating = true;
+        document.body.classList.add("navigating");
+      });
+
+      document.addEventListener("astro:page-load", () => {
+        setTimeout(() => {
+          navigating = false;
+          document.body.classList.remove("navigating");
+        }, 100);
+      });
     </script>
   </head>
   <body>
@@ -40,6 +73,7 @@ import "@/styles/global.css";
       style="background-image: url('https://grainy-gradients.vercel.app/noise.svg');"
     >
     </div>
+    <TransitionMaster client:load transition:persist />
     <slot />
   </body>
 </html>
