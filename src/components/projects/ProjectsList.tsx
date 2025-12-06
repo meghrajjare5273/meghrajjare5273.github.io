@@ -13,9 +13,10 @@ export function ProjectsList() {
   const containerRef = useRef<HTMLDivElement>(null);
 
   useGSAP(() => {
-    if (!containerRef.current) return;
 
-    // A. HEADER TEXT REVEAL
+    if (!containerRef.current) return;
+    const ctx = gsap.context(() => {
+      // A. HEADER TEXT REVEAL
     // We select the spans inside the h1 and animate them up
     const textTl = gsap.timeline({ defaults: { ease: "power4.out" } });
     
@@ -71,6 +72,12 @@ export function ProjectsList() {
             }
         });
     });
+    })
+
+    return () => {
+      ctx.revert();
+    }
+
 
   }, { scope: containerRef });
 

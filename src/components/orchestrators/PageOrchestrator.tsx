@@ -19,13 +19,30 @@ export function PageOrchestrator({ children }: PageOrchestratorProps) {
   const signatureWrapperRef = useRef<HTMLDivElement>(null);
   const contentRef = useRef<HTMLDivElement>(null);
 
-  useLayoutEffect(() => {
-    const hasVisited = sessionStorage.getItem("intro-completed");
-    if (hasVisited) {
-      setShouldPlayIntro(false);
-      setIntroFinished(true);
+// In PageOrchestrator.tsx, replace the useLayoutEffect with:
+useLayoutEffect(() => {
+  const handleBeforePreparation = () => {
+    // Clear the flag when navigating AWAY from home
+    if (window.location.pathname !== '/' && window.location.pathname !== '/index.astro') {
+      sessionStorage.removeItem('intro-completed');
     }
-  }, []);
+  };
+
+  const hasVisited = sessionStorage.getItem('intro-completed');
+  
+  // Only skip intro if we're on the same page within the same navigation session
+  if (hasVisited && performance.navigation.type !== 1) { // Not a reload
+    setShouldPlayIntro(false);
+    setIntroFinished(true);
+  }
+
+  document.addEventListener('astro:before-preparation', handleBeforePreparation);
+  
+  return () => {
+    document.removeEventListener('astro:before-preparation', handleBeforePreparation);
+  };
+}, []);
+
 
   useGSAP(() => {
     if (!shouldPlayIntro) {

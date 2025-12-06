@@ -72,8 +72,10 @@ export default function Navbar() {
         );
 
       timeline.current = tl;
-    },
+    }
+    ,
     { scope: menuContainerRef }
+ 
   );
 
   // Control Timeline based on state

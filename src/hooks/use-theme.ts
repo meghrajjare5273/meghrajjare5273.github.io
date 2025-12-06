@@ -6,16 +6,19 @@ export function useTheme() {
   const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
-    setMounted(true);
-    const savedTheme = localStorage.getItem("theme") as "light" | "dark" | null;
-    const systemTheme = window.matchMedia("(prefers-color-scheme: dark)")
-      .matches
-      ? "dark"
-      : "light";
-    const initialTheme = savedTheme || systemTheme;
+    const syncThemeAfterSwap = () => {
+      const savedTheme = localStorage.getItem('theme');
+      if (savedTheme) {
+        setTheme(savedTheme as 'light' | 'dark');
+        document.documentElement.classList.toggle('dark', savedTheme === 'dark');
+      }
+    };
 
-    setTheme(initialTheme);
-    document.documentElement.classList.toggle("dark", initialTheme === "dark");
+    document.addEventListener('astro:after-swap', syncThemeAfterSwap);
+    
+    return () => {
+      document.removeEventListener('astro:after-swap', syncThemeAfterSwap);
+    };
   }, []);
 
   const toggleTheme = useCallback(() => {

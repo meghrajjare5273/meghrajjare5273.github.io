@@ -32,10 +32,39 @@ import { TransitionMaster } from "@/components/orchestrators/TransitionMaster";
           (window.matchMedia("(prefers-color-scheme: dark)").matches
             ? "dark"
             : "light");
+
         if (theme === "dark") {
           document.documentElement.classList.add("dark");
         }
       })();
+
+      // Reapply theme after view transitions
+      document.addEventListener("astro:after-swap", () => {
+        const theme =
+          localStorage.getItem("theme") ||
+          (window.matchMedia("(prefers-color-scheme: dark)").matches
+            ? "dark"
+            : "light");
+
+        if (theme === "dark") {
+          document.documentElement.classList.add("dark");
+        } else {
+          document.documentElement.classList.remove("dark");
+        }
+      });
+
+      let navigating = false;
+      document.addEventListener("astro:before-preparation", () => {
+        navigating = true;
+        document.body.classList.add("navigating");
+      });
+
+      document.addEventListener("astro:page-load", () => {
+        setTimeout(() => {
+          navigating = false;
+          document.body.classList.remove("navigating");
+        }, 100);
+      });
     </script>
   </head>
   <body>

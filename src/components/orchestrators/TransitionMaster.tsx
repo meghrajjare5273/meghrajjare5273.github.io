@@ -34,8 +34,8 @@ export function TransitionMaster() {
       
       tl.current.to(bars, {
         scaleY: 0,
-        duration: 0.8,
-          delay: 1.0   , // Small delay for content load
+        duration: 0.5,
+          delay: 0.8   , // Small delay for content load
         stagger: 0.05,
         ease: "power3.inOut",
         onComplete: () => {
