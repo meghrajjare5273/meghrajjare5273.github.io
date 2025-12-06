@@ -24,7 +24,7 @@ import { TransitionMaster } from "@/components/orchestrators/TransitionMaster";
       crossorigin
     />
 
-    <script is:inline>
+    <script is:inline transition:persist>
       // Prevent FOUC (Flash of Unstyled Content)
       (function () {
         const theme =

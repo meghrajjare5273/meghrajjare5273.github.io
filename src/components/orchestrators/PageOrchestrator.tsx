@@ -1,4 +1,4 @@
-"use client";
+
 
 import React, { useRef, useState, useLayoutEffect } from "react";
 import gsap from "gsap";
@@ -9,40 +9,33 @@ interface PageOrchestratorProps {
   children: React.ReactNode;
 }
 
-const SIGNATURE_DRAW_DURATION = 2.5;
+const SIGNATURE_DRAW_DURATION = 2.0;
 
 export function PageOrchestrator({ children }: PageOrchestratorProps) {
   const [introFinished, setIntroFinished] = useState(false);
-  const [shouldPlayIntro, setShouldPlayIntro] = useState(true); // Default true
+  const [shouldPlayIntro, setShouldPlayIntro] = useState(true);
   
   const introContainerRef = useRef<HTMLDivElement>(null);
   const signatureWrapperRef = useRef<HTMLDivElement>(null);
   const contentRef = useRef<HTMLDivElement>(null);
 
-  // Check session storage before painting
   useLayoutEffect(() => {
     const hasVisited = sessionStorage.getItem("intro-completed");
     if (hasVisited) {
       setShouldPlayIntro(false);
-      setIntroFinished(true); // Skip straight to finished state
+      setIntroFinished(true);
     }
   }, []);
 
   useGSAP(() => {
-    // If we shouldn't play intro, ensure content is visible and bail out
     if (!shouldPlayIntro) {
       gsap.set(contentRef.current, { opacity: 1, zIndex: 1 });
       
-      // Dispatch event immediately so Hero animations still run (the "Reveal" from transition master handles the curtain)
       window.dispatchEvent(
         new CustomEvent("page-intro-complete", { detail: { timestamp: Date.now() } })
       );
       return;
     }
-
-    // --- STANDARD SIGNATURE INTRO SEQUENCE ---
-    // (This code remains largely the same as your original file, 
-    //  but we add the sessionStorage setItem at the end)
 
     const originalOverflow = document.body.style.overflow;
     document.body.style.overflow = "hidden";
@@ -51,12 +44,13 @@ export function PageOrchestrator({ children }: PageOrchestratorProps) {
       onComplete: () => {
         setIntroFinished(true);
         document.body.style.overflow = originalOverflow;
-        sessionStorage.setItem("intro-completed", "true"); // Mark as seen
+        sessionStorage.setItem("intro-completed", "true");
       },
     });
 
     gsap.set(contentRef.current, { zIndex: 1, opacity: 1 });
-    gsap.set(introContainerRef.current, { zIndex: 50, yPercent: 0 });
+    // FIX: Increased zIndex from 50 to 9999 to correctly cover all page content
+    gsap.set(introContainerRef.current, { zIndex: 9999, yPercent: 0 });
 
     tl.to({}, { duration: SIGNATURE_DRAW_DURATION * 0.85 });
 
@@ -66,24 +60,23 @@ export function PageOrchestrator({ children }: PageOrchestratorProps) {
 
     tl.to(introContainerRef.current, {
         yPercent: -100,
-        duration: 1.4,
+        duration: 0.8,
         ease: "power4.inOut",
         onStart: () => {
           window.dispatchEvent(
             new CustomEvent("page-intro-complete", { detail: { timestamp: Date.now() } })
           );
         },
-    }, "exit+=0.4");
+    }, "exit+=0.2");
 
     return () => {
       document.body.style.overflow = originalOverflow;
       tl.kill();
     };
-  }, [shouldPlayIntro]); // Re-run if this state changes
+  }, [shouldPlayIntro]);
 
   return (
     <>
-      {/* Intro Curtain - Only render if we need to play the intro */}
       {shouldPlayIntro && !introFinished && (
         <div
           ref={introContainerRef}
@@ -99,7 +92,6 @@ export function PageOrchestrator({ children }: PageOrchestratorProps) {
         </div>
       )}
 
-      {/* Main Content */}
       <div ref={contentRef} className="relative min-h-screen bg-background">
         {children}
       </div>

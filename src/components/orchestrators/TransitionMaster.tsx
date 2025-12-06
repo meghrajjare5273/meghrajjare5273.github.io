@@ -1,102 +1,62 @@
 import React, { useRef } from "react";
 import gsap from "gsap";
 import { useGSAP } from "@gsap/react";
-import { ScrollTrigger } from "gsap/ScrollTrigger";
-
-gsap.registerPlugin(ScrollTrigger);
 
 export function TransitionMaster() {
-  const curtainRef = useRef<HTMLDivElement>(null);
+  const containerRef = useRef<HTMLDivElement>(null);
   const tl = useRef<gsap.core.Timeline | null>(null);
 
-  useGSAP(
-    () => {
-      const handleBeforePreparation = () => {
-        if (!curtainRef.current) return;
+  useGSAP(() => {
+    const bars = gsap.utils.toArray<HTMLElement>(".transition-bar");
+    
+    const handleBeforePreparation = () => {
+      if (tl.current) tl.current.kill();
+      tl.current = gsap.timeline();
 
-        // Kill any previous timeline for safety
-        if (tl.current) {
-          tl.current.kill();
-          tl.current = null;
+      // Reset
+      gsap.set(containerRef.current, { autoAlpha: 1 });
+      gsap.set(bars, { scaleY: 0, transformOrigin: "bottom" });
+
+      // Close Shutters
+      tl.current.to(bars, {
+        scaleY: 1,
+        duration: 0.5,
+        stagger: 0.05,
+        ease: "power3.inOut",
+      });
+    };
+
+    const handlePageLoad = () => {
+      if (!tl.current) tl.current = gsap.timeline();
+
+      // Open Shutters (change origin to top to make them shrink upwards)
+      tl.current.set(bars, { transformOrigin: "top" });
+      
+      tl.current.to(bars, {
+        scaleY: 0,
+        duration: 0.8,
+          delay: 1.0   , // Small delay for content load
+        stagger: 0.05,
+        ease: "power3.inOut",
+        onComplete: () => {
+           gsap.set(containerRef.current, { autoAlpha: 0 });
         }
+      });
+    };
 
-        tl.current = gsap.timeline();
-
-        // Ensure starting state
-        gsap.set(curtainRef.current, { yPercent: 100, autoAlpha: 1 });
-
-        // Animate UP to cover screen
-        tl.current.to(curtainRef.current, {
-          yPercent: 0,
-          duration: 0.8,
-          ease: "power4.inOut",
-        });
-      };
-
-      const handleAfterSwap = () => {
-        // New content is in the DOM at this point; refresh ScrollTrigger
-        ScrollTrigger.refresh();
-      };
-
-      const handlePageLoad = () => {
-        if (!curtainRef.current) return;
-
-        // If navigation happened without an exit timeline (first load), create one
-        if (!tl.current) {
-          tl.current = gsap.timeline();
-        }
-
-        // Reveal animation queued after the cover tween
-        tl.current.to(
-          curtainRef.current,
-          {
-            yPercent: -100,
-            duration: 1.2,
-            ease: "power4.inOut",
-            onComplete: () => {
-              if (!curtainRef.current) return;
-
-              // Reset for next navigation
-              gsap.set(curtainRef.current, { yPercent: 100, autoAlpha: 0 });
-
-              tl.current?.kill();
-              tl.current = null;
-            },
-          },
-          ">" // start after previous tween ends
-        );
-      };
-
-      document.addEventListener(
-        "astro:before-preparation",
-        handleBeforePreparation
-      );
-      document.addEventListener("astro:after-swap", handleAfterSwap);
-      document.addEventListener("astro:page-load", handlePageLoad);
-
-      // Cleanup: avoid duplicate handlers and leaks (important in React Strict Mode)
-      return () => {
-        document.removeEventListener(
-          "astro:before-preparation",
-          handleBeforePreparation
-        );
-        document.removeEventListener("astro:after-swap", handleAfterSwap);
-        document.removeEventListener("astro:page-load", handlePageLoad);
-
-        if (tl.current) {
-          tl.current.kill();
-          tl.current = null;
-        }
-      };
-    },
-    { scope: curtainRef }
-  );
+    document.addEventListener("astro:before-preparation", handleBeforePreparation);
+    document.addEventListener("astro:page-load", handlePageLoad);
+    return () => {
+      document.removeEventListener("astro:before-preparation", handleBeforePreparation);
+      document.removeEventListener("astro:page-load", handlePageLoad);
+    };
+  }, { scope: containerRef });
 
   return (
-    <div
-      ref={curtainRef}
-      className="fixed inset-0 w-full h-full bg-[#0e0e0e] z-[10000] pointer-events-none opacity-0 invisible"
-      style={{ willChange: "transform" }}
-    />
+    <div ref={containerRef} className="fixed inset-0 w-full h-full z-[10000] flex pointer-events-none opacity-0 invisible">
+      {[...Array(5)].map((_, i) => (
+        <div key={i} className="transition-bar flex-1 bg-[#0e0e0e] w-full h-full" />
+      ))}
+    </div>
   );
 }
