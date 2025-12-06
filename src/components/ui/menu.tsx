@@ -1,60 +1,57 @@
 "use client";
 
-import React, { useState } from "react";
+import React from "react";
 import { cn } from "@/lib/utils";
 
 const navigationItems = [
   { name: "Home", href: "/" },
   { name: "About", href: "/#about" },
   { name: "Projects", href: "/projects" },
-  { name: "Blogs", href: "/blog" },
+  { name: "Process", href: "/process" },
+  { name: "Latest News", href: "/blog" },
   { name: "Contact", href: "/#contact" },
-  // { name: "Test", href: "/#xx" },
-
 ];
 
 export const MenuComponent: React.FC<{ className?: string }> = ({ className }) => {
-  const [hoveredIndex, setHoveredIndex] = useState<number | null>(null);
-
   return (
     <nav
       className={cn(
-        // CHANGED: "h-screen" -> "h-full". 
-        // This allows it to fit inside the Navbar's flex container without overflowing.
-        "flex max-h-screen w-full flex-col items-center justify-center", 
+        // Changed items-center to items-start for left alignment
+        "flex w-full flex-col items-start justify-center",
         className
       )}
     >
-      <ul className="flex flex-col items-center gap-4 sm:gap-6 md:gap-8 lg:gap-8 xl:gap-10">
+      <ul 
+        // Changed items-center to items-start
+        // Reduced gap from gap-4 to gap-1 md:gap-2 for better vertical fit
+        className="flex flex-col items-start gap-1 md:gap-2 group/list"
+        onMouseLeave={() => {
+          // Optional: Reset logic if needed
+        }}
+      >
         {navigationItems.map((item, index) => (
           <li
             key={index}
-            className="group relative flex items-center justify-center p-2" // Added padding for hover targets
-            onMouseEnter={() => setHoveredIndex(index)}
-            onMouseLeave={() => setHoveredIndex(null)}
+            className="menu-link-item overflow-hidden" 
           >
             <a
               href={item.href}
               className={cn(
-                "relative transition-all duration-500 ease-in-out",
-                // Hover Logic: Blur non-active items
-                hoveredIndex !== null && hoveredIndex !== index
-                  ? "blur-[3px] scale-90 opacity-40"
-                  : "scale-100 opacity-100"
+                "block font-about text-foreground transition-all duration-300 ease-out",
+                // Reduced text sizes slightly: 
+                // Mobile: 4xl (was 5xl)
+                // Tablet: 6xl (was 7xl)
+                // Desktop: 7xl (was 8xl)
+                "text-4xl sm:text-5xl md:text-6xl lg:text-7xl",
+                "leading-[0.9]", // Tighter line height
+                // Base state
+                "opacity-100",
+                // Hover Logic
+                "group-hover/list:opacity-40",
+                "hover:!opacity-100 hover:translate-x-2" // Added slight right nudge on hover
               )}
             >
-              <span
-                className="block font-black uppercase tracking-tighter text-foreground transition-transform duration-300
-                leading-[0.85] /* Tighter line height for better vertical fit */
-                text-4xl       /* Mobile */
-                sm:text-5xl    /* Large Phones */
-                md:text-6xl    /* Tablets */
-                lg:text-7xl    /* Laptops */
-                xl:text-8xl    /* Large Desktop */
-                group-hover:-skew-x-12"
-              >
-                {item.name}
-              </span>
+              {item.name}
             </a>
           </li>
         ))}
