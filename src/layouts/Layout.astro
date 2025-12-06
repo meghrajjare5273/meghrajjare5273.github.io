@@ -1,5 +1,7 @@
 ---
 import "@/styles/global.css";
+import { ClientRouter } from "astro:transitions";
+import { TransitionMaster } from "@/components/orchestrators/TransitionMaster";
 ---
 
 <!doctype html>
@@ -10,6 +12,8 @@ import "@/styles/global.css";
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <meta name="generator" content="{Astro.generator}" />
     <title>Meghraj Jare - Portfolio</title>
+
+    <ClientRouter />
 
     <!-- Preload font with font-display swap -->
     <link
@@ -40,6 +44,7 @@ import "@/styles/global.css";
       style="background-image: url('https://grainy-gradients.vercel.app/noise.svg');"
     >
     </div>
+    <TransitionMaster client:load transition:persist />
     <slot />
   </body>
 </html>
