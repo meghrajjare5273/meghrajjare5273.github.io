@@ -53,7 +53,7 @@ export function TransitionMaster() {
   }, { scope: containerRef });
 
   return (
-    <div ref={containerRef} className="fixed inset-0 w-full h-full z-[10000] flex pointer-events-none opacity-0 invisible">
+    <div ref={containerRef} className="fixed inset-0 w-full h-full z-10000 flex pointer-events-none opacity-0 invisible">
       {[...Array(5)].map((_, i) => (
         <div key={i} className="transition-bar flex-1 bg-[#0e0e0e] w-full h-full" />
       ))}

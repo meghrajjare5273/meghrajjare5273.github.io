@@ -200,7 +200,7 @@ export default function Navbar() {
         role="dialog"
         aria-modal="true"
         aria-label="Navigation menu"
-        className="fixed inset-0 z-[60] bg-[#eceae8] dark:bg-[#101010] invisible opacity-0 text-foreground"
+        className="fixed inset-0 z-60 bg-[#eceae8] dark:bg-[#101010] invisible opacity-0 text-foreground"
         onClick={(e) => {
           if (e.target === e.currentTarget) {
             setIsMenuOpen(false);

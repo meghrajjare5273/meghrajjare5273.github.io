@@ -13,7 +13,7 @@ export const ProjectRow = ({ project }: ProjectRowProps) => {
       href={project.link} 
       target={project.link.startsWith("http") ? "_blank" : "_self"}
       rel="noreferrer"
-      className="group block w-full border-t border-white/10 transition-colors duration-300 hover:bg-white/[0.02]"
+      className="group block w-full border-t border-white/10 transition-colors duration-300 hover:bg-white/2"
     >
       <div className="w-full max-w-[2000px] mx-auto px-6 md:px-12 py-12 md:py-16">
         {/* Main Grid: 1 col on mobile, 12 cols on XL screens */}

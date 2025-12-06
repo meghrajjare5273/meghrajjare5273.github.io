@@ -32,12 +32,12 @@ export const MenuComponent: React.FC<{ className?: string }> = ({ className }) =
         {navigationItems.map((item, index) => (
           <li
             key={index}
-            className="menu-link-item overflow-hidden" 
+            className="menu-link-item" 
           >
             <a
               href={item.href}
               className={cn(
-                "block font-about text-foreground transition-all duration-300 ease-out",
+                "block font-about text-foreground transition-all w-full duration-300 ease-out",
                 // Reduced text sizes slightly: 
                 // Mobile: 4xl (was 5xl)
                 // Tablet: 6xl (was 7xl)
@@ -48,7 +48,7 @@ export const MenuComponent: React.FC<{ className?: string }> = ({ className }) =
                 "opacity-100",
                 // Hover Logic
                 "group-hover/list:opacity-40",
-                "hover:!opacity-100 hover:translate-x-2" // Added slight right nudge on hover
+                "hover:opacity-100! hover:translate-x-2" // Added slight right nudge on hover
               )}
             >
               {item.name}
