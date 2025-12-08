@@ -2,8 +2,12 @@
 // src/pages/projects.astro
 import Layout from "@/layouts/Layout.astro";
 import { ProjectsList } from "@/components/projects/ProjectsList";
+import { ProjectsPageOrchestrator } from "@/components/orchestrators/ProjectPageOrchestrator";
+import ErrorLayout from "@/layouts/ErrorLayout.astro";
 ---
 
 <Layout title="Projects | Meghraj Jare">
-  <ProjectsList client:load />
+  <ProjectsPageOrchestrator client:load>
+    <ProjectsList client:load />
+  </ProjectsPageOrchestrator>
 </Layout>

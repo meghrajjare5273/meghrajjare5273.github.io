@@ -1,106 +1,144 @@
 // src/components/projects/ProjectRow.tsx
-import React from "react";
-import { ArrowRight, Asterisk } from "lucide-react";
-import type { Project } from "@/lib/projects";
+import React, { useRef } from "react";
+import gsap from "gsap";
+import { useGSAP } from "@gsap/react";
+import { ArrowRight } from "lucide-react";
+import type { Project } from "@/lib/projects"; // Assuming you updated your types file
 
 interface ProjectRowProps {
   project: Project;
+  index: number;
 }
 
-export const ProjectRow = ({ project }: ProjectRowProps) => {
+export const ProjectRow = ({ project, index }: ProjectRowProps) => {
+  const rowRef = useRef<HTMLAnchorElement>(null);
+  const imageRef = useRef<HTMLDivElement>(null);
+  const overlayRef = useRef<HTMLDivElement>(null);
+  
+  const paddedIndex = index.toString().padStart(2, "0");
+
+  useGSAP(() => {
+    const el = rowRef.current;
+    if (!el) return;
+
+    const tl = gsap.timeline({ paused: true, defaults: { duration: 0.3, ease: "power2.out" } });
+    
+    // 1. Reveal Image
+    tl.to(imageRef.current, { autoAlpha: 1, scale: 1, x: 0 }, 0);
+    // 2. Darken Row BG
+    tl.to(overlayRef.current, { opacity: 1 }, 0);
+    // 3. Shift Title
+    tl.to(".row-title", { x: 10, color: "currentColor" }, 0);
+    // 4. Reveal Arrow
+    tl.to(".row-arrow", { x: 0, opacity: 1 }, 0);
+    // 5. Fade out Year/Tags slightly to focus on image? (Optional, let's keep it clean)
+    tl.to(".row-meta", { opacity: 0.5 }, 0);
+
+    const onEnter = () => tl.play();
+    const onLeave = () => tl.reverse();
+
+    el.addEventListener("mouseenter", onEnter);
+    el.addEventListener("mouseleave", onLeave);
+
+    return () => {
+      el.removeEventListener("mouseenter", onEnter);
+      el.removeEventListener("mouseleave", onLeave);
+    };
+  }, { scope: rowRef });
+
   return (
     <a
+      ref={rowRef}
       href={project.link}
       target={project.link.startsWith("http") ? "_blank" : "_self"}
       rel="noreferrer"
-      // Removed hover:bg-black/5 and hover:bg-white/5
-      className="group block w-full bg-[#eceae8] dark:bg-[#0e0e0e] border-t border-black/10 dark:border-white/10 transition-colors duration-300"
+      // Increased height: py-8 (was py-6)
+      className="group relative block w-full border-b border-black/10 dark:border-white/10 outline-none"
     >
-      <div className="w-full max-w-[2000px] mx-auto px-6 md:px-12 py-12 md:py-16">
-        <div className="grid grid-cols-1 xl:grid-cols-12 gap-y-8 xl:gap-6 items-start">
+      {/* Hover Background Overlay */}
+      <div ref={overlayRef} className="absolute inset-0 bg-neutral-200/50 dark:bg-white/5 opacity-0 transition-opacity pointer-events-none" />
+
+      {/* Grid Container */}
+      <div className="w-full max-w-[1800px] mx-auto px-6 md:px-10 py-8 relative z-10">
+        <div className="grid grid-cols-12 gap-4 items-center">
           
-          {/* COLUMN 1-2: Title */}
-          <div className="xl:col-span-2 flex flex-col justify-between h-full">
-            <div className="flex items-center justify-between w-full">
-              <div className="relative">
-                {/* Removed drastic color shift, added subtle opacity shift instead */}
-                <h3 className="font-akira text-2xl md:text-3xl text-neutral-900 dark:text-white tracking-wide uppercase transition-opacity duration-300 group-hover:opacity-70">
-                  {project.title}
-                </h3>
-              </div>
-
-              {project.featured && (
-                <div className="xl:hidden flex items-center gap-1 py-1 px-3 bg-black/5 dark:bg-white/10 rounded-full">
-                  <Asterisk className="w-3 h-3 text-neutral-900 dark:text-white" />
-                  <span className="font-space text-xs text-neutral-900 dark:text-white">
-                    {project.featuredText}
-                  </span>
-                </div>
-              )}
-            </div>
-
-            {project.featured && (
-              <div className="hidden xl:flex w-fit items-center gap-1 py-1 px-2 bg-black/5 dark:bg-white/10 rounded-full mt-auto">
-                <Asterisk className="w-3 h-3 text-neutral-600 dark:text-white/80" />
-                <span className="font-space text-xs text-neutral-600 dark:text-white/80">
-                  {project.featuredText}
-                </span>
-              </div>
-            )}
+          {/* COL 1: Index (Span 1) */}
+          <div className="col-span-2 md:col-span-1">
+             <span className="font-space font-medium text-xs text-neutral-400 dark:text-neutral-600">
+               ({paddedIndex})
+             </span>
           </div>
 
-          {/* COLUMN 3-6: Description */}
-          <div className="xl:col-start-3 xl:col-span-4">
-            <p className="font-space text-base md:text-lg text-neutral-600 dark:text-neutral-400 leading-relaxed">
+          {/* COL 2: Title (Span 3) */}
+          <div className="col-span-10 md:col-span-3">
+            <h3 className="row-title font-akira text-xl md:text-2xl text-neutral-900 dark:text-white uppercase tracking-tight transition-transform will-change-transform">
+              {project.title}
+            </h3>
+          </div>
+
+          {/* COL 3: Description (Span 4) */}
+          <div className="hidden md:block col-span-4 pr-8">
+            <p className="font-space text-sm text-neutral-500 dark:text-neutral-400 leading-relaxed line-clamp-2">
               {project.description}
             </p>
           </div>
 
-          {/* COLUMN 7-8: Thumbnail */}
-          <div className="hidden xl:block xl:col-start-7 xl:col-span-2 relative h-[120px]">
-            <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[200px] aspect-video rounded-lg overflow-hidden opacity-0 scale-95 group-hover:opacity-100 group-hover:scale-105 transition-all duration-300 ease-out shadow-2xl border border-black/10 dark:border-white/10">
-              <img
-                src={project.thumbnail}
-                alt={project.title}
-                loading="lazy"
-                className="w-full h-full object-cover"
-              />
-            </div>
+          {/* COL 4: Year (Span 2) - NEW */}
+          <div className="hidden md:block col-span-2">
+             <span className="row-meta font-space text-sm text-neutral-500 dark:text-neutral-400 transition-opacity duration-300">
+               {project.year}
+             </span>
           </div>
 
-          {/* Mobile Image */}
-          <div className="block xl:hidden w-full aspect-video rounded-lg overflow-hidden border border-black/10 dark:border-white/10">
-            <img
-              src={project.thumbnail}
-              alt={project.title}
-              loading="lazy"
-              className="w-full h-full object-cover"
-            />
+          {/* COL 5: Tags & Arrow (Span 2) - Right Aligned */}
+          <div className="hidden md:flex col-span-2 justify-end items-center gap-4 relative">
+             {/* Tags (Fades out on hover slightly via .row-meta class) */}
+             <div className="row-meta flex gap-2 transition-opacity duration-300">
+                {project.tags.slice(0, 2).map(tag => ( // Limited to 2 tags to save space
+                  <span key={tag} className="text-[10px] uppercase tracking-wider text-neutral-400 dark:text-neutral-500">
+                      {tag}
+                  </span>
+                ))}
+             </div>
+
+             {/* Arrow Icon (Slides in) */}
+             <div className="row-arrow -translate-x-4 opacity-0 text-neutral-900 dark:text-white absolute right-0">
+                <ArrowRight className="w-5 h-5" />
+             </div>
           </div>
 
-          {/* COLUMN 9-10: Tags */}
-          <div className="xl:col-start-9 xl:col-span-2">
-            <div className="flex flex-wrap xl:flex-col gap-2 items-start">
-              {project.tags.map((tag) => (
-                <span
-                  key={tag}
-                  className="font-space text-xs text-neutral-600 dark:text-neutral-400 px-3 py-1 border border-black/10 dark:border-white/10 rounded-full whitespace-nowrap group-hover:border-black/30 dark:group-hover:border-white/30 transition-colors"
-                >
-                  {tag}
-                </span>
-              ))}
-            </div>
-          </div>
-
-          {/* COLUMN 11-12: Button */}
-          <div className="xl:col-start-11 xl:col-span-2 flex justify-start xl:justify-end">
-            <button className="flex items-center gap-2 px-6 py-2 rounded-full border border-black/10 dark:border-white/10 bg-black/5 dark:bg-white/5 text-sm font-space text-neutral-900 dark:text-white group-hover:bg-black group-hover:text-white dark:group-hover:bg-white dark:group-hover:text-black transition-all duration-300">
-              <span>View Case</span>
-              <ArrowRight className="w-4 h-4" />
-            </button>
-          </div>
         </div>
       </div>
+
+      {/* REVEAL IMAGE 
+          Positioned to overlap the Tags/Year area slightly but keeping Title clear.
+          Right-aligned at roughly 10-15%.
+      */}
+      <div 
+        ref={imageRef}
+        className="hidden md:block absolute right-[12%] top-1/2 -translate-y-1/2 w-[220px] aspect-video z-20 pointer-events-none invisible opacity-0 scale-95 origin-center shadow-xl rounded-sm overflow-hidden border border-black/10 dark:border-white/10 bg-neutral-100 dark:bg-neutral-900"
+      >
+        <img 
+          src={project.thumbnail} 
+          alt={project.title} 
+          className="w-full h-full object-cover"
+        />
+      </div>
+
+      {/* MOBILE LAYOUT (Simple Stack) */}
+      <div className="md:hidden w-full px-6 pb-6">
+         <div className="flex justify-between items-center mb-4">
+             <span className="font-space text-xs text-neutral-400">{project.year}</span>
+             <div className="flex gap-2">
+                 {project.tags.slice(0,2).map(t => <span key={t} className="text-[10px] uppercase text-neutral-400">{t}</span>)}
+             </div>
+         </div>
+         <p className="font-space text-sm text-neutral-500 mb-4 line-clamp-3">{project.description}</p>
+         <div className="w-full aspect-video rounded overflow-hidden border border-black/5 dark:border-white/5">
+            <img src={project.thumbnail} alt={project.title} className="w-full h-full object-cover" />
+         </div>
+      </div>
+
     </a>
   );
 };

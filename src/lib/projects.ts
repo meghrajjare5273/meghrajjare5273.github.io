@@ -1,17 +1,17 @@
 // src/data/projects.ts
-export interface Project {
-  id: string;
-  title: string; // Used if no logo is available
-  logo?: string; // URL to logo image (white)
-  logoHover?: string; // URL to logo image (colored)
-  description: string;
-  tags: string[]; // e.g., "Website", "Web App"
-  link: string;
-  thumbnail: string; // The image that appears on hover
-  year: string;
-  featured?: boolean; // Highlight badge like "$7.2B valuation"
-  featuredText?: string; 
-}
+  export interface Project {
+    id: string;
+    title: string; // Used if no logo is available
+    logo?: string; // URL to logo image (white)
+    logoHover?: string; // URL to logo image (colored)
+    description: string;
+    tags: string[]; // e.g., "Website", "Web App"
+    link: string;
+    thumbnail: string; // The image that appears on hover
+    year: string;
+    featured?: boolean; // Highlight badge like "$7.2B valuation"
+    featuredText?: string; 
+  }
 
 export const projects: Project[] = [
   {

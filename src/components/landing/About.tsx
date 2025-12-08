@@ -2,6 +2,7 @@ import React, { useEffect, useRef } from "react";
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { SplitText } from "gsap/SplitText";
+import prof from "@/assets/prof.jpeg"
 
 gsap.registerPlugin(ScrollTrigger, SplitText);
 
@@ -389,7 +390,7 @@ const AboutSection = () => {
               className="relative w-full aspect-3/4 overflow-hidden rounded-4xl bg-gray-300"
             >
               <img
-                src="/prof.jpeg"
+                src={prof.src}
                 alt="Developer workspace"
                 className="w-full h-full object-cover grayscale brightness-95 contrast-110 transition-all duration-700 ease-in-out hover:scale-105 hover:contrast-100"
               />
