@@ -54,9 +54,9 @@
   src: url("/fonts/Hero/Galderglynn Titling Rg.otf") format("opentype");
 }
 
-.font-space {
+/* .font-space {
   font-family: "Space Grotesk Variable", ui-sans-serif, system-ui, sans-serif;
-}
+} */
 
 @theme inline {
   --radius-sm: calc(var(--radius) - 4px);

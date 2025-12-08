@@ -11,18 +11,11 @@ import { TransitionMaster } from "@/components/orchestrators/TransitionMaster";
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <meta name="generator" content="{Astro.generator}" />
-    <title>Meghraj Jare - Portfolio</title>
+    <title>Projects | Meghraj Jare</title>
 
     <ClientRouter />
 
     <!-- Preload font with font-display swap -->
-    <link
-      rel="preload"
-      href="https://cdn.jsdelivr.net/npm/@fontsource-variable/space-grotesk@5.2.10/files/space-grotesk-latin-wght-normal.woff2"
-      as="font"
-      type="font/woff2"
-      crossorigin
-    />
 
     <script is:inline transition:persist>
       // Prevent FOUC (Flash of Unstyled Content)
@@ -53,41 +46,8 @@ import { TransitionMaster } from "@/components/orchestrators/TransitionMaster";
         }
       });
 
-      let navigating = false;
-      document.addEventListener("astro:before-preparation", () => {
-        navigating = true;
-        document.body.classList.add("navigating");
-      });
-
-      document.addEventListener("astro:page-load", () => {
-        setTimeout(() => {
-          navigating = false;
-          document.body.classList.remove("navigating");
-        }, 100);
-      });
-
-      // // Reset scroll position on navigation
-      // if ("scrollRestoration" in window.history) {
-      //   window.history.scrollRestoration = "manual";
-      // }
-
-      // Listen for Astro navigation events
-      // document.addEventListener("astro:before-swap", () => {
-      //   window.scrollTo(0, 0);
-      // });
-
-      document.addEventListener("astro:after-swap", (event) => {
-        const detail = event.detail;
-        // `to` is a URL object for the destination page
-        // https://docs.astro.build/en/reference/modules/astro-transitions/#lifecycle-events-attributes
-        if (!detail || !detail.to) return;
-
-        const toPath = detail.to.pathname;
-
-        // Only scroll to top when navigating *to* /projects or /projects/*
-        if (toPath === "/projects" || toPath.startsWith("/projects/")) {
-          window.scrollTo({ top: 0, left: 0, behavior: "auto" });
-        }
+      document.addEventListener("astro:after-swap", () => {
+        window.scrollTo(0, 0);
       });
     </script>
   </head>
@@ -97,7 +57,7 @@ import { TransitionMaster } from "@/components/orchestrators/TransitionMaster";
       style="background-image: url('https://grainy-gradients.vercel.app/noise.svg');"
     >
     </div>
-    <TransitionMaster client:load transition:persist />
+    <!-- <TransitionMaster client:load transition:persist /> -->
     <slot />
   </body>
 </html>

@@ -125,7 +125,7 @@ export default function Navbar() {
         CLOSED STATE NAVBAR (Unchanged)
         -------------------------------------------
       */}
-      <header className="fixed top-0 left-0 right-0 z-50 px-6 py-6 md:px-12 lg:px-24 w-full mix-blend-difference text-white">
+      <header className="fixed top-0 left-0 right-0 z-50 px-6 py-6 md:px-12 lg:px-24 w-full text-neutral-900 dark:text-white">
         <nav className="relative flex items-center justify-between max-w-screen-2xl mx-auto min-h-12">
           {/* Left: Logo */}
           <div className="flex-1 flex justify-start z-10">
