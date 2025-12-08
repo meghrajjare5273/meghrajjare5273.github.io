@@ -184,6 +184,10 @@ html {
   overscroll-behavior: none;
 }
 
+html,body{
+  overscroll-behavior-y: none;
+}
+
 /* Custom scrollbar for better UX */
 ::-webkit-scrollbar {
   width: 0%;

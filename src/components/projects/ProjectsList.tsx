@@ -78,7 +78,7 @@ export function ProjectsList() {
 
   return (
     // Updated Background Colors here
-    <div ref={containerRef} className="min-h-screen bg-[#eceae8] dark:bg-[#0e0e0e] text-neutral-950 dark:text-white selection:bg-black/20 dark:selection:bg-white/20 duration-300">
+    <div ref={containerRef} className="min-h-dvh bg-[#eceae8] dark:bg-[#0e0e0e] text-neutral-950 dark:text-white selection:bg-black/20 dark:selection:bg-white/20 duration-300">
       <Navbar />
       
       <main className="w-full pt-32 md:pt-48 pb-20">
