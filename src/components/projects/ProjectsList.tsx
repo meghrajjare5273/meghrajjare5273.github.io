@@ -20,8 +20,11 @@ export function ProjectsList() {
       // 1. Header Entrance
       gsap.fromTo(".header-reveal",
         { y: 20, opacity: 0 },
-        { y: 0, opacity: 1, duration: 0.8, stagger: 0.05, ease: "power2.out", delay: 0.2 }
+        { y: 0, opacity: 1, duration: 0.8, stagger: 0.05, ease: "power2.out", delay: 0.3 }
       );
+
+      // 3. Subtext Entrance
+      gsap.fromTo('.text-reveal',{ x:30, opacity:0}, { x:0 , opacity: 0.4, duration: 0.8, stagger: 0.5, ease: "power2.out", delay: 0.3 })
 
       // 2. List Entrance
       gsap.fromTo(".project-row-wrapper",
@@ -45,19 +48,28 @@ export function ProjectsList() {
   return (
     <div 
       ref={containerRef} 
-      className="min-h-dvh w-full bg-[#f4f4f4] dark:bg-[#0a0a0a] text-neutral-900 dark:text-white transition-colors duration-500"
+      className="min-h-dvh w-full bg-[#eceae8] dark:bg-[#0a0a0a] text-neutral-900 dark:text-white transition-colors duration-500"
     >
       <Navbar />
       
       <main className="w-full pt-28 md:pt-40 pb-20">
         
         {/* Page Title */}
-        <div className="w-full max-w-[1800px] mx-auto px-6 md:px-10 mb-20">
-          <h1 className="font-about text-5xl md:text-7xl leading-tight uppercase tracking-tighter">
-            <span className="header-reveal block">Selected</span>
-            <span className="header-reveal block text-neutral-400">Works</span>
-          </h1>
-        </div>
+  <div className="flex flex-col md:flex-row md:justify-between md:items-start gap-8 md:gap-12 w-full max-w-[1800px] mx-auto px-6 md:px-10 mb-20">
+  <div className="shrink-0">
+    <h1 className="font-about text-5xl md:text-7xl leading-tight uppercase tracking-tighter">
+      <span className="header-reveal block">Selected</span>
+      <span className="header-reveal block text-neutral-400">Works</span>
+    </h1>
+  </div>
+  
+  <div className="md:max-w-xl md:mt-2">
+    <h3 className="font-about text-lg opacity-30 text-neutral-900 dark:text-white text-reveal">
+      These are some of my best projects. Here I will be displaying most of my talent, some links may be broken and some of the services may also be down, but trust me I am working on getting it back online.
+    </h3>
+  </div>
+</div>
+
         
         {/* THE TABLE HEADER */}
         {/* We use the exact same grid-cols-12 and col-spans as the row to ensure alignment */}
@@ -87,11 +99,11 @@ export function ProjectsList() {
                 </span>
             </div>
             {/* Col 5: Tags/Link (2 cols) */}
-            <div className="col-span-2 text-right">
+            {/* <div className="col-span-2 text-right">
                  <span className="header-reveal font-space text-xs uppercase tracking-widest text-neutral-500 block">
                     Type
                 </span>
-            </div>
+            </div> */}
         </div>
 
         {/* List Section */}
