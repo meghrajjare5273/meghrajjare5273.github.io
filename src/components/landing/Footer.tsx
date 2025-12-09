@@ -114,7 +114,7 @@ export default function Footer() {
   return (
     <footer
       ref={footerRef}
-      className="relative z-40 bg-[#101010] text-[#eceae8] dark:bg-[#eceae8] dark:text-[#101010] pt-[clamp(2.5rem,2.1875vw+1.875rem,3.125rem)] pb-8 px-6 md:px-12 lg:px-20 overflow-hidden"
+      className="relative z-40 bg-[#101010] text-[#eceae8] dark:bg-[#c6c4c1] dark:text-[#101010] pt-[clamp(2.5rem,2.1875vw+1.875rem,3.125rem)] pb-8 px-6 md:px-12 lg:px-20 overflow-hidden"
     >
       <div className="max-w-[1400px] mx-auto flex flex-col justify-between h-full">
         {/* --- Header Section (Title + Socials) --- */}

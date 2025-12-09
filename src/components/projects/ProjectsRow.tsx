@@ -28,7 +28,7 @@ export const ProjectRow = ({ project, index }: ProjectRowProps) => {
     // 2. Darken Row BG
     tl.to(overlayRef.current, { opacity: 1 }, 0);
     // 3. Shift Title
-    tl.to(".row-title", { x: 10, color: "currentColor" }, 0);
+    tl.to(".row-title", { x: 10}, 0);
     // 4. Reveal Arrow
     tl.to(".row-arrow", { x: 0, opacity: 1 }, 0);
     // 5. Fade out Year/Tags slightly to focus on image? (Optional, let's keep it clean)
@@ -94,11 +94,11 @@ export const ProjectRow = ({ project, index }: ProjectRowProps) => {
           <div className="hidden md:flex col-span-2 justify-end items-center gap-4 relative">
              {/* Tags (Fades out on hover slightly via .row-meta class) */}
              <div className="row-meta flex gap-2 transition-opacity duration-300">
-                {project.tags.slice(0, 2).map(tag => ( // Limited to 2 tags to save space
+                {/* {project.tags.slice(0, 2).map(tag => ( // Limited to 2 tags to save space
                   <span key={tag} className="text-[10px] uppercase tracking-wider text-neutral-400 dark:text-neutral-500">
                       {tag}
                   </span>
-                ))}
+                ))} */}
              </div>
 
              {/* Arrow Icon (Slides in) */}
@@ -130,10 +130,10 @@ export const ProjectRow = ({ project, index }: ProjectRowProps) => {
          <div className="flex justify-between items-center mb-4">
              <span className="font-space text-xs text-neutral-400">{project.year}</span>
              <div className="flex gap-2">
-                 {project.tags.slice(0,2).map(t => <span key={t} className="text-[10px] uppercase text-neutral-400">{t}</span>)}
+                 {/* {project.tags.slice(0,2).map(t => <span key={t} className="text-[10px] uppercase text-neutral-400">{t}</span>)} */}
              </div>
          </div>
-         <p className="font-space text-sm text-neutral-500 mb-4 line-clamp-3">{project.description}</p>
+         <p className="font-space text-sm text-neutral-500 mb-4">{project.description}</p>
          <div className="w-full aspect-video rounded overflow-hidden border border-black/5 dark:border-white/5">
             <img src={project.thumbnail} alt={project.title} className="w-full h-full object-cover" />
          </div>
