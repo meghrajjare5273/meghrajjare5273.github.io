@@ -134,17 +134,7 @@ export function ProjectsPageOrchestrator({
       <div
         ref={containerRef}
         className="fixed inset-0 z-100000 pointer-events-none grid grid-cols-3 md:grid-cols-5 h-full w-screen overflow-hidden"
-      >
-        {/* Generate 5 panels max (CSS hides the extras on mobile if needed, 
-            but here we just rely on grid-cols to size them).
-            
-            We generate 5 divs. On mobile (grid-cols-3), the last 2 will wrap 
-            to the next row unless we force row-1. 
-            
-            BETTER FIX: Just generate 5, forcing them all to row-1 (or just let them exist).
-            Since we animate yPercent, having wrapped items is bad. 
-            We must force them to stay on row 1.
-        */}
+>
         {Array.from({ length: 5 }).map((_, index) => (
           <div
             key={index}
