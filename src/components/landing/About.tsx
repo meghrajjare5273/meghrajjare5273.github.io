@@ -2,29 +2,27 @@ import React, { useEffect, useRef } from "react";
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { SplitText } from "gsap/SplitText";
-import prof from "@/assets/prof.jpeg"
+import prof from "@/assets/prof.jpeg";
 
 gsap.registerPlugin(ScrollTrigger, SplitText);
-
-ScrollTrigger.config({ ignoreMobileResize: true });
 
 const AboutSection = () => {
   const sectionRef = useRef<HTMLDivElement>(null);
   const headingRef = useRef<HTMLHeadingElement>(null);
   const heroTextRef = useRef<HTMLHeadingElement>(null);
   const imageRef = useRef<HTMLDivElement>(null);
-  // Only keeping refs for elements actually present in the JSX
   const textBlocksRef = useRef<(HTMLDivElement | null)[]>([]);
   const awardsRef = useRef<(HTMLDivElement | null)[]>([]);
 
   useEffect(() => {
-    // 1. Detect Mobile
-    const isMobile = window.innerWidth < 768;
-
     const ctx = gsap.context(() => {
-      // --- SECTION HEADING ANIMATION ---
-      if (headingRef.current) {
-        if (!isMobile) {
+      // Use matchMedia for proper responsive handling
+      const mm = gsap.matchMedia();
+
+      // Desktop animations (768px and up)
+      mm.add("(min-width: 768px)", () => {
+        // --- SECTION HEADING ANIMATION (Desktop Only) ---
+        if (headingRef.current) {
           const headingSplit = new SplitText(headingRef.current, {
             type: "chars",
             charsClass: "char",
@@ -42,25 +40,12 @@ const AboutSection = () => {
             },
             duration: 0.8,
             ease: "back.out(1.2)",
-            clearProps: "all",
-          });
-        } else {
-          gsap.from(headingRef.current, {
-            scrollTrigger: {
-              trigger: headingRef.current,
-              start: "top 85%",
-            },
-            opacity: 0,
-            y: 50,
-            duration: 0.8,
-            ease: "power2.out",
+            force3D: true,
           });
         }
-      }
 
-      // --- HERO TEXT ANIMATION ---
-      if (heroTextRef.current) {
-        if (!isMobile) {
+        // --- HERO TEXT ANIMATION (Desktop) ---
+        if (heroTextRef.current) {
           const heroSplit = new SplitText(heroTextRef.current, {
             type: "lines,words",
             linesClass: "line-wrapper",
@@ -82,37 +67,13 @@ const AboutSection = () => {
             stagger: { amount: 0.6, from: "start" },
             duration: 0.9,
             ease: "power3.out",
-          });
-        } else {
-          gsap.from(heroTextRef.current, {
-            scrollTrigger: {
-              trigger: heroTextRef.current,
-              start: "top 85%",
-            },
-            opacity: 0,
-            y: 30,
-            duration: 0.8,
-            ease: "power2.out",
+            force3D: true,
           });
         }
-      }
 
-      // --- TEXT BLOCK ANIMATIONS ---
-      textBlocksRef.current.forEach((block) => {
-        if (!block) return;
-
-        if (isMobile) {
-          gsap.from(block, {
-            scrollTrigger: {
-              trigger: block,
-              start: "top 85%",
-            },
-            opacity: 0,
-            y: 30,
-            duration: 0.8,
-            ease: "power2.out",
-          });
-        } else {
+        // --- TEXT BLOCKS (Desktop) ---
+        textBlocksRef.current.forEach((block) => {
+          if (!block) return;
           const paragraphs = block.querySelectorAll<HTMLParagraphElement>("p");
           paragraphs.forEach((p) => {
             const split = new SplitText(p, {
@@ -135,73 +96,50 @@ const AboutSection = () => {
               stagger: { amount: 0.5, from: "start" },
               duration: 0.8,
               ease: "power3.out",
+              force3D: true,
             });
           });
-        }
-      });
-
-      // --- IMAGE REVEAL ---
-      if (imageRef.current) {
-        gsap.from(imageRef.current, {
-          scrollTrigger: {
-            trigger: imageRef.current,
-            start: "top 80%",
-            end: "top 30%",
-            scrub: isMobile ? true : 2.5,
-          },
-          clipPath: "inset(0% 0% 100% 0%)",
-          ease: "none",
         });
-      }
 
-      // --- SKILLS LIST ANIMATION (Formerly animateList) ---
-      // Logic simplified as we only have one list now (awardsRef)
-      const skillsTargets = awardsRef.current.filter((r) => r);
-      if (skillsTargets.length > 0) {
-        if (isMobile) {
-          ScrollTrigger.batch(skillsTargets, {
-            start: "top 90%",
-            onEnter: (batch) =>
-              gsap.to(batch, {
-                opacity: 1,
-                y: 0,
-                stagger: 0.1,
-                overwrite: true,
-              }),
-          });
-          gsap.set(skillsTargets, { opacity: 0, y: 30 });
-        } else {
-          skillsTargets.forEach((item, index) => {
-            gsap.from(item, {
-              scrollTrigger: {
-                trigger: item,
-                start: "top 85%",
-                toggleActions: "play none none reverse",
-              },
-              opacity: 0,
-              y: 30,
-              duration: 0.6,
-              delay: index * 0.08,
-              ease: "power2.out",
-            });
+        // --- IMAGE REVEAL (Desktop - scrub) ---
+        if (imageRef.current) {
+          gsap.from(imageRef.current, {
+            scrollTrigger: {
+              trigger: imageRef.current,
+              start: "top 50%",
+              end: "top 30%",
+              scrub: 3.5,
+            },
+            clipPath: "inset(0% 0% 100% 0%)",
+            ease: "none",
+            force3D: true,
           });
         }
-      }
 
-      // --- CONTACT / RESUME LINKS ---
-      if (sectionRef.current) {
-        const contactLinks = sectionRef.current.querySelectorAll(
-          "[data-contact-link]"
-        );
-
-        if (isMobile) {
-          ScrollTrigger.batch(contactLinks, {
-            start: "top 90%",
-            onEnter: (batch) =>
-              gsap.to(batch, { opacity: 1, y: 0, stagger: 0.1 }),
+        // --- SKILLS (Desktop - individual) ---
+        const skillsTargets = awardsRef.current.filter((r) => r);
+        skillsTargets.forEach((item, index) => {
+          if (!item) return;
+          gsap.from(item, {
+            scrollTrigger: {
+              trigger: item,
+              start: "top 85%",
+              toggleActions: "play none none reverse",
+            },
+            opacity: 0,
+            y: 30,
+            duration: 0.6,
+            delay: index * 0.08,
+            ease: "power2.out",
+            force3D: true,
           });
-          gsap.set(contactLinks, { opacity: 0, y: 20 });
-        } else {
+        });
+
+        // --- CONTACT LINKS (Desktop) ---
+        if (sectionRef.current) {
+          const contactLinks = sectionRef.current.querySelectorAll(
+            "[data-contact-link]"
+          );
           contactLinks.forEach((link, index) => {
             gsap.from(link, {
               scrollTrigger: {
@@ -214,79 +152,180 @@ const AboutSection = () => {
               duration: 0.5,
               delay: index * 0.1,
               ease: "power2.out",
+              force3D: true,
             });
           });
         }
-      }
+      });
 
-      // --- SECTION HEADERS ---
+      // Mobile animations (under 768px) - ULTRA LIGHTWEIGHT
+      mm.add("(max-width: 767px)", () => {
+        // Simple fade-in for heading (NO SplitText)
+        if (headingRef.current) {
+          gsap.from(headingRef.current, {
+            opacity: 0,
+            y: 30,
+            duration: 0.6,
+            ease: "power2.out",
+            force3D: true,
+          });
+        }
+
+        // Simple fade for hero text (NO SplitText)
+        if (heroTextRef.current) {
+          gsap.from(heroTextRef.current, {
+            scrollTrigger: {
+              trigger: heroTextRef.current,
+              start: "top 85%",
+            },
+            opacity: 0,
+            y: 20,
+            duration: 0.6,
+            ease: "power2.out",
+            force3D: true,
+          });
+        }
+
+        // Batch text blocks for efficiency
+        const textBlocks = textBlocksRef.current.filter((b) => b);
+        if (textBlocks.length > 0) {
+          ScrollTrigger.batch(textBlocks, {
+            start: "top 90%",
+            onEnter: (batch) =>
+              gsap.to(batch, {
+                opacity: 1,
+                y: 0,
+                duration: 0.5,
+                stagger: 0.1,
+                ease: "power2.out",
+                force3D: true,
+                overwrite: true,
+              }),
+          });
+          gsap.set(textBlocks, { opacity: 0, y: 20 });
+        }
+
+        // Simple image reveal (scrub: true for smooth)
+        if (imageRef.current) {
+          gsap.from(imageRef.current, {
+            scrollTrigger: {
+              trigger: imageRef.current,
+              start: "top 85%",
+              end: "top 40%",
+              scrub: true, // Tied to scroll for smoothness
+            },
+            clipPath: "inset(0% 0% 100% 0%)",
+            ease: "none",
+            force3D: true,
+          });
+        }
+
+        // Batch skills for performance
+        const skillsTargets = awardsRef.current.filter((r) => r);
+        if (skillsTargets.length > 0) {
+          ScrollTrigger.batch(skillsTargets, {
+            start: "top 92%",
+            onEnter: (batch) =>
+              gsap.to(batch, {
+                opacity: 1,
+                y: 0,
+                stagger: 0.08,
+                duration: 0.5,
+                ease: "power2.out",
+                force3D: true,
+                overwrite: true,
+              }),
+          });
+          gsap.set(skillsTargets, { opacity: 0, y: 20 });
+        }
+
+        // Batch contact links
+        if (sectionRef.current) {
+          const contactLinks = Array.from(
+            sectionRef.current.querySelectorAll("[data-contact-link]")
+          );
+          if (contactLinks.length > 0) {
+            ScrollTrigger.batch(contactLinks, {
+              start: "top 92%",
+              onEnter: (batch) =>
+                gsap.to(batch, {
+                  opacity: 1,
+                  y: 0,
+                  stagger: 0.08,
+                  duration: 0.5,
+                  ease: "power2.out",
+                  force3D: true,
+                  overwrite: true,
+                }),
+            });
+            gsap.set(contactLinks, { opacity: 0, y: 15 });
+          }
+        }
+      });
+
+      // --- SECTION HEADERS (both mobile & desktop) ---
       if (sectionRef.current) {
         const sectionHeaders = sectionRef.current.querySelectorAll(
           "[data-section-header]"
         );
-        sectionHeaders.forEach((header) => {
-          gsap.from(header, {
-            scrollTrigger: {
-              trigger: header,
-              start: "top 85%",
-              toggleActions: "play none none reverse",
-            },
-            opacity: 0,
-            y: 30,
-            duration: 0.7,
-            ease: "power2.out",
-            force3D: true,
-          });
+
+        ScrollTrigger.batch(sectionHeaders, {
+          start: "top 88%",
+          onEnter: (batch) =>
+            gsap.to(batch, {
+              opacity: 1,
+              y: 0,
+              stagger: 0.1,
+              duration: 0.6,
+              ease: "power2.out",
+              force3D: true,
+              overwrite: true,
+            }),
         });
+        gsap.set(sectionHeaders, { opacity: 0, y: 25 });
       }
     }, sectionRef);
 
-    const handleResize = () => ScrollTrigger.refresh();
-    window.addEventListener("resize", handleResize);
-
     return () => {
       ctx.revert();
-      window.removeEventListener("resize", handleResize);
     };
   }, []);
 
-  // --- NEW: Dynamic Sticky Offset Logic ---
+  // Dynamic Sticky Offset Logic
   useEffect(() => {
     const updateStickyPosition = () => {
       if (!sectionRef.current) return;
-
       const viewportHeight = window.innerHeight;
       const sectionHeight = sectionRef.current.offsetHeight;
-
-      // Calculate the offset:
-      // If section is taller than screen, stick so the bottom is visible (negative top).
-      // If section is shorter, stick to the top (0).
       const topOffset = Math.min(0, viewportHeight - sectionHeight);
-
       sectionRef.current.style.top = `${topOffset}px`;
     };
 
-    // Run on mount and resize
     updateStickyPosition();
+
+    let resizeTimer: NodeJS.Timeout;
     const handleResize = () => {
-      updateStickyPosition();
-      ScrollTrigger.refresh(); // Ensure GSAP stays in sync
+      clearTimeout(resizeTimer);
+      resizeTimer = setTimeout(() => {
+        updateStickyPosition();
+        ScrollTrigger.refresh();
+      }, 150); // Debounce resize
     };
 
     window.addEventListener("resize", handleResize);
-    return () => window.removeEventListener("resize", handleResize);
+    return () => {
+      window.removeEventListener("resize", handleResize);
+      clearTimeout(resizeTimer);
+    };
   }, []);
 
   return (
     <div
       ref={sectionRef}
-      // CHANGE: 'relative' -> 'sticky'
-      // CHANGE: 'z-20' ensures it is below Contact (z-30)
-      // REMOVE: 'bottom-0' (we set 'top' via JS above)
       className="sticky z-20 min-h-screen bg-[#9f9a95] dark:bg-[#1d1d1d] text-foreground font-mono selection:bg-black selection:text-white overflow-hidden py-24 px-6 md:px-12 lg:px-20"
     >
       <style>
-        {`          
+        {`
           .char, .word, .line-wrapper {
             display: inline-block;
           }
@@ -318,6 +357,14 @@ const AboutSection = () => {
             transform: scaleX(1);
             transform-origin: left;
           }
+
+          /* GPU acceleration for smooth scrolling */
+          @media (max-width: 767px) {
+            * {
+              -webkit-font-smoothing: antialiased;
+              -moz-osx-font-smoothing: grayscale;
+            }
+          }
         `}
       </style>
 
@@ -327,6 +374,7 @@ const AboutSection = () => {
           <h1
             ref={headingRef}
             className="font-akira text-[16vw] md:text-[10rem] lg:text-[12rem] leading-[0.8] tracking-tighter uppercase cursor-default"
+            style={{ willChange: "transform, opacity" }}
           >
             About Me
           </h1>
@@ -337,9 +385,9 @@ const AboutSection = () => {
             <h2
               ref={heroTextRef}
               className="text-[7vw] md:text-[2.5rem] lg:text-[3.125rem] leading-[1.1] tracking-tight mb-8"
+              style={{ willChange: "transform, opacity" }}
             >
               <span className="block ml-[15%] md:ml-[20%]">Meghraj Jare.</span>
-              {/* Fixed typo: "md: block" -> "md:block" */}
               <br className="md:block" />
               I am a full-stack developer & AI/ML engineer
               <br />
@@ -369,6 +417,7 @@ const AboutSection = () => {
               ref={(el) => {
                 textBlocksRef.current[0] = el;
               }}
+              style={{ willChange: "transform, opacity" }}
             >
               <p className="text-sm md:text-base leading-relaxed">
                 My expertise lies in building full-stack applications with
@@ -388,10 +437,13 @@ const AboutSection = () => {
             <div
               ref={imageRef}
               className="relative w-full aspect-3/4 overflow-hidden rounded-4xl bg-gray-300"
+              style={{ willChange: "clip-path" }}
             >
               <img
                 src={prof.src}
                 alt="Developer workspace"
+                loading="lazy"
+                decoding="async"
                 className="w-full h-full object-cover grayscale brightness-95 contrast-110 transition-all duration-700 ease-in-out hover:scale-105 hover:contrast-100"
               />
             </div>
@@ -402,13 +454,15 @@ const AboutSection = () => {
         <div className="grid grid-cols-1 md:grid-cols-12 gap-6 md:gap-8 mb-48 md:mb-56 font-about">
           <div className="md:col-start-3 md:col-span-8 lg:col-start-4 lg:col-span-7">
             <h3 className="text-[7vw] md:text-[2rem] lg:text-[2.5rem] leading-[1.1] mb-10">
-              {/* Fixed typo: "ml:8%" -> "ml-[8%]" */}
               <span className="md:ml-[10%] ml-[8%]">Here's</span> a link to my
               résumé.
             </h3>
 
             <ul className="grid grid-cols-2 md:ml-[15%] md:flex md:flex-wrap gap-6 md:gap-12 text-lg md:text-xl lg:text-2xl mt-8 md:mt-12">
-              <li data-contact-link>
+              <li
+                data-contact-link
+                style={{ willChange: "transform, opacity" }}
+              >
                 <a
                   href="/Meghraj Jare.pdf"
                   target="_blank"
@@ -428,7 +482,6 @@ const AboutSection = () => {
             className="grid grid-cols-6 md:grid-cols-12 gap-4 md:gap-8 mb-12"
             data-section-header
           >
-            {/* FIX APPLIED HERE: Added lg:col-start-4 lg:col-span-7 to align with the skills grid below */}
             <h3 className="col-start-1 col-span-5 md:col-start-3 md:col-span-8 lg:col-start-4 lg:col-span-7 text-[7vw] md:text-[2rem] lg:text-[2.5rem] font-bold leading-tight">
               Skills &<br />
               Technologies
@@ -439,7 +492,6 @@ const AboutSection = () => {
             className="grid grid-cols-6 md:grid-cols-12 gap-4 md:gap-8"
             data-section-header
           >
-            {/* Subtext stays at col-3 creating the staggered effect if intended, or you can add lg:col-start-4 here too if needed */}
             <h5 className="col-start-1 col-span-15 md:col-start-3 md:col-span-24 mb-12 text-lg md:text-xl">
               <span className="ml-[5%] md:ml-[15%]">Here's</span> a brief
               overview of the technologies I am familiar with in the domains I
@@ -448,7 +500,6 @@ const AboutSection = () => {
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-12 gap-6 md:gap-8">
-            {/* This is the "Lower Text" referenced - it starts at col-4 on lg */}
             <div className="ml-[5%] md:col-start-3 md:col-span-8 lg:col-start-4 lg:col-span-7 grid grid-cols-2 md:grid-cols-3 gap-x-6 gap-y-12 md:gap-x-8 md:gap-y-16">
               {[
                 {
@@ -482,6 +533,7 @@ const AboutSection = () => {
                     if (awardsRef.current) awardsRef.current[index] = el;
                   }}
                   className="text-base md:text-lg lg:text-xl"
+                  style={{ willChange: "transform, opacity" }}
                 >
                   <div className="text-sm md:text-base opacity-60 mb-2">
                     {item.category}
@@ -495,21 +547,21 @@ const AboutSection = () => {
 
         <div className="mb-24 md:mb-40 font-about mt-60 md:mt-80">
           <div className="grid grid-cols-1 md:grid-cols-12 gap-6 md:gap-8">
-            {/* Section 2: This remains as it was in your original code (starts at col-4 on lg) */}
             <div className="md:col-start-3 md:col-span-8 lg:col-start-4 lg:col-span-7">
               <h3
                 className="text-[7vw] font-bold md:text-[2rem] lg:text-[2.5rem] leading-[1.1] mb-6"
                 data-section-header
               >
-                Want to see  <br />
-               <p className="opacity-50">what I've been up to.?</p>
+                Want to see <br />
+                <p className="opacity-50">what I've been up to.?</p>
               </h3>
 
               <p
                 className="text-sm md:text-base leading-relaxed opacity-80 max-w-xl mb-12"
                 data-section-header
               >
-                I believe in learning by doing. The links attached below cover my journey over the past few years.
+                I believe in learning by doing. The links attached below cover
+                my journey over the past few years.
               </p>
 
               <div className="flex flex-col md:flex-row gap-8 md:gap-12 md:items-center">
@@ -517,6 +569,7 @@ const AboutSection = () => {
                   href="/projects"
                   className="underline-link text-lg md:text-xl font-medium w-fit"
                   data-contact-link
+                  style={{ willChange: "transform, opacity" }}
                 >
                   Projects ↗
                 </a>
@@ -524,6 +577,7 @@ const AboutSection = () => {
                   href="/awards"
                   className="underline-link text-lg md:text-xl font-medium w-fit"
                   data-contact-link
+                  style={{ willChange: "transform, opacity" }}
                 >
                   Awards and Recognition ↗
                 </a>
@@ -531,6 +585,7 @@ const AboutSection = () => {
                   href="/blogs"
                   className="underline-link text-lg md:text-xl font-medium w-fit"
                   data-contact-link
+                  style={{ willChange: "transform, opacity" }}
                 >
                   Blogs ↗
                 </a>
