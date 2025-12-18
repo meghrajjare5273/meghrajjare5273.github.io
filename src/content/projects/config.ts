@@ -1,13 +1,15 @@
 import { defineCollection, z } from "astro:content";
 
-export const projectsCollection = defineCollection({
+const projectsCollection = defineCollection({
   type: "content",
   schema: z.object({
     title: z.string(),
     description: z.string(),
-    industry: z.string(),
-    year: z.string(),
-    services: z.string(),
+    metadata: z.object({
+      industry: z.string(),
+      year: z.string(),
+      services: z.string(), // Consider z.array(z.string()) if you want a list
+    }),
     background: z.object({
       heading: z.string(),
       text: z.string(),
@@ -17,16 +19,18 @@ export const projectsCollection = defineCollection({
       detail: z.string(),
     }),
     hero: z.object({
-      title: z.array(z.string()),
+      heading: z.array(z.string()), // Renamed from title to distinguish from page title
       tag: z.string().optional(),
       image: z.string(),
       imageAlt: z.string().optional(),
     }),
-    video: z.object({
+    showcase: z.object({
+      // Renamed from video
       image: z.string(),
       imageAlt: z.string(),
     }),
-    gravityImages: z.object({
+    gallery: z.object({
+      // Renamed from gravityImages
       left: z.object({
         image: z.string(),
         caption: z.string(),
@@ -45,25 +49,27 @@ export const projectsCollection = defineCollection({
       teamImage: z.string(),
     }),
     stats: z.object({
-      resultTitle: z.string(),
-      resultDescription: z.string(),
+      heading: z.string(), // Renamed from resultTitle
+      description: z.string(), // Renamed from resultDescription
       items: z.array(
         z.object({
-          number: z.number(),
+          value: z.number(), // Renamed from number
           suffix: z.string().optional(),
-          description: z.string(),
+          label: z.string(), // Renamed from description
         })
       ),
     }),
-    footer: z.object({
+    testimonial: z.object({
+      // Renamed from footer
       quote: z.string(),
-      avatar: z.object({
+      author: z.object({
+        // Renamed from avatar
         image: z.string(),
         name: z.string(),
-        title: z.string(),
+        role: z.string(), // Renamed from title
       }),
     }),
   }),
 });
 
-// export default collections;
+export default projectsCollection;

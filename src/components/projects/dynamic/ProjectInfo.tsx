@@ -1,26 +1,24 @@
-"use client";
-
 import React, { useRef } from "react";
 import { gsap } from "gsap";
 import { useGSAP } from "@gsap/react";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
 
-interface ProjectInfoGridProps {
+interface ProjectInfoProps {
   industry: string;
   year: string;
   services: string;
 }
 
-export const ProjectInfoGrid = ({
+export const ProjectInfo: React.FC<ProjectInfoProps> = ({
   industry,
   year,
   services,
-}: ProjectInfoGridProps) => {
+}) => {
   const containerRef = useRef<HTMLDivElement>(null);
 
   useGSAP(
     () => {
-      const gridColumns = gsap.utils.toArray(".info-col");
-      gsap.from(gridColumns, {
+      gsap.from(".info-col", {
         y: -30,
         opacity: 0,
         stagger: 0.1,

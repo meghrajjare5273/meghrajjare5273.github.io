@@ -1,24 +1,20 @@
+import React, { useRef } from "react";
+import { gsap } from "gsap";
 import { useGSAP } from "@gsap/react";
-import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
-import { useRef } from "react";
 
+// Ensure ScrollTrigger is registered if not done globally
+gsap.registerPlugin(ScrollTrigger);
 
-gsap.registerPlugin(ScrollTrigger)
-
-interface BackgroundTextProps {
+interface ProjectBackgroundProps {
   heading: string;
-  paragraph: string;
-  headingClassName?: string;
-  paragraphClassName?: string;
+  text: string;
 }
 
-export const BackgroundText = ({
+export const ProjectBackground: React.FC<ProjectBackgroundProps> = ({
   heading,
-  paragraph,
-  headingClassName = "",
-  paragraphClassName = "",
-}: BackgroundTextProps) => {
+  text,
+}) => {
   const containerRef = useRef<HTMLElement>(null);
 
   useGSAP(
@@ -49,15 +45,11 @@ export const BackgroundText = ({
       ref={containerRef}
       className="w-full max-w-[1920px] mx-auto px-6 md:px-12 grid grid-cols-1 md:grid-cols-12 gap-4"
     >
-      <h3
-        className={`bg-heading text-[24px] leading-[130%] md:text-[35px] font-light dark:text-[#eceae8] text-[#101010] col-span-full md:col-span-4 xl:col-span-6 ${headingClassName}`}
-      >
+      <h3 className="bg-heading text-[24px] leading-[130%] md:text-[35px] font-light dark:text-[#eceae8] text-[#101010] col-span-full md:col-span-4 xl:col-span-6">
         {heading}
       </h3>
-      <p
-        className={`bg-para text-[17px] leading-[150%] md:text-[20px] font-normal dark:text-[#eceae8] text-[#101010] col-span-full md:col-span-8 xl:col-span-6 ${paragraphClassName}`}
-      >
-        {paragraph}
+      <p className="bg-para text-[17px] leading-[150%] md:text-[20px] font-normal dark:text-[#eceae8] text-[#101010] col-span-full md:col-span-8 xl:col-span-6">
+        {text}
       </p>
     </section>
   );

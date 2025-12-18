@@ -1,25 +1,17 @@
+import React, { useRef } from "react";
+import { gsap } from "gsap";
 import { useGSAP } from "@gsap/react";
-import gsap from "gsap";
-import {ScrollTrigger} from "gsap/ScrollTrigger";
-import { useRef } from "react";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
 
-
-gsap.registerPlugin(ScrollTrigger)
-interface VideoShowcaseProps {
-  videoImage: string;
-  imageAlt?: string;
-  containerClassName?: string;
-  videoClassName?: string;
-  onPlayClick?: () => void;
+interface ProjectShowcaseProps {
+  image: string;
+  alt: string;
 }
 
-export const VideoShowcase = ({
-  videoImage,
-  imageAlt = "Video showcase",
-  containerClassName = "",
-  videoClassName = "",
-  onPlayClick,
-}: VideoShowcaseProps) => {
+export const ProjectShowcase: React.FC<ProjectShowcaseProps> = ({
+  image,
+  alt,
+}) => {
   const containerRef = useRef<HTMLElement>(null);
 
   useGSAP(
@@ -59,16 +51,13 @@ export const VideoShowcase = ({
   return (
     <section
       ref={containerRef}
-      className={`w-full max-w-[1920px] mx-auto px-6 md:px-12 ${containerClassName}`}
+      className="w-full max-w-[1920px] mx-auto px-6 md:px-12"
     >
-      <div
-        className={`video-container relative w-full xl:w-10/12 xl:mx-auto rounded-2xl overflow-hidden aspect-video bg-gray-900 group cursor-pointer ${videoClassName}`}
-        onClick={onPlayClick}
-      >
+      <div className="video-container relative w-full xl:w-10/12 xl:mx-auto rounded-2xl overflow-hidden aspect-video bg-gray-900 group cursor-pointer">
         <img
-          src={videoImage}
+          src={image}
           className="video-img w-full h-full object-cover opacity-80 group-hover:opacity-60 transition-opacity duration-500"
-          alt={imageAlt}
+          alt={alt}
         />
         <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2">
           <button className="play-btn flex items-center justify-center w-[72px] h-[72px] rounded-full bg-white/10 border border-white/20 backdrop-blur-md transition-transform duration-300 hover:scale-110">

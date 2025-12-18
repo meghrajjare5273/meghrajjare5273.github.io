@@ -1,32 +1,23 @@
+import React, { useRef } from "react";
+import { gsap } from "gsap";
 import { useGSAP } from "@gsap/react";
-import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
-import { useRef } from "react";
 
-gsap.registerPlugin(ScrollTrigger)
-
-interface FooterCTAProps {
+interface ProjectFooterProps {
   quote: string;
-  avatar: {
+  author: {
     image: string;
     name: string;
-    title: string;
+    role: string;
   };
-  cta: {
-    heading: string;
-    description: string;
-    buttonText: string;
-    buttonLink: string;
-  };
-  containerClassName?: string;
+  ctaLink?: string;
 }
 
-export const FooterCTA = ({
+export const ProjectFooter: React.FC<ProjectFooterProps> = ({
   quote,
-  avatar,
-  cta,
-  containerClassName = "",
-}: FooterCTAProps) => {
+  author,
+  ctaLink = "#",
+}) => {
   const containerRef = useRef<HTMLElement>(null);
 
   useGSAP(
@@ -55,40 +46,44 @@ export const FooterCTA = ({
   return (
     <section
       ref={containerRef}
-      className={`w-full max-w-[1920px] mx-auto px-6 md:px-12 py-16 border-t border-white/10 mt-12 ${containerClassName}`}
+      className="w-full max-w-[1920px] mx-auto px-6 md:px-12 py-16 border-t border-white/10 mt-12"
     >
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-12">
         <div className="lg:col-span-5">
           <div className="footer-avatar flex items-center gap-4 mb-6">
             <div className="w-12 h-12 rounded-full bg-gray-700 overflow-hidden">
-              <img src={avatar.image} alt={avatar.name} />
+              <img
+                src={author.image}
+                alt={author.name}
+                className="w-full h-full object-cover"
+              />
             </div>
             <div>
               <p className="dark:text-[#eceae8] text-[#101010] text-lg">
-                {avatar.name}
+                {author.name}
               </p>
               <p className="dark:text-[#eceae8] text-[#101010] text-sm">
-                {avatar.title}
+                {author.role}
               </p>
             </div>
           </div>
           <p className="footer-quote text-[24px] md:text-[35px] font-light dark:text-[#eceae8] text-[#101010] italic leading-[130%]">
-            "{quote}"
+            “{quote}”
           </p>
         </div>
         <div className="hidden lg:block lg:col-span-1 border-l border-white/10 h-full mx-auto"></div>
         <div className="lg:col-span-6 flex flex-col justify-center gap-6">
           <h3 className="text-[20px] font-medium dark:text-[#eceae8] text-[#101010]">
-            {cta.heading}
+            Partner with us
           </h3>
           <p className="text-[18px] dark:text-[#eceae8] text-[#101010]">
-            {cta.description}
+            We can help you build your product from the ground up.
           </p>
           <a
-            href={cta.buttonLink}
+            href={ctaLink}
             className="w-fit inline-flex items-center gap-2 px-6 py-3 rounded-full border border-white/20 dark:text-[#eceae8] text-[#101010] hover:bg-white/10 transition-colors"
           >
-            {cta.buttonText}
+            Let's get started
             <svg
               width="20"
               height="20"
