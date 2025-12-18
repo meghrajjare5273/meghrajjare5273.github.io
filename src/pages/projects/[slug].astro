@@ -1,27 +1,26 @@
 ---
-import { getCollection } from 'astro:content';
-import type { CollectionEntry } from 'astro:content';
-import ProjectLayout from '../../layouts/ProjectLayout.astro';
+import { getCollection } from "astro:content";
+import ProjectLayout from "../../layouts/ProjectLayout.astro";
+import Layout from "@/layouts/Layout.astro";
+// import Navbar from '@/components/landing/Navbar';
 
 export async function getStaticPaths() {
-  const projects = await getCollection('projects');
-  return projects.map(project => ({
-    params: { slug: project.id }, // Use project.id instead of project.slug
+  const projects = await getCollection("projects");
+
+  return projects.map((project) => ({
+    // CHANGE: Use project.slug for clean URLs (e.g., /projects/amigo)
+    params: { slug: project.slug },
     props: { project },
   }));
 }
 
-type Props = {
-  project: CollectionEntry<'projects'>;
-};
-
 const { project } = Astro.props;
 const { Content } = await project.render();
-
-// Access frontmatter data directly from project.data
 const data = project.data;
 ---
 
 <ProjectLayout data={data}>
-  <Content />
+  <Layout>
+    <Content />
+  </Layout>
 </ProjectLayout>
