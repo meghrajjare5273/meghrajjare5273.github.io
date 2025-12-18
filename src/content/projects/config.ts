@@ -1,18 +1,73 @@
-import { z, defineCollection } from 'astro:content';
+import { defineCollection, z } from "astro:content";
 
 const projectsCollection = defineCollection({
-  type: 'content',
+  type: "content",
   schema: z.object({
     title: z.string(),
-    summary: z.string(),
-    date: z.date(),
-    coverImage: z.string(),
-    tags: z.array(z.string()),
-    featured: z.boolean().default(false),
-    // Add any other fields your projects use
+    description: z.string(),
+    industry: z.string(),
+    year: z.string(),
+    services: z.string(),
+    background: z.object({
+      heading: z.string(),
+      text: z.string(),
+    }),
+    challenge: z.object({
+      objective: z.string(),
+      detail: z.string(),
+    }),
+    hero: z.object({
+      title: z.array(z.string()),
+      tag: z.string().optional(),
+      image: z.string(),
+      imageAlt: z.string().optional(),
+    }),
+    video: z.object({
+      image: z.string(),
+      imageAlt: z.string(),
+    }),
+    gravityImages: z.object({
+      left: z.object({
+        image: z.string(),
+        caption: z.string(),
+      }),
+      right: z.object({
+        image: z.string(),
+        quote: z.string(),
+      }),
+    }),
+    techStack: z.object({
+      heading: z.string(),
+      description: z.string(),
+      stack: z.array(z.string()),
+      team: z.array(z.string()),
+      roles: z.array(z.string()),
+      teamImage: z.string(),
+    }),
+    stats: z.object({
+      resultTitle: z.string(),
+      resultDescription: z.string(),
+      items: z.array(
+        z.object({
+          number: z.number(),
+          suffix: z.string().optional(),
+          description: z.string(),
+        })
+      ),
+    }),
+    footer: z.object({
+      quote: z.string(),
+      avatar: z.object({
+        image: z.string(),
+        name: z.string(),
+        title: z.string(),
+      }),
+    }),
   }),
 });
 
 export const collections = {
-  'projects': projectsCollection,
+  projects: projectsCollection,
 };
+
+// export default collections;

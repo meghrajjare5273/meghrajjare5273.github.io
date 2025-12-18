@@ -3,6 +3,7 @@ import { ArrowDown } from "lucide-react";
 import gsap from "gsap";
 import { useGSAP } from "@gsap/react";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
+import Lenis from "lenis";
 import Navbar from "@/components/landing/Navbar";
 import Macbook from "@/components/ui/macbook";
 import IPhoneMockup from "@/components/ui/iphone";
@@ -11,12 +12,43 @@ import StatusCard from "@/components/ui/status-card";
 
 gsap.registerPlugin(ScrollTrigger);
 
+// 1. Configure ScrollTrigger to ignore address bar resizes
+ScrollTrigger.config({ ignoreMobileResize: true });
+
 export function HeroSection() {
   const trackRef = useRef<HTMLDivElement>(null);
   const contentRef = useRef<HTMLDivElement>(null);
   const macbookRef = useRef<HTMLDivElement>(null);
   const iphoneRef = useRef<HTMLDivElement>(null);
   const [canAnimate, setCanAnimate] = useState(false);
+  const [lenis, setLenis] = useState<Lenis | null>(null);
+
+  // 2. Custom hook logic to lock height
+  const [mobileHeight, setMobileHeight] = useState("100vh");
+
+  useEffect(() => {
+    // Function to set height based on innerHeight (visual viewport)
+    const setHeight = () => {
+      setMobileHeight(`${window.innerHeight}px`);
+    };
+
+    // Set initial height
+    setHeight();
+
+    // Only update height if WIDTH changes (orientation change), not height (address bar)
+    let lastWidth = window.innerWidth;
+    const handleResize = () => {
+      if (window.innerWidth !== lastWidth) {
+        lastWidth = window.innerWidth;
+        setHeight();
+        // Force ScrollTrigger to refresh positions on orientation change
+        ScrollTrigger.refresh();
+      }
+    };
+
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
 
   useEffect(() => {
     const handleIntroComplete = () => setCanAnimate(true);
@@ -25,21 +57,40 @@ export function HeroSection() {
       window.removeEventListener("page-intro-complete", handleIntroComplete);
   }, []);
 
+  useEffect(() => {
+    const lenisInstance = new Lenis({
+      lerp: 0.08,
+      wheelMultiplier: 1.2,
+      touchMultiplier: 1.2,
+    });
+
+    setLenis(lenisInstance);
+
+    function update(time: number) {
+      lenisInstance.raf(time * 1000);
+    }
+
+    gsap.ticker.add(update);
+    gsap.ticker.lagSmoothing(0);
+
+    return () => {
+      gsap.ticker.remove(update);
+      lenisInstance.destroy();
+    };
+  }, []);
+
   useGSAP(
     () => {
-      if (!canAnimate || !trackRef.current || !contentRef.current) return;
+      if (!canAnimate || !trackRef.current || !contentRef.current || !lenis)
+        return;
 
       const q = gsap.utils.selector(contentRef);
       const mm = gsap.matchMedia();
-
-      ScrollTrigger.normalizeScroll(true);
-      ScrollTrigger.config({ ignoreMobileResize: true });
 
       // --- SHARED INITIAL STATES ---
       gsap.set(".animate-text-reveal", { y: "110%", rotateX: -20, opacity: 0 });
       gsap.set(".animate-fade-in", { opacity: 0, y: 30 });
 
-      // Force hardware acceleration on moving parts
       gsap.set([macbookRef.current, iphoneRef.current], {
         force3D: true,
         backfaceVisibility: "hidden",
@@ -69,7 +120,7 @@ export function HeroSection() {
           "-=1.2"
         );
 
-      // --- 1. DESKTOP ANIMATION (>768px) ---
+      // --- DESKTOP ANIMATION ---
       mm.add("(min-width: 768px)", () => {
         gsap.set(macbookRef.current, { y: "20vh", scale: 0.8 });
         gsap.set(q(".macbook-screen-close"), {
@@ -110,7 +161,7 @@ export function HeroSection() {
           macbookRef.current,
           {
             y: "-15vh",
-            scale: 1.25, // Reduced slightly from 1.3 for better fit
+            scale: 1.25,
             duration: 0.3,
             ease: "power1.inOut",
           },
@@ -150,18 +201,16 @@ export function HeroSection() {
         );
       });
 
-      // --- 2. MOBILE ANIMATION (<767px) ---
+      // --- MOBILE ANIMATION ---
       mm.add("(max-width: 767px)", () => {
-        // Init: Start smaller (0.75)
         gsap.set(iphoneRef.current, { y: "20vh", scale: 0.75, opacity: 0 });
         gsap.set(q(".iphone-content-mask"), { opacity: 0 });
 
-        // Entrance: Land at 0.85 (Smaller resting size)
         entranceTl.to(
           iphoneRef.current,
           {
             y: "5vh",
-            scale: 0.85, // REDUCED: Was 1, now 0.85
+            scale: 0.85,
             opacity: 1,
             duration: 1.5,
             ease: "expo.out",
@@ -189,12 +238,11 @@ export function HeroSection() {
           0
         );
 
-        // Scroll: Zoom to 1.1 (Smaller zoomed size)
         scrollTl.to(
           iphoneRef.current,
           {
             y: "5dvh",
-            scale: 1.1, // REDUCED: Was 1.35, now 1.1 to fit screen edges
+            scale: 1.1,
             duration: 0.5,
             ease: "power1.inOut",
           },
@@ -214,24 +262,24 @@ export function HeroSection() {
 
       ScrollTrigger.refresh();
       return () => {
-        ScrollTrigger.normalizeScroll(false);
         mm.revert();
       };
     },
-    { scope: contentRef, dependencies: [canAnimate] }
+    { scope: contentRef, dependencies: [canAnimate, lenis] }
   );
 
   return (
     <div className="relative w-full font-bromo bg-[#eceae8] dark:bg-[#0e0e0e]">
+      {/* 3. Apply the locked mobileHeight to the container */}
       <div
         ref={contentRef}
-        className="fixed top-0 left-0 h-svh w-full  text-neutral-900 dark:text-white overflow-hidden z-0 flex flex-col"
+        style={{ height: mobileHeight }}
+        className="fixed top-0 left-0 w-full text-neutral-900 dark:text-white overflow-hidden z-0 flex flex-col"
       >
         <GridBackground />
         <Navbar />
 
         <div className="absolute inset-0 flex items-end justify-center z-0 pb-[15vh] md:pb-[10vh]">
-          {/* Mobile Component (iPhone) - Initial wrapper class tuned */}
           <div className="block md:hidden transform-gpu origin-bottom">
             <IPhoneMockup ref={iphoneRef} className="will-change-transform">
               <div className="iphone-content-mask w-full h-full">
@@ -240,7 +288,6 @@ export function HeroSection() {
             </IPhoneMockup>
           </div>
 
-          {/* Desktop Component (Macbook) */}
           <div className="hidden md:block transform-gpu scale-[0.85] lg:scale-[0.6] xl:scale-80 origin-bottom transition-transform duration-500 ease-out">
             <Macbook
               ref={macbookRef}
@@ -251,7 +298,7 @@ export function HeroSection() {
           </div>
         </div>
 
-        <div className="relative z-10 flex-1 flex flex-col justify-between pt-28 md:pt-[25vh] pb-8 md:pb-24 px-6 md:px-12 max-w-[1920px] mx-auto w-full min-h-svh pointer-events-none">
+        <div className="relative z-10 flex-1 flex flex-col justify-between pt-28 md:pt-[25vh] pb-8 md:pb-24 px-6 md:px-12 max-w-[1920px] mx-auto w-full min-h-full pointer-events-none">
           <div className="hero-text-container w-full">
             <h1 className="group font-space font-medium text-[10vw] md:text-[6vw] leading-[0.9] tracking-tight uppercase cursor-default w-fit pointer-events-auto">
               <div className="overflow-hidden perspective-[1000px]">
