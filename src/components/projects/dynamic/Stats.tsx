@@ -1,37 +1,34 @@
+import React, { useRef } from "react";
+import { gsap } from "gsap";
 import { useGSAP } from "@gsap/react";
-import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
-import { useRef } from "react";
-
-gsap.registerPlugin(ScrollTrigger)
 
 interface StatItem {
-  number: number;
+  value: number;
   suffix?: string;
-  description: string;
+  label: string;
 }
 
-interface StatsSectionProps {
-    resultTitle: string;
-    resultDescription: string;
-    items: StatItem[];
-    containerClassName?: string;
-  };
+interface ProjectStatsProps {
+  heading: string;
+  description: string;
+  items: StatItem[];
+}
 
-export const StatsSection = ({
-  resultTitle,
-  resultDescription,
-    items,
-  containerClassName = "",
-}: StatsSectionProps) => {
+export const ProjectStats: React.FC<ProjectStatsProps> = ({
+  heading,
+  description,
+  items,
+}) => {
   const containerRef = useRef<HTMLElement>(null);
 
   useGSAP(
     () => {
       // Number Counters
-      const statNumbers = gsap.utils.toArray(".stat-number");
-      statNumbers.forEach((stat: any) => {
-        const endValue = parseInt(stat.getAttribute("data-value"), 10);
+      const stats = gsap.utils.toArray(".stat-number");
+      stats.forEach((stat: any) => {
+        // We use the data-value attribute to drive the animation
+        const endValue = parseInt(stat.getAttribute("data-value") || "0", 10);
         const obj = { val: 0 };
 
         ScrollTrigger.create({
@@ -68,14 +65,14 @@ export const StatsSection = ({
   return (
     <section
       ref={containerRef}
-      className={`w-full max-w-[1920px] mx-auto px-6 md:px-12 grid grid-cols-1 lg:grid-cols-12 gap-8 pt-12 ${containerClassName}`}
+      className="w-full max-w-[1920px] mx-auto px-6 md:px-12 grid grid-cols-1 lg:grid-cols-12 gap-8 pt-12"
     >
       <div className="col-span-full lg:col-span-4 flex flex-col gap-4">
         <h2 className="text-[36px] md:text-[60px] font-light dark:text-[#eceae8] text-[#101010] leading-[110%]">
-          {resultTitle}
+          {heading}
         </h2>
         <p className="text-[17px] md:text-[20px] dark:text-[#eceae8] text-[#101010] leading-[150%]">
-          {resultDescription}
+          {description}
         </p>
       </div>
 
@@ -87,7 +84,10 @@ export const StatsSection = ({
           >
             <div className="md:col-span-4 lg:col-span-3 flex items-end">
               <span className="flex text-[36px] leading-[120%] md:text-[80px] md:leading-[110%] font-light dark:text-[#eceae8] text-[#101010]">
-                <span className="stat-number" data-value={item.number}>
+                {/* We set data-value so GSAP can read the target number easily.
+                   Initial innerText is 0 so the animation starts from 0.
+                */}
+                <span className="stat-number" data-value={item.value}>
                   0
                 </span>
                 {item.suffix && (
@@ -99,7 +99,7 @@ export const StatsSection = ({
             </div>
             <div className="md:col-span-8 lg:col-span-9 flex items-center">
               <p className="stat-desc text-[17px] md:text-[20px] dark:text-[#eceae8] text-[#101010]">
-                {item.description}
+                {item.label}
               </p>
             </div>
           </div>

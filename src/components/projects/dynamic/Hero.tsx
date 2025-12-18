@@ -1,26 +1,28 @@
-"use client";
-
-import { useRef } from "react";
+import React, { useRef } from "react";
 import { gsap } from "gsap";
 import { useGSAP } from "@gsap/react";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
 
-interface HeroSectionProps {
-  title: string[];
+gsap.registerPlugin(ScrollTrigger);
+
+interface ProjectHeroProps {
+  titleLines: string[];
   tag?: string;
   image: string;
   imageAlt?: string;
 }
 
-export const HeroSection = ({
-  title,
+export const ProjectHero: React.FC<ProjectHeroProps> = ({
+  titleLines,
   tag,
   image,
-  imageAlt = "hero",
-}: HeroSectionProps) => {
-  const containerRef = useRef<HTMLDivElement>(null);
+  imageAlt = "Project Hero",
+}) => {
+  const containerRef = useRef<HTMLElement>(null);
 
   useGSAP(
     () => {
+      // Text Reveal
       gsap.from(".hero-line-inner", {
         yPercent: 100,
         duration: 1.4,
@@ -29,6 +31,7 @@ export const HeroSection = ({
         delay: 0.2,
       });
 
+      // Tag Reveal
       if (tag) {
         gsap.from(".hero-tag", {
           opacity: 0,
@@ -39,6 +42,7 @@ export const HeroSection = ({
         });
       }
 
+      // Image Zoom
       gsap.fromTo(
         ".hero-img-anim",
         { scale: 1.15 },
@@ -52,13 +56,11 @@ export const HeroSection = ({
     <section ref={containerRef} className="relative w-full">
       <div className="max-w-[1920px] mx-auto px-6 md:px-12 flex flex-col md:flex-row pb-8 md:pb-16 items-start md:items-center md:justify-between">
         <h1 className="text-[34px] sm:text-[42px] md:text-[48px] lg:text-[60px] leading-[110%] font-light dark:text-[#eceae8] text-[#101010] w-full max-w-4xl">
-          <div className="overflow-hidden">
-            {title.map((line, i) => (
-              <div key={i} className="hero-line-inner">
-                {line}
-              </div>
-            ))}
-          </div>
+          {titleLines.map((line, idx) => (
+            <div key={idx} className="overflow-hidden">
+              <div className="hero-line-inner">{line}</div>
+            </div>
+          ))}
         </h1>
         {tag && (
           <div className="hero-tag mt-8 md:mt-0">
@@ -68,7 +70,7 @@ export const HeroSection = ({
           </div>
         )}
       </div>
-      <div className="w-full aspect-375/348 md:aspect-[1440/800] overflow-hidden">
+      <div className="w-full aspect-375/348 md:aspect-1440/800 overflow-hidden">
         <img
           alt={imageAlt}
           className="hero-img-anim w-full h-full object-cover"

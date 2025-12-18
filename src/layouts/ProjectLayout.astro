@@ -1,53 +1,49 @@
 ---
 import "@/styles/global.css";
-import { HeroSection } from "@/components/projects/dynamic/Hero";
-import { ProjectInfoGrid } from "@/components/projects/dynamic/ProjectInfo";
 import Navbar from "@/components/landing/Navbar";
-import { BackgroundText } from "@/components/projects/dynamic/BackgroundText";
-import { VideoShowcase } from "@/components/projects/dynamic/VideoShowcase";
-import { StickyChallenge } from "@/components/projects/dynamic/StickyChallange";
-import { GravityImages } from "@/components/projects/dynamic/GravityImages";
-import { TechStack } from "@/components/projects/dynamic/TechStack";
-import { StatsSection } from "@/components/projects/dynamic/Stats";
-import { FooterCTA } from "@/components/projects/dynamic/CTA";
 import Footer from "@/components/landing/Footer";
 
-// src/layouts/ProjectLayout.astro
+// Import restructured components
+import { ProjectHero } from "@/components/projects/dynamic/Hero";
+import { ProjectInfo } from "@/components/projects/dynamic/ProjectInfo";
+import { ProjectBackground } from "@/components/projects/dynamic/Background"; // Assume created
+import { ProjectShowcase } from "@/components/projects/dynamic/Showcase";   // Assume created
+import { ProjectChallenge } from "@/components/projects/dynamic/Challenge"; // Assume created
+import { ProjectGallery } from "@/components/projects/dynamic/Gallery";
+import { ProjectTechStack } from "@/components/projects/dynamic/TechStack"; // Assume created
+import { ProjectStats } from "@/components/projects/dynamic/Stats";         // Assume created
+import { ProjectFooter } from "@/components/projects/dynamic/CTA";       // Assume created
 
-// Define Props interface for direct data passing
+// Define Props based on the NEW Schema
 interface Props {
   data: {
     title: string;
-    industry: string;
-    year: string;
-    services: string;
+    metadata: {
+      industry: string;
+      year: string;
+      services: string;
+    };
+    hero: {
+      heading: string[];
+      tag?: string;
+      image: string;
+      imageAlt?: string;
+    };
     background: {
       heading: string;
       text: string;
+    };
+    showcase: {
+      image: string;
+      imageAlt: string;
     };
     challenge: {
       objective: string;
       detail: string;
     };
-    hero: {
-      title: string[];
-      tag?: string;
-      image: string;
-      imageAlt?: string;
-    };
-    video: {
-      image: string;
-      imageAlt: string;
-    };
-    gravityImages: {
-      left: {
-        image: string;
-        caption: string;
-      };
-      right: {
-        image: string;
-        quote: string;
-      };
+    gallery: {
+      left: { image: string; caption: string };
+      right: { image: string; quote: string };
     };
     techStack: {
       heading: string;
@@ -58,21 +54,13 @@ interface Props {
       teamImage: string;
     };
     stats: {
-      resultTitle: string;
-      resultDescription: string;
-      items: {
-        number: number;
-        suffix?: string;
-        description: string;
-      }[];
+      heading: string;
+      description: string;
+      items: { value: number; suffix?: string; label: string }[];
     };
-    footer: {
+    testimonial: {
       quote: string;
-      avatar: {
-        image: string;
-        name: string;
-        title: string;
-      };
+      author: { image: string; name: string; role: string };
     };
   };
 }
@@ -85,151 +73,76 @@ const { data } = Astro.props;
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <link rel="icon" type="image/svg+xml" href=`${data.title}.svg` />
-    <meta name="generator" content="{Astro.generator}" />
     <title>{data.title}</title>
-    <script is:inline transition:persist>
-      // Prevent FOUC (Flash of Unstyled Content)
-      (function () {
-        const theme =
-          localStorage.getItem("theme") ||
-          (window.matchMedia("(prefers-color-scheme: dark)").matches
-            ? "dark"
-            : "light");
-
-        if (theme === "dark") {
-          document.documentElement.classList.add("dark");
-        }
-      })();
-
-      // Reapply theme after view transitions
-      document.addEventListener("astro:after-swap", () => {
-        const theme =
-          localStorage.getItem("theme") ||
-          (window.matchMedia("(prefers-color-scheme: dark)").matches
-            ? "dark"
-            : "light");
-
-        if (theme === "dark") {
-          document.documentElement.classList.add("dark");
-        } else {
-          document.documentElement.classList.remove("dark");
-        }
-      });
-
-      let navigating = false;
-      document.addEventListener("astro:before-preparation", () => {
-        navigating = true;
-        document.body.classList.add("navigating");
-      });
-
-      document.addEventListener("astro:page-load", () => {
-        setTimeout(() => {
-          navigating = false;
-          document.body.classList.remove("navigating");
-        }, 100);
-      });
-
-      // // Reset scroll position on navigation
-      // if ("scrollRestoration" in window.history) {
-      //   window.history.scrollRestoration = "manual";
-      // }
-
-      // Listen for Astro navigation events
-      // document.addEventListener("astro:before-swap", () => {
-      //   window.scrollTo(0, 0);
-      // });
-
-      document.addEventListener("astro:after-swap", (event) => {
-        const detail = event.detail;
-        if (!detail || !detail.to) return;
-
-        const toPath = detail.to.pathname;
-
-        // Only scroll to top when navigating to /projects or /projects/*
-        if (toPath === "/projects" || toPath.startsWith("/projects/")) {
-          // Use requestAnimationFrame to ensure DOM is ready
-          requestAnimationFrame(() => {
-            window.scrollTo({ top: 0, left: 0, behavior: "instant" });
-            // Force a layout recalculation
-            document.body.offsetHeight;
-          });
-        }
-      });
-    </script>
-  </head>
+    </head>
   <body>
-    <main
-      class="w-full min-h-dvh pt-[120px] md:pt-[150px] flex flex-col gap-12 md:gap-20 bg-[#eceae8] dark:bg-[#0e0e0e] overflow-x-hidden selection:bg-orange-500/30"
-    >
-      <!-- <div class="overflow-hidden"> -->
+    <main class="w-full min-h-dvh pt-[120px] md:pt-[150px] flex flex-col gap-12 md:gap-20 bg-[#eceae8] dark:bg-[#0e0e0e] overflow-x-hidden">
       <Navbar client:load />
-      <HeroSection
-        title={data.hero.title}
+      
+      <ProjectHero
+        titleLines={data.hero.heading}
         tag={data.hero.tag}
         image={data.hero.image}
         imageAlt={data.hero.imageAlt}
         client:load
       />
-      <ProjectInfoGrid
-        industry={data.industry}
-        year={data.year}
-        services={data.services}
-        client:load
-      />
-      <BackgroundText
-        heading={data.background.heading}
-        paragraph={data.background.text}
+
+      <ProjectInfo
+        industry={data.metadata.industry}
+        year={data.metadata.year}
+        services={data.metadata.services}
         client:load
       />
 
-      <VideoShowcase
-        videoImage={data.video.image}
-        imageAlt={data.video.imageAlt}
+      <ProjectBackground
+        heading={data.background.heading}
+        text={data.background.text}
         client:load
       />
-      <StickyChallenge
+
+      <ProjectShowcase
+        image={data.showcase.image}
+        alt={data.showcase.imageAlt}
+        client:load
+      />
+
+      <ProjectChallenge
         objective={data.challenge.objective}
         detail={data.challenge.detail}
         client:load
       />
-      <GravityImages
-        leftImage={data.gravityImages.left.image}
-        leftCaption={data.gravityImages.left.caption}
-        rightImage={data.gravityImages.right.image}
-        quote={data.gravityImages.right.quote}
+
+      <ProjectGallery
+        left={data.gallery.left}
+        right={data.gallery.right}
         client:load
       />
-      <TechStack
-        title={data.techStack.heading}
+
+      <ProjectTechStack
+        heading={data.techStack.heading}
         description={data.techStack.description}
-        techStack={data.techStack.stack}
+        stack={data.techStack.stack}
         team={data.techStack.team}
         roles={data.techStack.roles}
-        image={data.techStack.teamImage}
+        teamImage={data.techStack.teamImage}
         client:load
       />
-      <StatsSection
-        resultTitle={data.stats.resultTitle}
-        resultDescription={data.stats.resultDescription}
+
+      <ProjectStats
+        heading={data.stats.heading}
+        description={data.stats.description}
         items={data.stats.items}
         client:load
       />
-      <FooterCTA
-        quote={data.footer.quote}
-        avatar={data.footer.avatar}
-        cta={{
-          heading: "Partner with us",
-          description:
-            "We can help you build your product from the ground up just like we did with amigo.",
-          buttonText: "Let's get started",
-          buttonLink: "#contact",
-        }}
+
+      <ProjectFooter
+        quote={data.testimonial.quote}
+        author={data.testimonial.author}
+        ctaLink="#contact"
         client:load
       />
+
       <Footer client:load />
-      <!-- </div> -->
-      <!-- <slot /> -->
     </main>
   </body>
 </html>
