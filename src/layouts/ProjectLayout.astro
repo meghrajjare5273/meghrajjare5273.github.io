@@ -1,9 +1,18 @@
 ---
-import { HeroSection } from '@/components/projects/dynamic/Hero';
-import { ProjectInfoGrid } from '@/components/projects/dynamic/ProjectInfo';
+import "@/styles/global.css";
+import { HeroSection } from "@/components/projects/dynamic/Hero";
+import { ProjectInfoGrid } from "@/components/projects/dynamic/ProjectInfo";
+import Navbar from "@/components/landing/Navbar";
+import { BackgroundText } from "@/components/projects/dynamic/BackgroundText";
+import { VideoShowcase } from "@/components/projects/dynamic/VideoShowcase";
+import { StickyChallenge } from "@/components/projects/dynamic/StickyChallange";
+import { GravityImages } from "@/components/projects/dynamic/GravityImages";
+import { TechStack } from "@/components/projects/dynamic/TechStack";
+import { StatsSection } from "@/components/projects/dynamic/Stats";
+import { FooterCTA } from "@/components/projects/dynamic/CTA";
+import Footer from "@/components/landing/Footer";
 
 // src/layouts/ProjectLayout.astro
-
 
 // Define Props interface for direct data passing
 interface Props {
@@ -71,51 +80,156 @@ interface Props {
 const { data } = Astro.props;
 ---
 
-<main class="w-full min-h-screen pt-[120px] md:pt-[150px] pb-[100px] flex flex-col gap-12 md:gap-20 bg-[#eceae8] dark:bg-[#0e0e0e] overflow-x-hidden selection:bg-orange-500/30">
-  <HeroSection
-    title={data.hero.title}
-    tag={data.hero.tag}
-    image={data.hero.image}
-    imageAlt={data.hero.imageAlt}
-  />
-  <ProjectInfoGrid
-    industry={data.industry}
-    year={data.year}
-    services={data.services}
-  />
-  <!-- <BackgroundText
-    heading={data.background.heading}
-    text={data.background.text}
-  />
-  <VideoShowcase
-    image={data.video.image}
-    imageAlt={data.video.imageAlt}
-  />
-  <StickyChallenge
-    objective={data.challenge.objective}
-    detail={data.challenge.detail}
-  />
-  <GravityImages
-    leftImage={data.gravityImages.left.image}
-    leftCaption={data.gravityImages.left.caption}
-    rightImage={data.gravityImages.right.image}
-    rightQuote={data.gravityImages.right.quote}
-  />
-  <TechStack
-    heading={data.techStack.heading}
-    description={data.techStack.description}
-    stack={data.techStack.stack}
-    team={data.techStack.team}
-    roles={data.techStack.roles}
-    teamImage={data.techStack.teamImage}
-  />
-  <StatsSection
-    resultTitle={data.stats.resultTitle}
-    resultDescription={data.stats.resultDescription}
-    stats={data.stats.items}
-  />
-  <FooterCTA
-    quote={data.footer.quote}
-    avatar={data.footer.avatar}
-  /> -->
-</main>
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="icon" type="image/svg+xml" href=`${data.title}.svg` />
+    <meta name="generator" content="{Astro.generator}" />
+    <title>{data.title}</title>
+    <script is:inline transition:persist>
+      // Prevent FOUC (Flash of Unstyled Content)
+      (function () {
+        const theme =
+          localStorage.getItem("theme") ||
+          (window.matchMedia("(prefers-color-scheme: dark)").matches
+            ? "dark"
+            : "light");
+
+        if (theme === "dark") {
+          document.documentElement.classList.add("dark");
+        }
+      })();
+
+      // Reapply theme after view transitions
+      document.addEventListener("astro:after-swap", () => {
+        const theme =
+          localStorage.getItem("theme") ||
+          (window.matchMedia("(prefers-color-scheme: dark)").matches
+            ? "dark"
+            : "light");
+
+        if (theme === "dark") {
+          document.documentElement.classList.add("dark");
+        } else {
+          document.documentElement.classList.remove("dark");
+        }
+      });
+
+      let navigating = false;
+      document.addEventListener("astro:before-preparation", () => {
+        navigating = true;
+        document.body.classList.add("navigating");
+      });
+
+      document.addEventListener("astro:page-load", () => {
+        setTimeout(() => {
+          navigating = false;
+          document.body.classList.remove("navigating");
+        }, 100);
+      });
+
+      // // Reset scroll position on navigation
+      // if ("scrollRestoration" in window.history) {
+      //   window.history.scrollRestoration = "manual";
+      // }
+
+      // Listen for Astro navigation events
+      // document.addEventListener("astro:before-swap", () => {
+      //   window.scrollTo(0, 0);
+      // });
+
+      document.addEventListener("astro:after-swap", (event) => {
+        const detail = event.detail;
+        if (!detail || !detail.to) return;
+
+        const toPath = detail.to.pathname;
+
+        // Only scroll to top when navigating to /projects or /projects/*
+        if (toPath === "/projects" || toPath.startsWith("/projects/")) {
+          // Use requestAnimationFrame to ensure DOM is ready
+          requestAnimationFrame(() => {
+            window.scrollTo({ top: 0, left: 0, behavior: "instant" });
+            // Force a layout recalculation
+            document.body.offsetHeight;
+          });
+        }
+      });
+    </script>
+  </head>
+  <body>
+    <main
+      class="w-full min-h-dvh pt-[120px] md:pt-[150px] flex flex-col gap-12 md:gap-20 bg-[#eceae8] dark:bg-[#0e0e0e] overflow-x-hidden selection:bg-orange-500/30"
+    >
+      <!-- <div class="overflow-hidden"> -->
+      <Navbar client:load />
+      <HeroSection
+        title={data.hero.title}
+        tag={data.hero.tag}
+        image={data.hero.image}
+        imageAlt={data.hero.imageAlt}
+        client:load
+      />
+      <ProjectInfoGrid
+        industry={data.industry}
+        year={data.year}
+        services={data.services}
+        client:load
+      />
+      <BackgroundText
+        heading={data.background.heading}
+        paragraph={data.background.text}
+        client:load
+      />
+
+      <VideoShowcase
+        videoImage={data.video.image}
+        imageAlt={data.video.imageAlt}
+        client:load
+      />
+      <StickyChallenge
+        objective={data.challenge.objective}
+        detail={data.challenge.detail}
+        client:load
+      />
+      <GravityImages
+        leftImage={data.gravityImages.left.image}
+        leftCaption={data.gravityImages.left.caption}
+        rightImage={data.gravityImages.right.image}
+        quote={data.gravityImages.right.quote}
+        client:load
+      />
+      <TechStack
+        title={data.techStack.heading}
+        description={data.techStack.description}
+        techStack={data.techStack.stack}
+        team={data.techStack.team}
+        roles={data.techStack.roles}
+        image={data.techStack.teamImage}
+        client:load
+      />
+      <StatsSection
+        resultTitle={data.stats.resultTitle}
+        resultDescription={data.stats.resultDescription}
+        items={data.stats.items}
+        client:load
+      />
+      <FooterCTA
+        quote={data.footer.quote}
+        avatar={data.footer.avatar}
+        cta={{
+          heading: "Partner with us",
+          description:
+            "We can help you build your product from the ground up just like we did with amigo.",
+          buttonText: "Let's get started",
+          buttonLink: "#contact",
+        }}
+        client:load
+      />
+      <Footer client:load />
+      <!-- </div> -->
+      <!-- <slot /> -->
+    </main>
+  </body>
+</html>
