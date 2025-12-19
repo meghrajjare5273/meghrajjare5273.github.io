@@ -8,6 +8,7 @@ gsap.registerPlugin(ScrollTrigger);
 interface ProjectShowcaseProps {
   videoSrc: string;
   alt: string;
+  thumbnail: string;
   loop?: boolean;
 }
 

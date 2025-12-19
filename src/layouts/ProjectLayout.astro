@@ -22,10 +22,12 @@ interface Props {
       industry: string;
       year: string;
       services: string;
+      repoLink: string;
+      deploymentLink?: string;
     };
     hero: {
       heading: string[];
-      tag?: string;
+      svgIcon?: string;
       image: string;
       imageAlt?: string;
     };
@@ -43,8 +45,8 @@ interface Props {
       detail: string;
     };
     gallery: {
-      left: { image: string; caption: string };
-      right: { image: string; quote: string };
+      left: { image: string; description: string };
+      right: { image: string; quote: string; description: string; };
     };
     techStack: {
       heading: string;
@@ -74,7 +76,78 @@ const { data } = Astro.props;
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="icon" type="image/svg+xml"  href="/favicon.svg">
+    <link rel="apple-touch-icon" href="/favicon.svg">
     <title>{data.title}</title>
+<script is:inline transition:persist>
+      // Prevent FOUC (Flash of Unstyled Content)
+      (function () {
+        const theme =
+          localStorage.getItem("theme") ||
+          (window.matchMedia("(prefers-color-scheme: dark)").matches
+            ? "dark"
+            : "light");
+
+        if (theme === "dark") {
+          document.documentElement.classList.add("dark");
+        }
+      })();
+
+      // Reapply theme after view transitions
+      document.addEventListener("astro:after-swap", () => {
+        const theme =
+          localStorage.getItem("theme") ||
+          (window.matchMedia("(prefers-color-scheme: dark)").matches
+            ? "dark"
+            : "light");
+
+        if (theme === "dark") {
+          document.documentElement.classList.add("dark");
+        } else {
+          document.documentElement.classList.remove("dark");
+        }
+      });
+
+      let navigating = false;
+      document.addEventListener("astro:before-preparation", () => {
+        navigating = true;
+        document.body.classList.add("navigating");
+      });
+
+      document.addEventListener("astro:page-load", () => {
+        setTimeout(() => {
+          navigating = false;
+          document.body.classList.remove("navigating");
+        }, 100);
+      });
+
+      // // Reset scroll position on navigation
+      // if ("scrollRestoration" in window.history) {
+      //   window.history.scrollRestoration = "manual";
+      // }
+
+      // Listen for Astro navigation events
+      // document.addEventListener("astro:before-swap", () => {
+      //   window.scrollTo(0, 0);
+      // });
+
+      document.addEventListener("astro:after-swap", (event) => {
+        const detail = event.detail;
+        if (!detail || !detail.to) return;
+
+        const toPath = detail.to.pathname;
+
+        // Only scroll to top when navigating to /projects or /projects/*
+        if (toPath === "/projects" || toPath.startsWith("/projects/")) {
+          // Use requestAnimationFrame to ensure DOM is ready
+          requestAnimationFrame(() => {
+            window.scrollTo({ top: 0, left: 0, behavior: "instant" });
+            // Force a layout recalculation
+            document.body.offsetHeight;
+          });
+        }
+      });
+    </script>
     </head>
   <body>
     <main class="w-full min-h-dvh pt-[120px] md:pt-[150px] flex flex-col gap-12 md:gap-20 bg-[#eceae8] dark:bg-[#0e0e0e] overflow-x-hidden">
@@ -82,7 +155,7 @@ const { data } = Astro.props;
       
       <ProjectHero
         titleLines={data.hero.heading}
-        tag={data.hero.tag}
+        svgIcon={data.hero.svgIcon}
         image={data.hero.image}
         imageAlt={data.hero.imageAlt}
         client:load
@@ -92,6 +165,8 @@ const { data } = Astro.props;
         industry={data.metadata.industry}
         year={data.metadata.year}
         services={data.metadata.services}
+        repoLink={data.metadata.repoLink}
+        deploymentLink={data.metadata.deploymentLink}
         client:load
       />
 

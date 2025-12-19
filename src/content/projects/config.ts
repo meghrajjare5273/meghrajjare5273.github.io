@@ -9,6 +9,8 @@ const projectsCollection = defineCollection({
       industry: z.string(),
       year: z.string(),
       services: z.string(), // Consider z.array(z.string()) if you want a list
+      repoLink: z.string(),
+      deploymentLink: z.string(),
     }),
     background: z.object({
       heading: z.string(),
@@ -20,7 +22,7 @@ const projectsCollection = defineCollection({
     }),
     hero: z.object({
       heading: z.array(z.string()), // Renamed from title to distinguish from page title
-      tag: z.string().optional(),
+      svgIcon: z.string().optional(),
       image: z.string(),
       imageAlt: z.string().optional(),
     }),
@@ -34,11 +36,12 @@ const projectsCollection = defineCollection({
       // Renamed from gravityImages
       left: z.object({
         image: z.string(),
-        caption: z.string(),
+        description: z.string(),
       }),
       right: z.object({
         image: z.string(),
         quote: z.string(),
+        description: z.string(),
       }),
     }),
     techStack: z.object({
