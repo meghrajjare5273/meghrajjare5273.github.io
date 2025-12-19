@@ -34,8 +34,9 @@ interface Props {
       text: string;
     };
     showcase: {
-      image: string;
-      imageAlt: string;
+      videoSrc: string;
+      thumbnail: string;
+      alt: string;
     };
     challenge: {
       objective: string;
@@ -101,8 +102,9 @@ const { data } = Astro.props;
       />
 
       <ProjectShowcase
-        image={data.showcase.image}
-        alt={data.showcase.imageAlt}
+        videoSrc={data.showcase.videoSrc}
+        thumbnail={data.showcase.thumbnail}
+        alt={data.showcase.alt}
         client:load
       />
 

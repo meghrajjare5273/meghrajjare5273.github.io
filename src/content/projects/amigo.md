@@ -17,8 +17,9 @@ hero:
   image: "https://images.unsplash.com/photo-1580489944761-15a19d654956?q=80&w=200&auto=format&fit=crop"
   imageAlt: "Amigo Hero"
 showcase:
-  image: "https://images.unsplash.com/photo-1580489944761-15a19d654956?q=80&w=200&auto=format&fit=crop"
-  imageAlt: "Showcase"
+  videoSrc: "https://sopimafnvxjycyh6.public.blob.vercel-storage.com/legalmind-demo-1080-publer.io.mp4"
+  thumbnail: "https://images.unsplash.com/photo-1580489944761-15a19d654956?q=80&w=200&auto=format&fit=crop"
+  alt: "thumbnail"
 gallery:
   left:
     image: "https://images.unsplash.com/photo-1580489944761-15a19d654956?q=80&w=200&auto=format&fit=crop"

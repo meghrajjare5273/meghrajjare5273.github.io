@@ -26,8 +26,9 @@ const projectsCollection = defineCollection({
     }),
     showcase: z.object({
       // Renamed from video
-      image: z.string(),
-      imageAlt: z.string(),
+      thumbnail: z.string(),
+      alt: z.string(),
+      videoSrc: z.string(),
     }),
     gallery: z.object({
       // Renamed from gravityImages
