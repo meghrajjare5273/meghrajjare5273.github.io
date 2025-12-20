@@ -54,6 +54,15 @@
   src: url("/fonts/Hero/Galderglynn Titling Rg.otf") format("opentype");
 }
 
+@font-face {
+  font-family: "Founders Grotesk";
+  font-style: normal;
+  font-weight: normal;
+  font-display: swap;
+
+  src: url("/fonts/general/FoundersGrotesk.otf") format("opentype");
+}
+
 /* .font-space {
   font-family: "Space Grotesk Variable", ui-sans-serif, system-ui, sans-serif;
 } */
@@ -208,6 +217,11 @@ html {
 
 .font-about {
   font-family: "Space Grotesk Variable";
+}
+
+.font-about-complement {
+  font-family: "Founders Grotesk";
+  letter-spacing: 0.5px;
 }
 
 .font-geo {
