@@ -45,9 +45,9 @@ export const ProjectBackground: React.FC<ProjectBackgroundProps> = ({
       ref={containerRef}
       className="w-full max-w-[1920px] mx-auto px-6 md:px-12 grid grid-cols-1 md:grid-cols-12 gap-4"
     >
-      <h3 className="bg-heading text-[24px] leading-[130%] md:text-[35px] font-light dark:text-[#eceae8] text-[#101010] col-span-full md:col-span-4 xl:col-span-6">
+      <h2 className="bg-heading text-[32px] md:text-[48px] lg:text-[60px] leading-[110%] font-light dark:text-[#eceae8] text-[#101010] col-span-full md:col-span-4 xl:col-span-6">
         {heading}
-      </h3>
+      </h2>
       <p className="bg-para text-[17px] leading-[150%] md:text-[20px] font-normal dark:text-[#eceae8] text-[#101010] col-span-full md:col-span-8 xl:col-span-6">
         {text}
       </p>

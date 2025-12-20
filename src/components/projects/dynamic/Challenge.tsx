@@ -45,13 +45,13 @@ export const ProjectChallenge: React.FC<ProjectChallengeProps> = ({
     >
       <div className="md:w-5/12 lg:w-4/12">
         <div className="md:sticky md:top-32">
-          <div className="w-12 h-[1px] bg-white/50 mb-4"></div>
-          <h3 className="sticky-heading text-[32px] md:text-[48px] lg:text-[60px] leading-[110%] font-light dark:text-[#eceae8] text-[#101010] opacity-50">
+          {/* <div className="w-12 h-[1px] bg-white/50 mb-4"></div> */}
+          <h3 className="sticky-heading text-[32px] md:text-[48px] lg:text-[60px] leading-[110%] font-light dark:text-[#eceae8] text-[#101010] ">
             The Challenge
           </h3>
         </div>
       </div>
-      <div className="md:w-7/12 lg:w-8/12 flex flex-col gap-12 border-l border-white/10 pl-6 md:pl-12 py-2">
+      <div className="md:w-7/12 lg:w-8/12 flex flex-col gap-12  pl-6 md:pl-12 py-2">
         <div className="challenge-block flex flex-col gap-4">
           <span className="dark:text-[#eceae8]/40 text-[#101010]/40 font-mono text-sm tracking-widest">
             {objective}

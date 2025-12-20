@@ -10,13 +10,13 @@ interface ProjectFooterProps {
     name: string;
     role: string;
   };
-  ctaLink?: string;
+  // ctaLink?: string;
 }
 
 export const ProjectFooter: React.FC<ProjectFooterProps> = ({
   quote,
   author,
-  ctaLink = "#",
+  // ctaLink = "#",
 }) => {
   const containerRef = useRef<HTMLElement>(null);
 
@@ -74,16 +74,16 @@ export const ProjectFooter: React.FC<ProjectFooterProps> = ({
         <div className="hidden lg:block lg:col-span-1 border-l border-white/10 h-full mx-auto"></div>
         <div className="lg:col-span-6 flex flex-col justify-center gap-6">
           <h3 className="text-[20px] font-medium dark:text-[#eceae8] text-[#101010]">
-            Partner with us
+            Like what you see here.?
           </h3>
           <p className="text-[18px] dark:text-[#eceae8] text-[#101010]">
-            We can help you build your product from the ground up.
+            Let's talk and we can figure out something together.
           </p>
           <a
-            href={ctaLink}
-            className="w-fit inline-flex items-center gap-2 px-6 py-3 rounded-full border border-white/20 dark:text-[#eceae8] text-[#101010] hover:bg-white/10 transition-colors"
+            href="/contact"
+            className="w-fit  inline-flex items-center gap-2 px-6 py-3 rounded-full border border-white/20 dark:text-[#eceae8] text-[#101010] hover:bg-white/10 transition-colors"
           >
-            Let's get started
+            Get in touch
             <svg
               width="20"
               height="20"
