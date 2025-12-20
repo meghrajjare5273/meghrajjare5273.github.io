@@ -48,18 +48,25 @@ const projectsCollection = defineCollection({
       heading: z.string(),
       description: z.string(),
       stack: z.array(z.string()),
-      team: z.array(z.string()),
-      roles: z.array(z.string()),
+      team: z.array(
+        z.object({
+          name: z.string(),
+          role: z.string(),
+        })
+      ),
       teamImage: z.string(),
     }),
     stats: z.object({
-      heading: z.string(), // Renamed from resultTitle
-      description: z.string(), // Renamed from resultDescription
-      items: z.array(
+      heading: z.string().optional(),
+      description: z.string().optional(),
+      snapshotDate: z.string().optional(), // New optional field for section-level date
+      services: z.array(
+        // Renamed from 'items' to match component prop
         z.object({
-          value: z.number(), // Renamed from number
-          suffix: z.string().optional(),
-          label: z.string(), // Renamed from description
+          name: z.string(),
+          status: z.enum(["active", "degraded", "offline"]), // Strict validation for visual logic
+          description: z.string(), // Short status explanation
+          updatedAt: z.string(), // e.g. "12 Aug 2025"
         })
       ),
     }),

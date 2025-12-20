@@ -504,7 +504,7 @@ const AboutSection = () => {
               {[
                 {
                   category: "AI & ML",
-                  count: "Scikit-Learn, Huggingface, NLTK",
+                  count: "Scikit-Learn, Huggingface, NLTK, Pandas",
                 },
                 {
                   category: "Web Development",
@@ -524,7 +524,7 @@ const AboutSection = () => {
                 },
                 {
                   category: "Cloud & DevOps",
-                  count: "Microsoft Azure, Github Pages",
+                  count: "Microsoft Azure, Github Pages, Cloudlare DNS",
                 },
               ].map((item, index) => (
                 <div

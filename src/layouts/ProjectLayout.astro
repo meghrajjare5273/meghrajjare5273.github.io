@@ -7,12 +7,15 @@ import Footer from "@/components/landing/Footer";
 import { ProjectHero } from "@/components/projects/dynamic/Hero";
 import { ProjectInfo } from "@/components/projects/dynamic/ProjectInfo";
 import { ProjectBackground } from "@/components/projects/dynamic/Background"; // Assume created
-import { ProjectShowcase } from "@/components/projects/dynamic/Showcase";   // Assume created
+import { ProjectShowcase } from "@/components/projects/dynamic/Showcase"; // Assume created
 import { ProjectChallenge } from "@/components/projects/dynamic/Challenge"; // Assume created
 import { ProjectGallery } from "@/components/projects/dynamic/Gallery";
-import { ProjectTechStack } from "@/components/projects/dynamic/TechStack"; // Assume created
-import { ProjectStats } from "@/components/projects/dynamic/Stats";         // Assume created
-import { ProjectFooter } from "@/components/projects/dynamic/CTA";       // Assume created
+import {
+  ProjectTechStack,
+  type TeamMember,
+} from "@/components/projects/dynamic/TechStack"; // Assume created
+import { ProjectStats } from "@/components/projects/dynamic/Stats"; // Assume created
+import { ProjectFooter } from "@/components/projects/dynamic/CTA"; // Assume created
 
 // Define Props based on the NEW Schema
 interface Props {
@@ -46,20 +49,26 @@ interface Props {
     };
     gallery: {
       left: { image: string; description: string };
-      right: { image: string; quote: string; description: string; };
+      right: { image: string; quote: string; description: string };
     };
     techStack: {
       heading: string;
       description: string;
       stack: string[];
-      team: string[];
+      team: TeamMember[];
       roles: string[];
       teamImage: string;
     };
     stats: {
       heading: string;
       description: string;
-      items: { value: number; suffix?: string; label: string }[];
+      snapshotDate?: string; // Optional field for the specific date
+      services: {
+        name: string;
+        status: "active" | "degraded" | "offline";
+        description: string;
+        updatedAt: string;
+      }[];
     };
     testimonial: {
       quote: string;
@@ -76,10 +85,10 @@ const { data } = Astro.props;
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <link rel="icon" type="image/svg+xml"  href="/favicon.svg">
-    <link rel="apple-touch-icon" href="/favicon.svg">
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="apple-touch-icon" href="/favicon.svg" />
     <title>{data.title}</title>
-<script is:inline transition:persist>
+    <script is:inline transition:persist>
       // Prevent FOUC (Flash of Unstyled Content)
       (function () {
         const theme =
@@ -148,11 +157,13 @@ const { data } = Astro.props;
         }
       });
     </script>
-    </head>
+  </head>
   <body>
-    <main class="w-full min-h-dvh pt-[120px] md:pt-[150px] flex flex-col gap-12 md:gap-20 bg-[#eceae8] dark:bg-[#0e0e0e] overflow-x-hidden">
+    <main
+      class="w-full min-h-dvh pt-[120px] md:pt-[150px] flex flex-col gap-12 md:gap-20 bg-[#eceae8] dark:bg-[#0e0e0e] overflow-x-hidden"
+    >
       <Navbar client:load />
-      
+
       <ProjectHero
         titleLines={data.hero.heading}
         svgIcon={data.hero.svgIcon}
@@ -200,7 +211,6 @@ const { data } = Astro.props;
         description={data.techStack.description}
         stack={data.techStack.stack}
         team={data.techStack.team}
-        roles={data.techStack.roles}
         teamImage={data.techStack.teamImage}
         client:load
       />
@@ -208,7 +218,8 @@ const { data } = Astro.props;
       <ProjectStats
         heading={data.stats.heading}
         description={data.stats.description}
-        items={data.stats.items}
+        services={data.stats.services}
+        snapshotDate={data.stats.snapshotDate}
         client:load
       />
 

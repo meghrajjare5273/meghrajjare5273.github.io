@@ -49,23 +49,32 @@ gallery:
     quote: "The collaboration with amigo was marked by cooperation..."
     description: "Lorem ipsum dolor sit amet consectetur adipisicing elit. Praesentium dolorum, perferendis saepe aut maxime quidem reiciendis nesciunt optio veritatis."
 techStack:
-  heading: "To ensure a robust, scalable platform..."
-  description: "The architecture was built to handle high traffic loads..."
-  stack: ["Next.js", "TypeScript", "Tailwind CSS", "Supabase"]
-  team: ["Sarah Jenkins", "David Chen", "Marco Rossi"]
-  roles: ["Frontend Dev", "UI Engineering", "Backend Arch."]
-  teamImage: "https://images.unsplash.com/photo-1580489944761-15a19d654956?q=80&w=200&auto=format&fit=crop"
+    heading: "To ensure a robust, scalable platform..."
+    description: "The architecture was built to handle high traffic loads..."
+    stack: ["Next.js", "TypeScript", "Tailwind CSS", "Supabase"]
+    team: [
+      { name: "Sarah Jenkins", role: "Frontend Dev" },
+      { name: "David Chen", role: "UI Engineering" },
+      { name: "Marco Rossi", role: "Backend Arch." }
+  ]
+    teamImage: "https://images.unsplash.com/photo-1580489944761-15a19d654956?q=80&w=200&auto=format&fit=crop"
 stats:
-  heading: "The result"
-  description: "From the intuitive web interface to the Mobile App..."
-  items:
-    - value: 82
-      label: "NPS Score on overall user satisfaction..."
-    - value: 71
-      suffix: "%"
-      label: "Of users praised the simplicity..."
-    - value: 81
-      label: "NPS Score regarding the speed..."
+  heading: "System Status"
+  description: "Real-time operational snapshot of the platform's core services and infrastructure stability."
+  snapshotDate: "20 Dec 2025"
+  services:
+    - name: "Core Platform API"
+      status: "active"
+      description: "All endpoints operational. 99.9% uptime maintained over the last 30 days."
+      updatedAt: "20 Dec 2025"
+    - name: "Mobile Sync Engine"
+      status: "active"
+      description: "Bi-directional data synchronization is fully functional across iOS and Android."
+      updatedAt: "19 Dec 2025"
+    - name: "Analytics Cluster"
+      status: "degraded"
+      description: "Minor latency observed in generating historical reports due to high volume."
+      updatedAt: "20 Dec 2025"
 testimonial:
   quote: "Pixelmatters is a strong partner to structure..."
   author:
