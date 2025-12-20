@@ -127,7 +127,7 @@ export const ProjectTechStack: React.FC<ProjectTechStackProps> = ({
         {/* Right: Landscape Image (Larger width now) */}
         <div className="lg:col-span-7 w-full order-1 lg:order-2">
           {/* Increased aspect ratio to 4/3 for more height */}
-          <div className="hero-img relative w-full aspect-3/2 overflow-hidden bg-gray-200 dark:bg-gray-800">
+          <div className="hero-img relative w-full aspect-3/2 overflow-hidden bg-[#eceae8] dark:bg-[#0e0e0e]">
             <img
               src={teamImage}
               alt="Project Visual"
