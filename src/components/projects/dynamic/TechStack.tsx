@@ -179,7 +179,7 @@ export const ProjectTechStack: React.FC<ProjectTechStackProps> = ({
                   key={i}
                   className="flex items-baseline justify-between border-b border-black/5 dark:border-white/5 pb-1 last:border-0"
                 >
-                  <span className="text-sm md:text-base font-medium uppercase tracking-wide opacity-90">
+                  <span className="text-sm md:text-base font-medium tracking-wide opacity-90">
                     {member.name}
                   </span>
                   <span className="text-xs md:text-sm font-about opacity-50 text-right">

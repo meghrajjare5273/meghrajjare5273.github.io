@@ -143,11 +143,16 @@ export const ProjectHero: React.FC<ProjectHeroProps> = ({
       </div>
 
       {/* Image Section */}
-      <div className="w-full aspect-375/348 md:aspect-1440/800 overflow-hidden">
+      <div className="w-fit h-fit items-center  overflow-hidden bg-[#eceae8] dark:bg-[#0e0e0e]">
         <img
+          // ref={imageRef} // Optional: If you want to target specific transforms later
           alt={imageAlt}
-          className="hero-img-anim w-full h-full object-cover"
+          className="hero-img-anim w-full h-full items center object-contain object-center will-change-transform"
           src={image}
+          // Change 2: "eager" ensures the browser prioritizes this image (prevents pop-in)
+          loading="eager"
+          // Change 3: "async" decoding allows the UI thread to stay smooth during the animation start
+          decoding="async"
         />
       </div>
     </section>

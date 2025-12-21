@@ -106,7 +106,7 @@ export function ProjectsList({ projects }: ProjectsListProps) {
         </div>
 
         {/* THE TABLE HEADER (Keep existing code) */}
-        <div className="w-full max-w-[1800px] mx-auto px-6 md:px-10 mb-4 hidden md:grid grid-cols-12 gap-4 border-b border-black/10 dark:border-white/10 pb-4">
+        <div className="w-full max-w-[1800px] mx-auto px-6 md:px-10 hidden md:grid grid-cols-12 gap-4 border-b border-black/10 dark:border-white/10 pb-4">
           <div className="col-span-1">
             <span className="header-reveal font-space text-xs uppercase tracking-widest text-neutral-500 block">
               No.
