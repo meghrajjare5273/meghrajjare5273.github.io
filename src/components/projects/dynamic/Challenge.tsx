@@ -41,7 +41,7 @@ export const ProjectChallenge: React.FC<ProjectChallengeProps> = ({
   return (
     <section
       ref={containerRef}
-      className="w-full max-w-[1920px] mx-auto px-6 md:px-12 flex flex-col md:flex-row gap-8 md:gap-16"
+      className="w-full max-w-480 mx-auto px-6 md:px-12 flex flex-col md:flex-row gap-8 md:gap-16"
     >
       <div className="md:w-5/12 lg:w-4/12">
         <div className="md:sticky md:top-32">

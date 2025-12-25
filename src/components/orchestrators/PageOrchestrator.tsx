@@ -102,7 +102,7 @@ useLayoutEffect(() => {
         >
           <div ref={signatureWrapperRef} className="relative z-10 p-4">
             <SignatureLogo
-              className="w-[280px] md:w-[360px] text-foreground"
+              className="w-70 md:w-90 text-foreground"
               duration={SIGNATURE_DRAW_DURATION}
             />
           </div>

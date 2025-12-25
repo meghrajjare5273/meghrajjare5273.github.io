@@ -104,7 +104,7 @@ export const ProjectTechStack: React.FC<ProjectTechStackProps> = ({
   return (
     <section
       ref={containerRef}
-      className="w-full max-w-[1920px] mx-auto px-6 md:px-12 py-12 md:py-24 bg-[#eceae8] dark:bg-[#0e0e0e] text-[#101010] dark:text-[#eceae8]"
+      className="w-full max-w-480 mx-auto px-6 md:px-12 py-12 md:py-24 bg-[#eceae8] dark:bg-[#0e0e0e] text-[#101010] dark:text-[#eceae8]"
     >
       {/* --- TOP SECTION: SPLIT LAYOUT --- */}
       {/* Changed Grid Ratio: 5 cols Text / 7 cols Image */}
@@ -142,7 +142,7 @@ export const ProjectTechStack: React.FC<ProjectTechStackProps> = ({
         {/* The Divider Line */}
         <div
           ref={lineRef}
-          className="w-full h-[1px] bg-black/10 dark:bg-white/10 origin-left mb-12"
+          className="w-full h-px bg-black/10 dark:bg-white/10 origin-left mb-12"
         />
 
         {/* Centered Grid Strategy */}

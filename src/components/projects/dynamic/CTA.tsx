@@ -46,7 +46,7 @@ export const ProjectFooter: React.FC<ProjectFooterProps> = ({
   return (
     <section
       ref={containerRef}
-      className="w-full max-w-[1920px] mx-auto px-6 md:px-12 py-16 border-t border-white/10 mt-12"
+      className="w-full max-w-480 mx-auto px-6 md:px-12 py-16 border-t border-white/10 mt-12"
     >
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-12">
         <div className="lg:col-span-5">

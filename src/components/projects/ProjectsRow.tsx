@@ -163,7 +163,7 @@ export const ProjectRow = ({ project, index }: ProjectRowProps) => {
       rel="noreferrer"
       onMouseEnter={handleMouseEnter}
       onMouseLeave={handleMouseLeave}
-      className="group relative block w-full min-h-[140px] border-b border-black/10 dark:border-white/10 outline-none overflow-hidden"
+      className="group relative block w-full min-h-35 border-b border-black/10 dark:border-white/10 outline-none overflow-hidden"
     >
       {/* BACKGROUND OVERLAY */}
       <div
@@ -172,7 +172,7 @@ export const ProjectRow = ({ project, index }: ProjectRowProps) => {
       />
 
       {/* CONTENT GRID */}
-      <div className="w-full max-w-[1800px] mx-auto px-6 md:px-10 py-12 relative z-10">
+      <div className="w-full max-w-450 mx-auto px-6 md:px-10 py-12 relative z-10">
         <div className="grid grid-cols-12 gap-4 items-center">
           {/* COL 1: Index */}
           <div className="col-span-2 md:col-span-1">
@@ -190,7 +190,7 @@ export const ProjectRow = ({ project, index }: ProjectRowProps) => {
             <div ref={titleInnerRef} className="will-change-transform">
               {sanitizedSVG ? (
                 <div
-                  className="max-w-[140px] md:max-w-[180px] h-8 md:h-10 text-neutral-900 dark:text-white [&>svg]:!w-auto [&>svg]:!h-full [&>svg]:max-w-full"
+                  className="max-w-35 md:max-w-45 h-8 md:h-10 text-neutral-900 dark:text-white [&>svg]:w-auto! [&>svg]:h-full! [&>svg]:max-w-full"
                   dangerouslySetInnerHTML={{ __html: sanitizedSVG }}
                 />
               ) : (
@@ -236,7 +236,7 @@ export const ProjectRow = ({ project, index }: ProjectRowProps) => {
       {/* HOVER IMAGE */}
       <div
         ref={imageRef}
-        className="hidden md:block absolute right-[10%] top-1/2 w-[220px] aspect-video z-20 pointer-events-none opacity-0 shadow-2xl rounded-sm overflow-hidden border border-black/10 dark:border-white/10 bg-neutral-100 dark:bg-neutral-900"
+        className="hidden md:block absolute right-[10%] top-1/2 w-55 aspect-video z-20 pointer-events-none opacity-0 shadow-2xl rounded-sm overflow-hidden border border-black/10 dark:border-white/10 bg-neutral-100 dark:bg-neutral-900"
       >
         <img
           src={project.thumbnail}

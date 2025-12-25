@@ -75,7 +75,7 @@ export const ProjectShowcase: React.FC<ProjectShowcaseProps> = ({
   return (
     <section
       ref={containerRef}
-      className="w-full max-w-[1920px] mx-auto px-6 md:px-12 py-12"
+      className="w-full max-w-480 mx-auto px-6 md:px-12 py-12"
     >
       <div
         className="video-wrapper relative w-full xl:w-10/12 xl:mx-auto aspect-video bg-[#eceae8] dark:bg-[#0e0e0e] shadow-2xl isolate"
@@ -128,14 +128,14 @@ export const ProjectShowcase: React.FC<ProjectShowcaseProps> = ({
                 <line x1="17" x2="23" y1="9" y2="15" />
               </svg>
             ) : (
-              <div className="flex items-end gap-[3px] h-4 pointer-events-none">
-                <span className="w-[3px] h-2 bg-[#0e0e0e] dark:bg-[#eceae8] animate-[bounce_1s_infinite] rounded-full opacity-80" />
+              <div className="flex items-end gap-0.75 h-4 pointer-events-none">
+                <span className="w-0.75 h-2 bg-[#0e0e0e] dark:bg-[#eceae8] animate-bounce rounded-full opacity-80" />
                 <span
-                  className="w-[3px] h-4 bg-[#0e0e0e] dark:bg-[#eceae8] animate-[bounce_1.2s_infinite] rounded-full opacity-80"
+                  className="w-0.75 h-4 bg-[#0e0e0e] dark:bg-[#eceae8] animate-[bounce_1.2s_infinite] rounded-full opacity-80"
                   style={{ animationDelay: "0.1s" }}
                 />
                 <span
-                  className="w-[3px] h-3 bg-[#0e0e0e] dark:bg-[#eceae8] animate-[bounce_0.8s_infinite] rounded-full opacity-80"
+                  className="w-0.75 h-3 bg-[#0e0e0e] dark:bg-[#eceae8] animate-[bounce_0.8s_infinite] rounded-full opacity-80"
                   style={{ animationDelay: "0.2s" }}
                 />
               </div>

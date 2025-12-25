@@ -114,9 +114,9 @@ export const ProjectHero: React.FC<ProjectHeroProps> = ({
   return (
     <section
       ref={containerRef}
-      className="relative w-full perspective-[1200px]"
+      className="relative w-full perspective-distant"
     >
-      <div className="max-w-[1920px] mx-auto px-6 md:px-12 flex flex-col md:flex-row pb-8 md:pb-16 items-start md:items-center md:justify-between">
+      <div className="max-w-480 mx-auto px-6 md:px-12 flex flex-col md:flex-row pb-8 md:pb-16 items-start md:items-center md:justify-between">
         {/* Title Section */}
         <h1 className="text-[34px] sm:text-[42px] md:text-[48px] lg:text-[60px] leading-[110%] font-light dark:text-[#eceae8] text-[#101010] w-full max-w-4xl">
           {titleLines.map((line, idx) => (
@@ -128,7 +128,7 @@ export const ProjectHero: React.FC<ProjectHeroProps> = ({
 
         {/* SVG Icon Section */}
         {svgIcon && (
-          <div className="mt-8 md:mt-0 flex-shrink-0 perspective-[1000px] overflow-visible">
+          <div className="mt-8 md:mt-0 shrink-0 perspective-[1000px] overflow-visible">
             {/* 
                 We use a wrapper for the mask animation so the inner SVG 
                 can have its own transform context without conflict.

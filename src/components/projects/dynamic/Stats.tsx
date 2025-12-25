@@ -93,7 +93,7 @@ export const ProjectStats: React.FC<ProjectSystemStatusProps> = ({
   return (
     <section
       ref={containerRef}
-      className="w-full max-w-[1920px] mx-auto px-6 md:px-12 grid grid-cols-1 lg:grid-cols-12 gap-8 pt-12 pb-12"
+      className="w-full max-w-480 mx-auto px-6 md:px-12 grid grid-cols-1 lg:grid-cols-12 gap-8 pt-12 pb-12"
     >
       {/* Header Section */}
       <div className="col-span-full lg:col-span-4 flex flex-col gap-4">

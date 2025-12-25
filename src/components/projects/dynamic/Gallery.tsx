@@ -92,23 +92,23 @@ export const ProjectGallery: React.FC<ProjectGalleryProps> = ({
       ref={containerRef}
       className="w-full py-16 md:py-32 bg-[#eceae8] dark:bg-[#0e0e0e] text-[#0e0e0e] dark:text-[#eceae8] overflow-hidden transition-colors duration-500"
     >
-      <div className="w-full max-w-[1920px] mx-auto px-6 md:px-12">
+      <div className="w-full max-w-480 mx-auto px-6 md:px-12">
         {/* --- SECTION HEADING --- */}
         <div className="header-reveal mb-12 md:mb-20 flex flex-col gap-4">
           <h2 className="sticky-heading text-[32px] md:text-[48px] lg:text-[60px] leading-[110%] font-light dark:text-[#eceae8] text-[#101010] ">
             Selected Works
           </h2>
-          <div className="w-full h-[1px] bg-[#0e0e0e]/10 dark:bg-[#eceae8]/10 mt-2" />
+          <div className="w-full h-px bg-[#0e0e0e]/10 dark:bg-[#eceae8]/10 mt-2" />
         </div>
 
         {/* --- GRID LAYOUT --- */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 md:gap-12 h-auto lg:h-[850px]">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 md:gap-12 h-auto lg:h-212.5">
           {/* --- LEFT COLUMN --- */}
           <div className="flex flex-col h-full">
             {/* Image Container */}
             <div
               ref={leftContainerRef}
-              className="relative w-full h-[500px] lg:h-[75%] rounded-3xl overflow-hidden shadow-sm"
+              className="relative w-full h-125 lg:h-[75%] rounded-3xl overflow-hidden shadow-sm"
             >
               <img
                 // ref={leftImageRef}
@@ -130,7 +130,7 @@ export const ProjectGallery: React.FC<ProjectGalleryProps> = ({
           <div className="flex flex-col h-full">
             {/* Text Context Area (Quote) */}
             <div className="text-container flex flex-col justify-center px-2 lg:px-6 h-auto lg:h-[35%] mb-8 lg:mb-0">
-              <div className="anim-text w-12 h-[2px] bg-neutral-400 dark:bg-neutral-600 mb-8" />
+              <div className="anim-text w-12 h-0.5 bg-neutral-400 dark:bg-neutral-600 mb-8" />
               <h3 className="anim-text text-2xl md:text-3xl lg:text-4xl font-light leading-tight tracking-tight">
                 "{right.quote}"
               </h3>
@@ -140,7 +140,7 @@ export const ProjectGallery: React.FC<ProjectGalleryProps> = ({
             <div className="flex flex-col h-auto lg:h-[65%]">
               <div
                 ref={rightContainerRef}
-                className="relative w-full h-[400px] lg:h-full rounded-3xl overflow-hidden shadow-sm"
+                className="relative w-full h-100 lg:h-full rounded-3xl overflow-hidden shadow-sm"
               >
                 <img
                   // ref={rightImageRef}
