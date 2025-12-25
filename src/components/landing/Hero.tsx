@@ -298,7 +298,7 @@ export function HeroSection() {
           </div>
         </div>
 
-        <div className="relative z-10 flex-1 flex flex-col justify-between pt-28 md:pt-[25vh] pb-8 md:pb-24 px-6 md:px-12 max-w-[1920px] mx-auto w-full min-h-full pointer-events-none">
+        <div className="relative z-10 flex-1 flex flex-col justify-between pt-28 md:pt-[25vh] pb-8 md:pb-24 px-6 md:px-12 max-w-480 mx-auto w-full min-h-full pointer-events-none">
           <div className="hero-text-container w-full">
             <h1 className="group font-space font-medium text-[10vw] md:text-[6vw] leading-[0.9] tracking-tight uppercase cursor-default w-fit pointer-events-auto">
               <div className="overflow-hidden perspective-[1000px]">
@@ -314,7 +314,7 @@ export function HeroSection() {
             </h1>
           </div>
 
-          <div className="hero-sub-text flex flex-col md:grid md:grid-cols-12 gap-y-8 md:gap-y-0 w-full content-end min-h-[280px] md:min-h-0 will-change-transform">
+          <div className="hero-sub-text flex flex-col md:grid md:grid-cols-12 gap-y-8 md:gap-y-0 w-full content-end min-h-70 md:min-h-0 will-change-transform">
             <div className="order-2 md:order-1 md:col-span-4 self-end group cursor-default min-h-40 md:min-h-0">
               <div className="flex flex-col gap-6 animate-fade-in">
                 <div className="w-12 h-12 rounded-full border border-neutral-300 dark:border-neutral-700 flex items-center justify-center group-hover:animate-none transition-all">

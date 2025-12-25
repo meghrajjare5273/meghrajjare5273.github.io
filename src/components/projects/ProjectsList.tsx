@@ -85,7 +85,7 @@ export function ProjectsList({ projects }: ProjectsListProps) {
 
       <main className="w-full pt-28 md:pt-40 pb-20">
         {/* Page Title & Subtext (Keep existing code) */}
-        <div className="flex flex-col md:flex-row md:justify-between md:items-start gap-8 md:gap-12 w-full max-w-[1800px] mx-auto px-6 md:px-10 mb-20">
+        <div className="flex flex-col md:flex-row md:justify-between md:items-start gap-8 md:gap-12 w-full max-w-450 mx-auto px-6 md:px-10 mb-20">
           <div className="shrink-0">
             <h1 className="font-about-complement text-5xl md:text-7xl ">
               <span className="header-reveal block">Selected</span>
@@ -106,7 +106,7 @@ export function ProjectsList({ projects }: ProjectsListProps) {
         </div>
 
         {/* THE TABLE HEADER (Keep existing code) */}
-        <div className="w-full max-w-[1800px] mx-auto px-6 md:px-10 hidden md:grid grid-cols-12 gap-4 border-b border-black/10 dark:border-white/10 pb-4">
+        <div className="w-full max-w-450 mx-auto px-6 md:px-10 hidden md:grid grid-cols-12 gap-4 border-b border-black/10 dark:border-white/10 pb-4">
           <div className="col-span-1">
             <span className="header-reveal font-space text-xs uppercase tracking-widest text-neutral-500 block">
               No.

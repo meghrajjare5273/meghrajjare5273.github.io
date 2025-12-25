@@ -116,7 +116,7 @@ export default function Footer() {
       ref={footerRef}
       className="relative z-40 bg-[#101010] text-[#eceae8] dark:bg-[#c6c4c1] dark:text-[#101010] pt-[clamp(2.5rem,2.1875vw+1.875rem,3.125rem)] pb-8 px-6 md:px-12 lg:px-20 overflow-hidden"
     >
-      <div className="max-w-[1400px] mx-auto flex flex-col justify-between h-full">
+      <div className="max-w-350 mx-auto flex flex-col justify-between h-full">
         {/* --- Header Section (Title + Socials) --- */}
         <div className="flex flex-col lg:flex-row justify-between items-start lg:items-end mb-[clamp(3.125rem,2.8125vw+2.5rem,5rem)] gap-8">
           {/* Main Title / Slogan */}
@@ -182,7 +182,7 @@ export default function Footer() {
         </div>
 
         {/* SVG Signature - Positioned OUTSIDE bottom section to sit ON the line */}
-        <div className="footer-reveal absolute bottom-14 right-6 md:right-12 lg:right-20 -translate-y-1/2 w-[150px] h-20 md:w-[200px] md:h-[90px] md:mr-3 md:mb-2 z-20 opacity-50 hover:opacity-100 transition-opacity duration-500">
+        <div className="footer-reveal absolute bottom-14 right-6 md:right-12 lg:right-20 -translate-y-1/2 w-37.5 h-20 md:w-50 md:h-22.5 md:mr-3 md:mb-2 z-20 opacity-50 hover:opacity-100 transition-opacity duration-500">
           {/* <div className="w-full h-full border border-dashed border-current border-opacity-20 flex items-center justify-center rounded-lg bg-[#101010] dark:bg-[#eceae8]">
             <span className="text-[10px] font-mono opacity-50">
               Signature Slot

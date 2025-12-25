@@ -60,7 +60,7 @@ export const ProjectInfo: React.FC<ProjectInfoProps> = ({
       ref={containerRef}
       // UPDATE 1: Kept max-w-[1920px] but increased padding (px-6 -> px-10/24)
       // This ensures it spans the full screen but doesn't touch the edges on massive monitors
-      className="w-full max-w-[1920px] mx-auto px-6 md:px-12 lg:px-24 py-12"
+      className="w-full max-w-480 mx-auto px-6 md:px-12 lg:px-24 py-12"
     >
       {/* Divider - Optional, uncomment if you want the line back */}
       {/* <div className="divider-line w-full h-[1px] bg-neutral-200 dark:bg-neutral-800 origin-left mb-8" /> */}

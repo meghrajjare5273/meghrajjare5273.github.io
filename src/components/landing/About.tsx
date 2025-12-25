@@ -368,7 +368,7 @@ const AboutSection = () => {
         `}
       </style>
 
-      <div className="max-w-[1400px] mx-auto">
+      <div className="max-w-350 mx-auto">
         {/* Section Heading */}
         <div className="w-full text-center mb-20 md:mb-32">
           <h1
