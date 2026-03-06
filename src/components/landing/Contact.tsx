@@ -1,11 +1,18 @@
-// src/components/landing/Contact.tsx
 import { useEffect, useRef } from "react";
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { SplitText } from "gsap/SplitText";
 import { Mail, Github, Linkedin, ArrowUpRight, Instagram } from "lucide-react";
+import { CONTACT_CONTENT, type ContactIconKey } from "@/config/contact";
 
 gsap.registerPlugin(ScrollTrigger, SplitText);
+
+const CONTACT_ICONS: Record<ContactIconKey, typeof Mail> = {
+  github: Github,
+  linkedin: Linkedin,
+  mail: Mail,
+  instagram: Instagram,
+};
 
 const Contact = () => {
   const sectionRef = useRef<HTMLDivElement>(null);
@@ -20,7 +27,6 @@ const Contact = () => {
     const isMobile = window.innerWidth < 768;
 
     const ctx = gsap.context(() => {
-      // --- HEADING ANIMATION ---
       if (headingRef.current) {
         if (!isMobile) {
           const headingSplit = new SplitText(headingRef.current, {
@@ -55,7 +61,6 @@ const Contact = () => {
         }
       }
 
-      // --- SUBHEADING ANIMATION ---
       if (subheadingRef.current) {
         if (!isMobile) {
           const subheadingSplit = new SplitText(subheadingRef.current, {
@@ -90,7 +95,6 @@ const Contact = () => {
         }
       }
 
-      // --- FADE IN ELEMENTS (Description & CTA) ---
       const fadeElements = [descriptionRef.current, ctaBlockRef.current];
       fadeElements.forEach((el) => {
         if (el) {
@@ -107,7 +111,6 @@ const Contact = () => {
         }
       });
 
-      // --- SOCIAL LINKS STAGGER ---
       const validLinks = linksRef.current.filter(Boolean);
       if (validLinks.length > 0) {
         gsap.from(validLinks, {
@@ -123,7 +126,6 @@ const Contact = () => {
         });
       }
 
-      // --- DECORATIVE TEXT PARALLAX ---
       if (decorativeTextRef.current && !isMobile) {
         gsap.to(decorativeTextRef.current, {
           scrollTrigger: {
@@ -144,7 +146,6 @@ const Contact = () => {
   return (
     <div
       ref={sectionRef}
-      // Ensure this is sticky top-0 and z-30 (Higher than About's z-20)
       className="sticky top-0 z-30 w-full bg-[#b3ada6] dark:bg-[#313131] text-foreground font-mono overflow-hidden py-16 md:py-24 px-4 md:px-8"
     >
       <style>
@@ -163,116 +164,83 @@ const Contact = () => {
       </style>
 
       <div className="max-w-6xl mx-auto relative z-10">
-        {/* COMPACT HEADER */}
         <div className="mb-12 md:mb-20">
           <h1
             ref={headingRef}
             className="font-akira text-[13vw] md:text-8xl lg:text-9xl leading-[0.8] tracking-tighter uppercase cursor-default wrap-break-word"
           >
-            Let's Talk
+            {CONTACT_CONTENT.heading}
           </h1>
         </div>
 
-        {/* TWO COLUMN COMPACT GRID */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 lg:gap-16 mb-16 items-start">
-          {/* Left Column: Text */}
           <div className="max-w-2xl">
             <h2
               ref={subheadingRef}
               className="font-about text-2xl md:text-4xl leading-[1.2] tracking-tight mb-6"
             >
-              Have a project in mind? <br className="hidden md:block" />
-              Let's build something great.
+              {CONTACT_CONTENT.subheadingLine1}{" "}
+              <br className="hidden md:block" />
+              {CONTACT_CONTENT.subheadingLine2}
             </h2>
 
             <p
               ref={descriptionRef}
               className="text-sm md:text-base font-about leading-relaxed opacity-80 max-w-md"
             >
-              I'm available for freelance projects and full-time opportunities.
-              If you like what you see here—drop me a message.
+              {CONTACT_CONTENT.description}
             </p>
           </div>
 
-          {/* Right Column: CTA Box */}
           <div className="w-full lg:w-auto" ref={ctaBlockRef}>
             <div className="bg-[#9f9a95] dark:bg-[#1d1d1d] rounded-xl p-6 md:p-8 inline-block w-full lg:w-auto">
               <p className="text-[10px] font-about uppercase tracking-widest opacity-60 mb-3">
-                Primary Contact
+                {CONTACT_CONTENT.primaryContactLabel}
               </p>
               <a
-                href="mailto:meghrajjare77@gmail.com"
+                href={`mailto:${CONTACT_CONTENT.primaryEmail}`}
                 className="block text-xl md:text-2xl lg:text-3xl font-about leading-tight break-all md:break-normal contact-link"
               >
-                meghrajjare77@gmail.com
+                {CONTACT_CONTENT.primaryEmail}
               </a>
             </div>
           </div>
         </div>
 
-        {/* FOOTER LINKS */}
         <div className="border-t border-black/10 dark:border-white/10 pt-8 mt-8">
           <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
             <p className="text-[10px] text-transparent pointer-events-none touch-none font-about uppercase tracking-widest opacity-60"></p>
 
             <div className="flex flex-wrap gap-6 md:gap-10">
-              <a
-                ref={(el) => {
-                  linksRef.current[0] = el;
-                }}
-                href="https://github.com/meghrajjare5273"
-                target="_blank"
-                rel="noreferrer"
-                className="flex items-center gap-2 text-base font-about contact-link"
-              >
-                <Github className="w-4 h-4" /> GitHub{" "}
-                <ArrowUpRight className="w-3 h-3 opacity-60" />
-              </a>
+              {CONTACT_CONTENT.links.map((link, index) => {
+                const Icon = CONTACT_ICONS[link.icon];
 
-              <a
-                ref={(el) => {
-                  linksRef.current[1] = el;
-                }}
-                href="https://linkedin.com/in/meghrajjare5273"
-                target="_blank"
-                rel="noreferrer"
-                className="flex items-center gap-2 text-base font-about contact-link"
-              >
-                <Linkedin className="w-4 h-4" /> LinkedIn{" "}
-                <ArrowUpRight className="w-3 h-3 opacity-60" />
-              </a>
-
-              <a
-                ref={(el) => {
-                  linksRef.current[2] = el;
-                }}
-                href="mailto:meghrajjare77@gmail.com"
-                className="flex items-center gap-2 text-base font-about contact-link"
-              >
-                <Mail className="w-4 h-4" /> Email{" "}
-                <ArrowUpRight className="w-3 h-3 opacity-60" />
-              </a>
-              <a
-                ref={(el) => {
-                  linksRef.current[3] = el;
-                }}
-                href="https://www.instagram.com/meghrajjare"
-                className="flex items-center gap-2 text-base font-about contact-link"
-              >
-                <Instagram className="w-4 h-4" /> Instagram{" "}
-                <ArrowUpRight className="w-3 h-3 opacity-60" />
-              </a>
+                return (
+                  <a
+                    key={link.label}
+                    ref={(el) => {
+                      linksRef.current[index] = el;
+                    }}
+                    href={link.href}
+                    target={link.target}
+                    rel={link.rel}
+                    className="flex items-center gap-2 text-base font-about contact-link"
+                  >
+                    <Icon className="w-4 h-4" /> {link.label}{" "}
+                    <ArrowUpRight className="w-3 h-3 opacity-60" />
+                  </a>
+                );
+              })}
             </div>
           </div>
         </div>
       </div>
 
-      {/* DECORATIVE BACKGROUND TEXT */}
       <div
         ref={decorativeTextRef}
         className="hidden lg:block absolute bottom-[-5%] right-[4%] font-akira text-[12rem] leading-none tracking-tighter uppercase opacity-[0.03] pointer-events-none select-none whitespace-nowrap"
       >
-        Connect
+        {CONTACT_CONTENT.decorativeText}
       </div>
     </div>
   );

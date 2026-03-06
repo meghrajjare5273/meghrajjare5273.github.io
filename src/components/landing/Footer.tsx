@@ -3,10 +3,10 @@ import { gsap } from "gsap";
 import { useGSAP } from "@gsap/react";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import SignatureLogo from "../loading/signature-logo";
+import { FOOTER_CONTENT } from "@/config/footer";
 
 gsap.registerPlugin(ScrollTrigger);
 
-// --- Configuration ---
 const SOCIAL_LINKS = [
   {
     name: "Discord",
@@ -35,33 +35,6 @@ const SOCIAL_LINKS = [
   },
 ];
 
-const NAV_GROUPS = [
-  {
-    title: "Sitemap",
-    links: [
-      { label: "Home", href: "/" },
-      { label: "About", href: "/about" },
-      { label: "Projects", href: "/projects" },
-      { label: "Contact", href: "/contact" },
-    ],
-  },
-  {
-    title: "Resources",
-    links: [
-      { label: "Blog", href: "/blog" },
-      { label: "Documentation", href: "/docs" },
-      // { label: "Brand Kit", href: "/brand" },
-    ],
-  },
-  // Add more groups here if needed to scale the grid
-];
-
-const LEGAL_LINKS = [
-  { label: "Ecosystem Disclaimer", href: "/disclaimer" },
-  { label: "Privacy Policy", href: "/privacy" },
-  { label: "Terms & Conditions", href: "/terms" },
-];
-
 export default function Footer() {
   const footerRef = useRef<HTMLDivElement>(null);
   const currentYear = new Date().getFullYear();
@@ -70,7 +43,6 @@ export default function Footer() {
     () => {
       const mm = gsap.matchMedia();
 
-      // Interactions: Hover on Socials
       const socialLinks = gsap.utils.toArray<HTMLElement>(".social-link-item");
       socialLinks.forEach((link) => {
         const icon = link.querySelector("svg");
@@ -82,7 +54,6 @@ export default function Footer() {
         });
       });
 
-      // Entrance Animation
       mm.add("(prefers-reduced-motion: no-preference)", () => {
         const tl = gsap.timeline({
           scrollTrigger: {
@@ -101,14 +72,15 @@ export default function Footer() {
             duration: 0.8,
             stagger: 0.05,
             ease: "power3.out",
-          }
+          },
         );
       });
+
       return () => {
         mm.revert();
-      }
+      };
     },
-    { scope: footerRef }
+    { scope: footerRef },
   );
 
   return (
@@ -117,15 +89,12 @@ export default function Footer() {
       className="relative z-40 bg-[#101010] text-[#eceae8] dark:bg-[#c6c4c1] dark:text-[#101010] pt-[clamp(2.5rem,2.1875vw+1.875rem,3.125rem)] pb-8 px-6 md:px-12 lg:px-20 overflow-hidden"
     >
       <div className="max-w-350 mx-auto flex flex-col justify-between h-full">
-        {/* --- Header Section (Title + Socials) --- */}
         <div className="flex flex-col lg:flex-row justify-between items-start lg:items-end mb-[clamp(3.125rem,2.8125vw+2.5rem,5rem)] gap-8">
-          {/* Main Title / Slogan */}
           <h3 className="footer-reveal font-about text-4xl leading-[1.1] font-bold max-w-2xl tracking-wide">
-            That's all folks. <br />
-            Here are a few quick links to navigate through.
+            {FOOTER_CONTENT.headingLine1} <br />
+            {FOOTER_CONTENT.headingLine2}
           </h3>
 
-          {/* Social Icons */}
           <ul className="footer-reveal flex items-center gap-3">
             {SOCIAL_LINKS.map((social) => (
               <li key={social.name}>
@@ -149,11 +118,13 @@ export default function Footer() {
           </ul>
         </div>
 
-        {/* --- Main Navigation Grid --- */}
         <nav className="mb-[clamp(3.75rem,3.125vw+2.8125rem,5.625rem)]">
           <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-[clamp(0.9375rem,1.5625vw+0.46875rem,1.875rem)]">
-            {NAV_GROUPS.map((group, idx) => (
-              <div key={idx} className="footer-reveal flex flex-col gap-6">
+            {FOOTER_CONTENT.navGroups.map((group) => (
+              <div
+                key={group.title}
+                className="footer-reveal flex flex-col gap-6"
+              >
                 <ul className="flex flex-col gap-4">
                   {group.links.map((link) => (
                     <li key={link.label}>
@@ -173,21 +144,15 @@ export default function Footer() {
           </div>
         </nav>
 
-        {/* --- Bottom Section --- */}
         <div className="relative flex flex-col-reverse lg:flex-row justify-center items-start lg:items-end pt-8 border-t border-current border-opacity-10">
-          {/* Copyright */}
           <div className="footer-reveal font-about text-sm opacity-60">
-            <span>© {currentYear} Meghraj Jare</span>
+            <span>
+              © {currentYear} {FOOTER_CONTENT.ownerName}
+            </span>
           </div>
         </div>
 
-        {/* SVG Signature - Positioned OUTSIDE bottom section to sit ON the line */}
         <div className="footer-reveal absolute bottom-14 right-6 md:right-12 lg:right-20 -translate-y-1/2 w-37.5 h-20 md:w-50 md:h-22.5 md:mr-3 md:mb-2 z-20 opacity-50 hover:opacity-100 transition-opacity duration-500">
-          {/* <div className="w-full h-full border border-dashed border-current border-opacity-20 flex items-center justify-center rounded-lg bg-[#101010] dark:bg-[#eceae8]">
-            <span className="text-[10px] font-mono opacity-50">
-              Signature Slot
-            </span>
-          </div> */}
           <SignatureLogo className="w-full h-full text-current" />
         </div>
       </div>

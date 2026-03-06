@@ -1,26 +1,21 @@
 ---
-import { getCollection } from "astro:content";
-import ProjectLayout from "../../layouts/ProjectLayout.astro";
-import Layout from "@/layouts/Layout.astro";
-// import Navbar from '@/components/landing/Navbar';
+import ProjectLayout from "@/layouts/ProjectLayout.astro";
+import { getAllProjects, type ProjectEntry } from "@/lib/project-content";
 
 export async function getStaticPaths() {
-  const projects = await getCollection("projects");
+  const projects = await getAllProjects();
 
   return projects.map((project) => ({
-    // CHANGE: Use project.slug for clean URLs (e.g., /projects/amigo)
-    params: { slug: project.slug },
+    params: { slug: project.id },
     props: { project },
   }));
 }
 
+interface Props {
+  project: ProjectEntry;
+}
+
 const { project } = Astro.props;
-const { Content } = await project.render();
-const data = project.data;
 ---
 
-<ProjectLayout data={data}>
-  <!-- <Layout> -->
-    <!-- <Content /> -->
-  <!-- </Layout> -->
-</ProjectLayout>
+<ProjectLayout data={project.data} />
