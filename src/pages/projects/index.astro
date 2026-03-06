@@ -2,33 +2,9 @@
 import Layout from "@/layouts/Layout.astro";
 import { ProjectsList } from "@/components/projects/ProjectsList";
 import { ProjectsPageOrchestrator } from "@/components/orchestrators/ProjectPageOrchestrator";
-import { getCollection } from "astro:content";
+import { getProjectCards } from "@/lib/project-content";
 
-const projectsCollection = await getCollection("projects");
-
-const projects = projectsCollection.map(
-    (project: {
-      slug: any;
-      data: {
-        title: any;
-        hero: { svgIcon: any; image: any };
-        description: any;
-        metadata: { services: string; year: any };
-      };
-    }) => ({
-    id: project.slug,
-    title: project.data.title,
-    // Map the raw SVG string from frontmatter to our new property
-    svgTitle: project.data.hero.svgIcon,
-    description: project.data.description,
-    tags: project.data.metadata.services
-      .split(",")
-      .map((s: string) => s.trim()),
-    link: `/projects/${project.slug}`,
-    thumbnail: project.data.hero.image,
-    year: project.data.metadata.year,
-  })
-);
+const projects = await getProjectCards();
 ---
 
 <Layout title="Projects | Meghraj Jare">

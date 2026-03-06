@@ -1,6 +1,7 @@
 ---
 import "@/styles/global.css";
 import { ClientRouter } from "astro:transitions";
+import DocumentClientSetup from "@/layouts/DocumentClientSetup.astro";
 ---
 
 <!doctype html>
@@ -9,13 +10,12 @@ import { ClientRouter } from "astro:transitions";
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-    <meta name="generator" content="{Astro.generator}" />
-    
+    <meta name="generator" content={Astro.generator} />
+
     <title>Meghraj Jare</title>
 
     <ClientRouter />
 
-    <!-- Preload font with font-display swap -->
     <link
       rel="preload"
       href="https://cdn.jsdelivr.net/npm/@fontsource-variable/space-grotesk@5.2.10/files/space-grotesk-latin-wght-normal.woff2"
@@ -24,75 +24,7 @@ import { ClientRouter } from "astro:transitions";
       crossorigin
     />
 
-    <script is:inline transition:persist>
-      // Prevent FOUC (Flash of Unstyled Content)
-      (function () {
-        const theme =
-          localStorage.getItem("theme") ||
-          (window.matchMedia("(prefers-color-scheme: dark)").matches
-            ? "dark"
-            : "light");
-
-        if (theme === "dark") {
-          document.documentElement.classList.add("dark");
-        }
-      })();
-
-      // Reapply theme after view transitions
-      document.addEventListener("astro:after-swap", () => {
-        const theme =
-          localStorage.getItem("theme") ||
-          (window.matchMedia("(prefers-color-scheme: dark)").matches
-            ? "dark"
-            : "light");
-
-        if (theme === "dark") {
-          document.documentElement.classList.add("dark");
-        } else {
-          document.documentElement.classList.remove("dark");
-        }
-      });
-
-      let navigating = false;
-      document.addEventListener("astro:before-preparation", () => {
-        navigating = true;
-        document.body.classList.add("navigating");
-      });
-
-      document.addEventListener("astro:page-load", () => {
-        setTimeout(() => {
-          navigating = false;
-          document.body.classList.remove("navigating");
-        }, 100);
-      });
-
-      // // Reset scroll position on navigation
-      // if ("scrollRestoration" in window.history) {
-      //   window.history.scrollRestoration = "manual";
-      // }
-
-      // Listen for Astro navigation events
-      // document.addEventListener("astro:before-swap", () => {
-      //   window.scrollTo(0, 0);
-      // });
-
-      document.addEventListener("astro:after-swap", (event) => {
-        const detail = event.detail;
-        if (!detail || !detail.to) return;
-
-        const toPath = detail.to.pathname;
-
-        // Only scroll to top when navigating to /projects or /projects/*
-        if (toPath === "/projects" || toPath.startsWith("/projects/")) {
-          // Use requestAnimationFrame to ensure DOM is ready
-          requestAnimationFrame(() => {
-            window.scrollTo({ top: 0, left: 0, behavior: "instant" });
-            // Force a layout recalculation
-            document.body.offsetHeight;
-          });
-        }
-      });
-    </script>
+    <DocumentClientSetup />
   </head>
   <body>
     <div

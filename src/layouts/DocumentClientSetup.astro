@@ -1,0 +1,61 @@
+---
+interface Props {
+  enableProjectScrollReset?: boolean;
+}
+
+const { enableProjectScrollReset = true } = Astro.props;
+---
+
+<script is:inline transition:persist define:vars={{ enableProjectScrollReset }}>
+  (function () {
+    const applyTheme = () => {
+      const theme =
+        localStorage.getItem("theme") ||
+        (window.matchMedia("(prefers-color-scheme: dark)").matches
+          ? "dark"
+          : "light");
+
+      if (theme === "dark") {
+        document.documentElement.classList.add("dark");
+      } else {
+        document.documentElement.classList.remove("dark");
+      }
+    };
+
+    applyTheme();
+
+    document.addEventListener("astro:after-swap", () => {
+      applyTheme();
+    });
+
+    let navigating = false;
+
+    document.addEventListener("astro:before-preparation", () => {
+      navigating = true;
+      document.body.classList.add("navigating");
+    });
+
+    document.addEventListener("astro:page-load", () => {
+      setTimeout(() => {
+        navigating = false;
+        document.body.classList.remove("navigating");
+      }, 100);
+    });
+
+    if (enableProjectScrollReset) {
+      document.addEventListener("astro:after-swap", (event) => {
+        const detail = event.detail;
+        if (!detail || !detail.to) return;
+
+        const toPath = detail.to.pathname;
+
+        if (toPath === "/projects" || toPath.startsWith("/projects/")) {
+          requestAnimationFrame(() => {
+            window.scrollTo({ top: 0, left: 0, behavior: "instant" });
+            document.body.offsetHeight;
+          });
+        }
+      });
+    }
+  })();
+</script>

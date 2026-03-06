@@ -2,29 +2,28 @@
 import "@/styles/global.css";
 import Navbar from "@/components/landing/Navbar";
 import Footer from "@/components/landing/Footer";
+import DocumentClientSetup from "@/layouts/DocumentClientSetup.astro";
 
-// Import restructured components
 import { ProjectHero } from "@/components/projects/dynamic/Hero";
 import { ProjectInfo } from "@/components/projects/dynamic/ProjectInfo";
-import { ProjectBackground } from "@/components/projects/dynamic/Background"; // Assume created
-import { ProjectShowcase } from "@/components/projects/dynamic/Showcase"; // Assume created
-import { ProjectChallenge } from "@/components/projects/dynamic/Challenge"; // Assume created
+import { ProjectBackground } from "@/components/projects/dynamic/Background";
+import { ProjectShowcase } from "@/components/projects/dynamic/Showcase";
+import { ProjectChallenge } from "@/components/projects/dynamic/Challenge";
 import { ProjectGallery } from "@/components/projects/dynamic/Gallery";
 import {
   ProjectTechStack,
   type TeamMember,
-} from "@/components/projects/dynamic/TechStack"; // Assume created
-import { ProjectStats } from "@/components/projects/dynamic/Stats"; // Assume created
-import { ProjectFooter } from "@/components/projects/dynamic/CTA"; // Assume created
+} from "@/components/projects/dynamic/TechStack";
+import { ProjectStats } from "@/components/projects/dynamic/Stats";
+import { ProjectFooter } from "@/components/projects/dynamic/CTA";
 
-// Define Props based on the NEW Schema
 interface Props {
   data: {
     title: string;
     metadata: {
       industry: string;
       year: string;
-      services: string;
+      services: string[];
       repoLink: string;
       deploymentLink?: string;
     };
@@ -56,13 +55,13 @@ interface Props {
       description: string;
       stack: string[];
       team: TeamMember[];
-      roles: string[];
+      roles?: string[];
       teamImage: string;
     };
     stats: {
       heading: string;
       description: string;
-      snapshotDate?: string; // Optional field for the specific date
+      snapshotDate?: string;
       services: {
         name: string;
         status: "active" | "degraded" | "offline";
@@ -88,75 +87,8 @@ const { data } = Astro.props;
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <link rel="apple-touch-icon" href="/favicon.svg" />
     <title>{data.title}</title>
-    <script is:inline transition:persist>
-      // Prevent FOUC (Flash of Unstyled Content)
-      (function () {
-        const theme =
-          localStorage.getItem("theme") ||
-          (window.matchMedia("(prefers-color-scheme: dark)").matches
-            ? "dark"
-            : "light");
 
-        if (theme === "dark") {
-          document.documentElement.classList.add("dark");
-        }
-      })();
-
-      // Reapply theme after view transitions
-      document.addEventListener("astro:after-swap", () => {
-        const theme =
-          localStorage.getItem("theme") ||
-          (window.matchMedia("(prefers-color-scheme: dark)").matches
-            ? "dark"
-            : "light");
-
-        if (theme === "dark") {
-          document.documentElement.classList.add("dark");
-        } else {
-          document.documentElement.classList.remove("dark");
-        }
-      });
-
-      let navigating = false;
-      document.addEventListener("astro:before-preparation", () => {
-        navigating = true;
-        document.body.classList.add("navigating");
-      });
-
-      document.addEventListener("astro:page-load", () => {
-        setTimeout(() => {
-          navigating = false;
-          document.body.classList.remove("navigating");
-        }, 100);
-      });
-
-      // // Reset scroll position on navigation
-      // if ("scrollRestoration" in window.history) {
-      //   window.history.scrollRestoration = "manual";
-      // }
-
-      // Listen for Astro navigation events
-      // document.addEventListener("astro:before-swap", () => {
-      //   window.scrollTo(0, 0);
-      // });
-
-      document.addEventListener("astro:after-swap", (event) => {
-        const detail = event.detail;
-        if (!detail || !detail.to) return;
-
-        const toPath = detail.to.pathname;
-
-        // Only scroll to top when navigating to /projects or /projects/*
-        if (toPath === "/projects" || toPath.startsWith("/projects/")) {
-          // Use requestAnimationFrame to ensure DOM is ready
-          requestAnimationFrame(() => {
-            window.scrollTo({ top: 0, left: 0, behavior: "instant" });
-            // Force a layout recalculation
-            document.body.offsetHeight;
-          });
-        }
-      });
-    </script>
+    <DocumentClientSetup />
   </head>
   <body>
     <main
@@ -175,7 +107,7 @@ const { data } = Astro.props;
       <ProjectInfo
         industry={data.metadata.industry}
         year={data.metadata.year}
-        services={data.metadata.services}
+        services={data.metadata.services.join(", ")}
         repoLink={data.metadata.repoLink}
         deploymentLink={data.metadata.deploymentLink}
         client:load

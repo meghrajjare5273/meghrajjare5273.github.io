@@ -3,6 +3,7 @@ import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { SplitText } from "gsap/SplitText";
 import prof from "@/assets/prof.jpeg";
+import { ABOUT_CONTENT } from "@/config/about";
 
 gsap.registerPlugin(ScrollTrigger, SplitText);
 
@@ -16,12 +17,9 @@ const AboutSection = () => {
 
   useEffect(() => {
     const ctx = gsap.context(() => {
-      // Use matchMedia for proper responsive handling
       const mm = gsap.matchMedia();
 
-      // Desktop animations (768px and up)
       mm.add("(min-width: 768px)", () => {
-        // --- SECTION HEADING ANIMATION (Desktop Only) ---
         if (headingRef.current) {
           const headingSplit = new SplitText(headingRef.current, {
             type: "chars",
@@ -44,7 +42,6 @@ const AboutSection = () => {
           });
         }
 
-        // --- HERO TEXT ANIMATION (Desktop) ---
         if (heroTextRef.current) {
           const heroSplit = new SplitText(heroTextRef.current, {
             type: "lines,words",
@@ -71,7 +68,6 @@ const AboutSection = () => {
           });
         }
 
-        // --- TEXT BLOCKS (Desktop) ---
         textBlocksRef.current.forEach((block) => {
           if (!block) return;
           const paragraphs = block.querySelectorAll<HTMLParagraphElement>("p");
@@ -101,7 +97,6 @@ const AboutSection = () => {
           });
         });
 
-        // --- IMAGE REVEAL (Desktop - scrub) ---
         if (imageRef.current) {
           gsap.from(imageRef.current, {
             scrollTrigger: {
@@ -116,7 +111,6 @@ const AboutSection = () => {
           });
         }
 
-        // --- SKILLS (Desktop - individual) ---
         const skillsTargets = awardsRef.current.filter((r) => r);
         skillsTargets.forEach((item, index) => {
           if (!item) return;
@@ -135,10 +129,9 @@ const AboutSection = () => {
           });
         });
 
-        // --- CONTACT LINKS (Desktop) ---
         if (sectionRef.current) {
           const contactLinks = sectionRef.current.querySelectorAll(
-            "[data-contact-link]"
+            "[data-contact-link]",
           );
           contactLinks.forEach((link, index) => {
             gsap.from(link, {
@@ -158,9 +151,7 @@ const AboutSection = () => {
         }
       });
 
-      // Mobile animations (under 768px) - ULTRA LIGHTWEIGHT
       mm.add("(max-width: 767px)", () => {
-        // Simple fade-in for heading (NO SplitText)
         if (headingRef.current) {
           gsap.from(headingRef.current, {
             opacity: 0,
@@ -171,7 +162,6 @@ const AboutSection = () => {
           });
         }
 
-        // Simple fade for hero text (NO SplitText)
         if (heroTextRef.current) {
           gsap.from(heroTextRef.current, {
             scrollTrigger: {
@@ -186,7 +176,6 @@ const AboutSection = () => {
           });
         }
 
-        // Batch text blocks for efficiency
         const textBlocks = textBlocksRef.current.filter((b) => b);
         if (textBlocks.length > 0) {
           ScrollTrigger.batch(textBlocks, {
@@ -205,14 +194,13 @@ const AboutSection = () => {
           gsap.set(textBlocks, { opacity: 0, y: 20 });
         }
 
-        // Simple image reveal (scrub: true for smooth)
         if (imageRef.current) {
           gsap.from(imageRef.current, {
             scrollTrigger: {
               trigger: imageRef.current,
               start: "top 85%",
               end: "top 40%",
-              scrub: true, // Tied to scroll for smoothness
+              scrub: true,
             },
             clipPath: "inset(0% 0% 100% 0%)",
             ease: "none",
@@ -220,7 +208,6 @@ const AboutSection = () => {
           });
         }
 
-        // Batch skills for performance
         const skillsTargets = awardsRef.current.filter((r) => r);
         if (skillsTargets.length > 0) {
           ScrollTrigger.batch(skillsTargets, {
@@ -239,10 +226,9 @@ const AboutSection = () => {
           gsap.set(skillsTargets, { opacity: 0, y: 20 });
         }
 
-        // Batch contact links
         if (sectionRef.current) {
           const contactLinks = Array.from(
-            sectionRef.current.querySelectorAll("[data-contact-link]")
+            sectionRef.current.querySelectorAll("[data-contact-link]"),
           );
           if (contactLinks.length > 0) {
             ScrollTrigger.batch(contactLinks, {
@@ -263,10 +249,9 @@ const AboutSection = () => {
         }
       });
 
-      // --- SECTION HEADERS (both mobile & desktop) ---
       if (sectionRef.current) {
         const sectionHeaders = sectionRef.current.querySelectorAll(
-          "[data-section-header]"
+          "[data-section-header]",
         );
 
         ScrollTrigger.batch(sectionHeaders, {
@@ -291,7 +276,6 @@ const AboutSection = () => {
     };
   }, []);
 
-  // Dynamic Sticky Offset Logic
   useEffect(() => {
     const updateStickyPosition = () => {
       if (!sectionRef.current) return;
@@ -309,7 +293,7 @@ const AboutSection = () => {
       resizeTimer = setTimeout(() => {
         updateStickyPosition();
         ScrollTrigger.refresh();
-      }, 150); // Debounce resize
+      }, 150);
     };
 
     window.addEventListener("resize", handleResize);
@@ -358,7 +342,6 @@ const AboutSection = () => {
             transform-origin: left;
           }
 
-          /* GPU acceleration for smooth scrolling */
           @media (max-width: 767px) {
             * {
               -webkit-font-smoothing: antialiased;
@@ -369,7 +352,6 @@ const AboutSection = () => {
       </style>
 
       <div className="max-w-350 mx-auto">
-        {/* Section Heading */}
         <div className="w-full text-center mb-20 md:mb-32">
           <h1
             ref={headingRef}
@@ -408,10 +390,9 @@ const AboutSection = () => {
             </h2>
           </div>
 
-          {/* Side Description */}
           <div className="md:col-start-3 md:col-span-8 lg:col-start-11 lg:col-span-3 mt-8 md:mt-0">
             <span className="hidden font-bold lg:block text-xs mb-6 opacity-60">
-              Last Updated: November 29, 2025
+              Last Updated: {ABOUT_CONTENT.lastUpdated}
             </span>
             <div
               ref={(el) => {
@@ -420,18 +401,12 @@ const AboutSection = () => {
               style={{ willChange: "transform, opacity" }}
             >
               <p className="text-sm md:text-base leading-relaxed">
-                My expertise lies in building full-stack applications with
-                modern frameworks like Next.js and FastAPI. I have been building
-                projects for the past two years and have had fun doing it.
-                I&apos;m currently pursuing a B.Tech. in Artificial Intelligence
-                and Data Science at AISSMS Institute of Information Technology,
-                Pune (CGPA 8.18).
+                {ABOUT_CONTENT.sideDescription}
               </p>
             </div>
           </div>
         </div>
 
-        {/* Image */}
         <div className="grid grid-cols-1 md:grid-cols-12 gap-6 md:gap-8 mb-20 md:mb-32">
           <div className="md:col-start-3 md:col-span-8 lg:col-start-4 lg:col-span-7">
             <div
@@ -450,7 +425,6 @@ const AboutSection = () => {
           </div>
         </div>
 
-        {/* Resume Link */}
         <div className="grid grid-cols-1 md:grid-cols-12 gap-6 md:gap-8 mb-48 md:mb-56 font-about">
           <div className="md:col-start-3 md:col-span-8 lg:col-start-4 lg:col-span-7">
             <h3 className="text-[7vw] md:text-[2rem] lg:text-[2.5rem] leading-[1.1] mb-10">
@@ -464,19 +438,18 @@ const AboutSection = () => {
                 style={{ willChange: "transform, opacity" }}
               >
                 <a
-                  href="/Meghraj Jare.pdf"
-                  target="_blank"
-                  rel="noreferrer"
+                  href={ABOUT_CONTENT.resumeLink.href}
+                  target={ABOUT_CONTENT.resumeLink.target}
+                  rel={ABOUT_CONTENT.resumeLink.rel}
                   className="underline-link"
                 >
-                  My Résumé ↗
+                  {ABOUT_CONTENT.resumeLink.label}
                 </a>
               </li>
             </ul>
           </div>
         </div>
 
-        {/* Skills Section */}
         <div className="mb-32 md:mb-40 font-about">
           <div
             className="grid grid-cols-6 md:grid-cols-12 gap-4 md:gap-8 mb-12"
@@ -501,34 +474,9 @@ const AboutSection = () => {
 
           <div className="grid grid-cols-1 md:grid-cols-12 gap-6 md:gap-8">
             <div className="ml-[5%] md:col-start-3 md:col-span-8 lg:col-start-4 lg:col-span-7 grid grid-cols-2 md:grid-cols-3 gap-x-6 gap-y-12 md:gap-x-8 md:gap-y-16">
-              {[
-                {
-                  category: "AI & ML",
-                  count: "Scikit-Learn, Huggingface, NLTK, Pandas",
-                },
-                {
-                  category: "Web Development",
-                  count: "Next.js, React, Astro",
-                },
-                {
-                  category: "Backend & APIs",
-                  count: "FastAPI, Node.js, Express.js",
-                },
-                {
-                  category: "Data & Infra",
-                  count: "PostgreSQL, Redis, Pinecone, Prisma",
-                },
-                {
-                  category: "Programming Languages",
-                  count: "C, C++, Python, TypeScript",
-                },
-                {
-                  category: "Cloud & DevOps",
-                  count: "Microsoft Azure, Github Pages, Cloudlare DNS",
-                },
-              ].map((item, index) => (
+              {ABOUT_CONTENT.skills.map((item, index) => (
                 <div
-                  key={index}
+                  key={item.category}
                   ref={(el) => {
                     if (awardsRef.current) awardsRef.current[index] = el;
                   }}
@@ -565,30 +513,17 @@ const AboutSection = () => {
               </p>
 
               <div className="flex flex-col md:flex-row gap-8 md:gap-12 md:items-center">
-                <a
-                  href="/projects"
-                  className="underline-link text-lg md:text-xl font-medium w-fit"
-                  data-contact-link
-                  style={{ willChange: "transform, opacity" }}
-                >
-                  Projects ↗
-                </a>
-                <a
-                  href="/awards"
-                  className="underline-link text-lg md:text-xl font-medium w-fit"
-                  data-contact-link
-                  style={{ willChange: "transform, opacity" }}
-                >
-                  Awards and Recognition ↗
-                </a>
-                <a
-                  href="/blogs"
-                  className="underline-link text-lg md:text-xl font-medium w-fit"
-                  data-contact-link
-                  style={{ willChange: "transform, opacity" }}
-                >
-                  Blogs ↗
-                </a>
+                {ABOUT_CONTENT.journeyLinks.map((link) => (
+                  <a
+                    key={link.label}
+                    href={link.href}
+                    className="underline-link text-lg md:text-xl font-medium w-fit"
+                    data-contact-link
+                    style={{ willChange: "transform, opacity" }}
+                  >
+                    {link.label}
+                  </a>
+                ))}
               </div>
             </div>
           </div>
