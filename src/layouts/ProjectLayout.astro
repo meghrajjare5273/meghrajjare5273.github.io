@@ -20,6 +20,7 @@ import { ProjectFooter } from "@/components/projects/dynamic/CTA";
 interface Props {
   data: {
     title: string;
+    description: string;
     metadata: {
       industry: string;
       year: string;
@@ -77,19 +78,34 @@ interface Props {
 }
 
 const { data } = Astro.props;
+const canonical = Astro.site ? new URL(Astro.url.pathname, Astro.site).toString() : Astro.url.href;
 ---
 
 <!doctype html>
 <html lang="en">
   <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-    <link rel="apple-touch-icon" href="/favicon.svg" />
-    <title>{data.title}</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+  <link rel="apple-touch-icon" href="/favicon.svg" />
 
-    <DocumentClientSetup />
-  </head>
+  <title>{data.title} | Meghraj Jare</title>
+  <meta name="description" content={data.description} />
+  <link rel="canonical" href={canonical} />
+
+  <meta property="og:type" content="website" />
+  <meta property="og:title" content={`${data.title} | Meghraj Jare`} />
+  <meta property="og:description" content={data.description} />
+  <meta property="og:url" content={canonical} />
+  <meta property="og:image" content={data.hero.image} />
+
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content={`${data.title} | Meghraj Jare`} />
+  <meta name="twitter:description" content={data.description} />
+  <meta name="twitter:image" content={data.hero.image} />
+
+  <DocumentClientSetup />
+</head>
   <body>
     <main
       class="w-full min-h-dvh pt-[120px] md:pt-[150px] flex flex-col gap-12 md:gap-20 bg-[#eceae8] dark:bg-[#0e0e0e] overflow-x-hidden"

@@ -7,7 +7,10 @@ import { getProjectCards } from "@/lib/project-content";
 const projects = await getProjectCards();
 ---
 
-<Layout title="Projects | Meghraj Jare">
+<Layout
+  title="Projects | Meghraj Jare"
+  description="Selected full-stack, AI, and product engineering case studies by Meghraj Jare."
+>
   <ProjectsPageOrchestrator client:load>
     <ProjectsList client:load projects={projects} />
   </ProjectsPageOrchestrator>

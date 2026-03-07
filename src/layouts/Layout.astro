@@ -2,6 +2,24 @@
 import "@/styles/global.css";
 import { ClientRouter } from "astro:transitions";
 import DocumentClientSetup from "@/layouts/DocumentClientSetup.astro";
+
+interface Props {
+  title?: string;
+  description?: string;
+  image?: string;
+  noindex?: boolean;
+}
+
+const {
+  title = "Meghraj Jare",
+  description = "Portfolio of Meghraj Jare, full-stack developer and AI/ML engineer.",
+  image = "/favicon.svg",
+  noindex = false,
+} = Astro.props;
+
+const canonical = Astro.site
+  ? new URL(Astro.url.pathname, Astro.site).toString()
+  : Astro.url.href;
 ---
 
 <!doctype html>
@@ -12,7 +30,22 @@ import DocumentClientSetup from "@/layouts/DocumentClientSetup.astro";
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <meta name="generator" content={Astro.generator} />
 
-    <title>Meghraj Jare</title>
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    <link rel="canonical" href={canonical} />
+
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={canonical} />
+    <meta property="og:image" content={image} />
+
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={title} />
+    <meta name="twitter:description" content={description} />
+    <meta name="twitter:image" content={image} />
+
+    {noindex && <meta name="robots" content="noindex,nofollow" />}
 
     <ClientRouter />
 
@@ -30,8 +63,7 @@ import DocumentClientSetup from "@/layouts/DocumentClientSetup.astro";
     <div
       class="fixed inset-0 z-9999 pointer-events-none opacity-[0.03] mix-blend-overlay"
       style="background-image: url('https://grainy-gradients.vercel.app/noise.svg');"
-    >
-    </div>
+    ></div>
     <slot />
   </body>
 </html>

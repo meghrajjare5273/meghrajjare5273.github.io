@@ -3,15 +3,15 @@ export interface Project {
   id: string;
   title: string;
   svgTitle?: string; // Add this new optional field
-  logo?: string; 
-  logoHover?: string; 
+  logo?: string;
+  logoHover?: string;
   description: string;
-  tags: string[]; 
+  tags: string[];
   link: string;
-  thumbnail: string; 
+  thumbnail: string;
   year: string;
-  featured?: boolean; 
-  featuredText?: string; 
+  featured?: boolean;
+  featuredText?: string;
 }
 
 // // ... (keep the hardcoded projects array if you want, or you can ignore it since we are fetching from MDX now)
