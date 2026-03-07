@@ -8,6 +8,7 @@ const projects = defineCollection({
   }),
   schema: z.object({
     title: z.string(),
+    slug: z.string().optional(),
     description: z.string(),
     order: z.number().int().nonnegative().default(999),
     published: z.boolean().default(true),

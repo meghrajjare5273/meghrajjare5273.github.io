@@ -21,7 +21,7 @@ export async function getProjectCards() {
   const projects = await getAllProjects();
 
   return projects.map((project: ProjectEntry) => ({
-    id: project.id,
+    id: project.data.slug ?? project.id,
     title: project.data.title,
     svgTitle: project.data.hero.svgIcon,
     description: project.data.description,

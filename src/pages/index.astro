@@ -10,8 +10,8 @@ import Contact from "@/components/landing/Contact";
 <Layout>
   <PageOrchestrator client:load>
     <HeroSection client:load />
-    <About client:load />
-    <Contact client:load />
-    <Footer client:load />
+    <About client:visible={{rootMargin: "100px"}} />
+    <Contact client:visible={{rootMargin: "100px"}} />
+    <Footer client:visible={{rootMargin: "100px"}} />
   </PageOrchestrator>
 </Layout>
