@@ -112,12 +112,12 @@ export function HeroSection() {
             stagger: 0.15,
             ease: "power4.out",
           },
-          "start+=0.9"
+          "start+=0.9",
         )
         .to(
           ".animate-fade-in",
           { opacity: 1, y: 0, duration: 1, stagger: 0.2 },
-          "-=1.2"
+          "-=1.2",
         );
 
       // --- DESKTOP ANIMATION ---
@@ -134,7 +134,7 @@ export function HeroSection() {
         entranceTl.to(
           macbookRef.current,
           { y: "10vh", scale: 1, duration: 1.5, ease: "expo.out" },
-          "start"
+          "start",
         );
 
         const scrollTl = gsap.timeline({
@@ -154,7 +154,7 @@ export function HeroSection() {
             duration: 0.1,
             ease: "power1.in",
           },
-          0
+          0,
         );
 
         scrollTl.to(
@@ -165,7 +165,7 @@ export function HeroSection() {
             duration: 0.3,
             ease: "power1.inOut",
           },
-          0
+          0,
         );
 
         scrollTl.to(
@@ -175,7 +175,7 @@ export function HeroSection() {
             duration: 0.1,
             ease: "power2.out",
           },
-          0.1
+          0.1,
         );
 
         scrollTl.to(
@@ -187,7 +187,7 @@ export function HeroSection() {
             duration: 0.65,
             ease: "none",
           },
-          0.25
+          0.25,
         );
 
         scrollTl.to(
@@ -197,7 +197,7 @@ export function HeroSection() {
             duration: 0.65,
             ease: "none",
           },
-          0.25
+          0.25,
         );
       });
 
@@ -215,7 +215,7 @@ export function HeroSection() {
             duration: 1.5,
             ease: "expo.out",
           },
-          "start"
+          "start",
         );
 
         const scrollTl = gsap.timeline({
@@ -235,7 +235,7 @@ export function HeroSection() {
             duration: 0.1,
             ease: "power1.in",
           },
-          0
+          0,
         );
 
         scrollTl.to(
@@ -246,7 +246,7 @@ export function HeroSection() {
             duration: 0.5,
             ease: "power1.inOut",
           },
-          0
+          0,
         );
 
         scrollTl.to(
@@ -256,7 +256,7 @@ export function HeroSection() {
             duration: 0.1,
             ease: "power2.out",
           },
-          0.1
+          0.1,
         );
       });
 
@@ -265,7 +265,7 @@ export function HeroSection() {
         mm.revert();
       };
     },
-    { scope: contentRef, dependencies: [canAnimate, lenis] }
+    { scope: contentRef, dependencies: [canAnimate, lenis] },
   );
 
   return (
@@ -300,13 +300,13 @@ export function HeroSection() {
 
         <div className="relative z-10 flex-1 flex flex-col justify-between pt-28 md:pt-[25vh] pb-8 md:pb-24 px-6 md:px-12 max-w-480 mx-auto w-full min-h-full pointer-events-none">
           <div className="hero-text-container w-full">
-            <h1 className="group font-space font-medium text-[10vw] md:text-[6vw] leading-[0.9] tracking-tight uppercase cursor-default w-fit pointer-events-auto">
-              <div className="overflow-hidden perspective-[1000px]">
-                <span className="block animate-text-reveal origin-top transform-gpu font-about">
+            <h1 className="group font-space font-medium text-[10vw] md:text-[6vw] leading-[0.9] tracking-tight uppercase cursor-default w-fit pointer-events-auto pt-2">
+              <div className="overflow-y-visible perspective-[1000px]">
+                <span className="block animate-text-reveal origin-top transform-gpu font-about-complement">
                   Software
                 </span>
               </div>
-              <div className="overflow-hidden perspective-[1000px] pl-[6vw] md:pl-[6vw] font-about">
+              <div className="overflow-y-visible perspective-[1000px] pl-[6vw] md:pl-[6vw] font-about-complement">
                 <span className="block animate-text-reveal origin-top transform-gpu text-neutral-400 dark:text-neutral-600 transition-colors duration-500 group-hover:text-neutral-900 dark:group-hover:text-white w-fit">
                   Engineer
                 </span>
@@ -323,7 +323,7 @@ export function HeroSection() {
                     strokeWidth={1.5}
                   />
                 </div>
-                <p className="w-full md:w-fit font-space text-base md:text-lg leading-relaxed max-w-[320px] uppercase tracking-wide transition-transform duration-500 ease-out group-hover:translate-x-4 backdrop-blur-md md:backdrop-blur-none rounded-md p-2 md:p-0 pointer-events-auto">
+                <p className="w-full md:w-fit font-about text-base md:text-lg leading-relaxed max-w-[320px] uppercase tracking-wide transition-transform duration-500 ease-out group-hover:translate-x-4 backdrop-blur-md md:backdrop-blur-none rounded-md p-2 md:p-0 pointer-events-auto">
                   I build and design full stack web appplications using modern
                   tech &amp; AI.
                 </p>
@@ -331,14 +331,14 @@ export function HeroSection() {
             </div>
 
             <div className="order-1 md:order-2 md:col-start-7 md:col-end-13 self-end text-left md:text-right">
-              <h2 className="w-full md:w-fit ml-auto font-medium text-[10vw] md:text-[6vw] leading-[0.85] tracking-tighter uppercase transition-all duration-500 ease-out hover:-skew-x-6 cursor-default hover:text-neutral-700 dark:hover:text-neutral-300 pointer-events-auto">
-                <div className="overflow-hidden perspective-[1000px]">
-                  <span className="block animate-text-reveal origin-top transform-gpu font-about ">
+              <h2 className="w-full md:w-fit ml-auto text-[10vw] md:text-[6vw] leading-[0.85] tracking-tighter uppercase transition-all duration-500 ease-out hover:-skew-x-6 cursor-default hover:text-neutral-700 dark:hover:text-neutral-300 pointer-events-auto pt-2">
+                <div className="overflow-y-visible perspective-[1000px]">
+                  <span className="block animate-text-reveal origin-top transform-gpu font-about-complement ">
                     Meghraj
                   </span>
                 </div>
-                <div className="overflow-hidden perspective-[1000px]">
-                  <span className="block animate-text-reveal origin-top transform-gpu font-about">
+                <div className="overflow-y-visible perspective-[1000px]">
+                  <span className="block animate-text-reveal origin-top transform-gpu font-about-complement">
                     Jare
                   </span>
                 </div>

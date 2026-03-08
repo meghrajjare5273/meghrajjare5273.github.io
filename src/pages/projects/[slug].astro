@@ -1,33 +1,25 @@
 ---
 // src/pages/projects/[slug].astro
-
-import Layout from '@/layouts/Layout.astro'
-import { ProjectsPageOrchestrator } from '@/components/orchestrators/ProjectPageOrchestrator'
-import { getCollection } from 'astro:content'
-import { toProjectDetailData } from '@/lib/project-content'
-import { ProjectDetail } from '@/components/projects/ProjectDetail'
+import { getCollection, render } from 'astro:content';
+import ProjectLayout from '@/layouts/ProjectLayout.astro';
+import { ProjectDetail } from '@/components/projects/ProjectDetail';
+import { ProjectsPageOrchestrator } from '@/components/orchestrators/ProjectPageOrchestrator';
 
 export async function getStaticPaths() {
-  const entries = await getCollection('projects', ({ data }) => data.published)
-  return entries.map((entry) => ({
-    params: { slug: entry.data.slug},
-    props: entry,
-  }))
+  const projects = await getCollection('projects');
+  return projects.map((entry) => ({
+    params: { slug: entry.slug || entry.id },
+    props: { entry },
+  }));
 }
 
-const entry = Astro.props
-const projectDetail = toProjectDetailData(entry)
-
-const pageTitle = `${entry.data.title} — Project | Meghraj Jare`
-const pageDescription = entry.data.description
-
-// ✅ FIX: Extract the string URL from the MediaItem object.
-// entry.data.media[0] is a MediaItem ({ type, url, alt? }), NOT a string.
-const ogImage = entry.data.media[0]?.url
+const { entry } = Astro.props;
+const { Content } = await render(entry);
+const projectData = entry.data;
 ---
 
-<Layout title={pageTitle} description={pageDescription} image={ogImage}>
+<ProjectLayout project={projectData}>
   <ProjectsPageOrchestrator client:load>
-    <ProjectDetail client:load project={projectDetail} />
+    <ProjectDetail project={projectData} client:load />
   </ProjectsPageOrchestrator>
-</Layout>
+</ProjectLayout>
