@@ -1,6 +1,11 @@
 ---
+import AwwwardsProjectPage from "@/components/temporary/imp (do not delete)/projects/Awwwards";
+import Layout from "@/layouts/Layout.astro";
 import ProjectLayout from "@/layouts/ProjectLayout.astro";
 import { getAllProjects, type ProjectEntry } from "@/lib/project-content";
+import {ProjectDetail} from "@/components/temporary/imp (do not delete)/projects/temp"
+import Navbar from "@/components/landing/Navbar";
+import Footer from "@/components/landing/Footer";
 
 export async function getStaticPaths() {
   const projects = await getAllProjects();
@@ -16,6 +21,50 @@ interface Props {
 }
 
 const { project } = Astro.props;
+
+const sampleProject = {
+  title: "AstraRise",
+  link: "https://astrarise.vercel.app/",
+  year: 2024,
+  tagline: "A galaxy you can feel, not just see.",
+  description: `AstraRise was my first step into the world of creative web experiments — and also my first recognized work on Awwwards. 
+I wanted to build something that felt alive, something that breathes when you interact with it. That's how AstraRise was born — a digital galaxy that reacts, moves, and shifts with every touch.
+The site lets you explore space through motion — twist the colors, adjust the density of stars, and shape your own universe in real time. It's built using Three.js for 3D visualization, GSAP for animation, and Tailwind CSS for a clean, fluid design.
+AstraRise isn't just a visual experiment; it's a personal milestone — the project that taught me how imagination can become recognition.`,
+  techStack: ["HTML", "Tailwind CSS", "JavaScript", "Three.js", "GSAP"],
+  highlights: [
+    "Interactive control panel for real-time galaxy customization",
+    "3D motion and space simulation built using Three.js",
+    "Seamless animations powered by GSAP"
+  ],
+  media: [
+    {
+      type: "image",
+      url: "https://images.unsplash.com/photo-1462331940025-496dfbfc7564?w=1200&q=80",
+      alt: "Temp"
+    },
+    {
+      type: "image",
+      url: "https://fastly.picsum.photos/id/933/200/300.jpg?hmac=8zdipGWKGkHz8wyA9J63P3fzghuUL9wqV5Y34b8mLTI",
+      alt: "Temp"
+    },
+    {
+      type:"video",
+      url: "https://sopimafnvxjycyh6.public.blob.vercel-storage.com/LegalMind-Deets/legalmind-demo-1080-publer.io.mp4",
+      alt: "Temp"
+    }
+  ],
+  githubLink:"https://www.perplexity.ai/search/import-useref-uselayouteffect-2..l8pubT0uGcM9.2CjztQ"
+};
 ---
 
-<ProjectLayout data={project.data} />
+<!-- <ProjectLayout data={project.data} /> -->
+ <Layout>
+  <!-- <AwwwardsProjectPage project={project.data} /> -->
+   <Navbar client:load />
+   <main class="pt-20">
+
+     <ProjectDetail client:load project={sampleProject} />
+   </main>
+   <Footer client:load />
+ </Layout>
