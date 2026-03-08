@@ -12,6 +12,9 @@ export interface Project {
   year: string;
   featured?: boolean;
   featuredText?: string;
+  highlights: string[];
+  techStack: string[];
+  tagline: string;
 }
 
 // // ... (keep the hardcoded projects array if you want, or you can ignore it since we are fetching from MDX now)

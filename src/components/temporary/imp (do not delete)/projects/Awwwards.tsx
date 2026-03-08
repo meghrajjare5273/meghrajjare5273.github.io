@@ -1,10 +1,9 @@
 import React, { useRef, useEffect, useState } from "react";
 import { gsap } from "gsap";
-import { useGSAP } from "@gsap/react";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { SplitText } from "gsap/SplitText";
-import { Flip } from "gsap/Flip";
-import { ArrowUpRight, X } from "lucide-react";
+import { Flip } from "gsap/all";
+import { ArrowUpRight } from "lucide-react";
 
 // Register GSAP plugins
 if (typeof window !== "undefined") {
@@ -67,12 +66,8 @@ export interface AwwwardsProjectData {
   };
 }
 
-interface ProjectDetailOverlayProps {
+interface ProjectDetailPageProps {
   project: AwwwardsProjectData | null;
-  isOpen: boolean;
-  onClose: () => void;
-  // Optional: pass the source element for FLIP animation
-  sourceElement?: HTMLElement | null;
 }
 
 // --- Double-Text Reveal Link Component (Exact match to design) ---
@@ -172,88 +167,6 @@ const HoverLink = ({
   );
 };
 
-// --- Close Button with Character Animation ---
-const CloseButton = ({ onClick }: { onClick: () => void }) => {
-  const btnRef = useRef<HTMLButtonElement>(null);
-  const [splitInstances, setSplitInstances] = useState<{
-    top: SplitText | null;
-    bottom: SplitText | null;
-  }>({ top: null, bottom: null });
-
-  useEffect(() => {
-    if (btnRef.current && typeof window !== "undefined") {
-      const topText = btnRef.current.querySelector(".close-text-top");
-      const bottomText = btnRef.current.querySelector(".close-text-bottom");
-
-      if (topText && bottomText) {
-        setSplitInstances({
-          top: new SplitText(topText, { type: "chars" }),
-          bottom: new SplitText(bottomText, { type: "chars" }),
-        });
-      }
-    }
-
-    return () => {
-      splitInstances.top?.revert();
-      splitInstances.bottom?.revert();
-    };
-  }, []);
-
-  const handleMouseEnter = () => {
-    if (!splitInstances.top || !splitInstances.bottom) return;
-
-    gsap.to(splitInstances.top.chars, {
-      duration: 0.3,
-      y: "-100%",
-      stagger: 0.025,
-      ease: "power3.inOut",
-    });
-    gsap.to(splitInstances.bottom.chars, {
-      duration: 0.3,
-      y: "-100%",
-      stagger: 0.025,
-      ease: "power3.inOut",
-    });
-  };
-
-  const handleMouseLeave = () => {
-    if (!splitInstances.top || !splitInstances.bottom) return;
-
-    gsap.to(splitInstances.top.chars, {
-      duration: 0.3,
-      y: "0%",
-      stagger: -0.025,
-      ease: "power3.inOut",
-    });
-    gsap.to(splitInstances.bottom.chars, {
-      duration: 0.3,
-      y: "0%",
-      stagger: -0.025,
-      ease: "power3.inOut",
-    });
-  };
-
-  return (
-    <button
-      ref={btnRef}
-      onClick={onClick}
-      onMouseEnter={handleMouseEnter}
-      onMouseLeave={handleMouseLeave}
-      className="closeBtn fixed top-[2vw] right-[2vw] z-[100] flex items-center gap-2 text-white border border-white/30 px-4 py-2 hover:border-white transition-colors"
-    >
-      <div className="relative h-[1em] overflow-hidden">
-        <span className="close-text-top text-[3vw] md:text-[0.9vw] uppercase tracking-widest block">
-          Close
-        </span>
-        <span className="close-text-bottom text-[3vw] md:text-[0.9vw] uppercase tracking-widest absolute top-full block">
-          Close
-        </span>
-      </div>
-      <X size={16} strokeWidth={1} />
-    </button>
-  );
-};
-
 // --- Media Display Component ---
 const ProjectMedia = ({ media }: { media: MediaItem[] }) => {
   const [currentIndex, setCurrentIndex] = useState(0);
@@ -322,25 +235,20 @@ const ProjectMedia = ({ media }: { media: MediaItem[] }) => {
   );
 };
 
-// --- Main Project Detail Overlay Component ---
-export default function ProjectDetailOverlay({
-  project,
-  isOpen,
-  onClose,
-  sourceElement,
-}: ProjectDetailOverlayProps) {
-  const overlayRef = useRef<HTMLDivElement>(null);
+// --- Main Project Detail Page Component (no overlay) ---
+export default function ProjectDetailPage({ project }: ProjectDetailPageProps) {
+  const pageRef = useRef<HTMLDivElement>(null);
   const contentRef = useRef<HTMLDivElement>(null);
   const imageContainerRef = useRef<HTMLDivElement>(null);
-  const timelineRef = useRef<gsap.core.Timeline | null>(null);
 
   // SplitText refs
   const titleSplitRef = useRef<SplitText | null>(null);
   const yearSplitRef = useRef<SplitText | null>(null);
   const tagSplitRef = useRef<SplitText | null>(null);
 
+  // Entrance animation
   useEffect(() => {
-    if (!isOpen || !project || !overlayRef.current) return;
+    if (!project || !pageRef.current) return;
 
     const ctx = gsap.context(() => {
       // Initial states
@@ -358,7 +266,6 @@ export default function ProjectDetailOverlay({
 
       gsap.set(
         [
-          ".closeBtn",
           ".livelink",
           ".description h2",
           ".techstackandhighlights h2",
@@ -371,21 +278,6 @@ export default function ProjectDetailOverlay({
       const tl = gsap.timeline({
         delay: 0.1,
       });
-
-      // If we have a source element, perform FLIP animation
-      if (sourceElement && imageContainerRef.current) {
-        const state = Flip.getState(sourceElement);
-
-        tl.add(() => {
-          imageContainerRef.current?.appendChild(sourceElement);
-          Flip.from(state, {
-            duration: 1,
-            ease: "power3.inOut",
-            absolute: true,
-            scale: true,
-          });
-        });
-      }
 
       // Color bands wipe up
       tl.to(".projectoverlay .colordivs", {
@@ -401,7 +293,6 @@ export default function ProjectDetailOverlay({
       // Reveal content
       tl.to(
         [
-          ".closeBtn",
           ".livelink",
           ".description h2",
           ".techstackandhighlights h2",
@@ -454,101 +345,14 @@ export default function ProjectDetailOverlay({
           "reveal+=0.2",
         );
       }
-
-      timelineRef.current = tl;
-    }, overlayRef);
+    }, pageRef);
 
     return () => ctx.revert();
-  }, [isOpen, project, sourceElement]);
-
-  // Handle close animation
-  const handleClose = () => {
-    if (!overlayRef.current) return;
-
-    const tl = gsap.timeline({
-      onComplete: onClose,
-    });
-
-    // Hide content first
-    tl.to(
-      [
-        ".closeBtn",
-        ".livelink",
-        ".description h2",
-        ".techstackandhighlights h2",
-        ".right-part-wrapper",
-      ],
-      {
-        autoAlpha: 0,
-        duration: 0.8,
-        ease: "power2.inOut",
-      },
-      "close",
-    );
-
-    // Hide text
-    if (titleSplitRef.current) {
-      tl.to(
-        titleSplitRef.current.chars,
-        {
-          y: "100%",
-          stagger: 0.05,
-          duration: 1.4,
-          ease: "expo.out",
-        },
-        "close",
-      );
-    }
-
-    if (yearSplitRef.current) {
-      tl.to(
-        yearSplitRef.current.chars,
-        {
-          y: "100%",
-          stagger: 0.05,
-          duration: 1.4,
-          ease: "expo.out",
-        },
-        "close",
-      );
-    }
-
-    if (tagSplitRef.current) {
-      tl.to(
-        tagSplitRef.current.words,
-        {
-          y: "100%",
-          stagger: 0.05,
-          duration: 1.2,
-          ease: "expo.out",
-        },
-        "close",
-      );
-    }
-
-    // Color bands wipe away
-    tl.to(".projectoverlay .colordivs", {
-      y: "-100%",
-      duration: 1,
-      stagger: {
-        each: 0.07,
-        from: "edges",
-      },
-      ease: "power2.inOut",
-    });
-
-    // FLIP back if needed
-    if (sourceElement) {
-      tl.add(() => {
-        // Return element to original parent would happen here
-        // This requires storing the original parent reference
-      });
-    }
-  };
+  }, [project]);
 
   // Initialize SplitText when content mounts
   useEffect(() => {
-    if (!isOpen || !contentRef.current) return;
+    if (!project || !contentRef.current) return;
 
     const ctx = gsap.context(() => {
       // Title split
@@ -588,16 +392,16 @@ export default function ProjectDetailOverlay({
       tagSplitRef.current?.revert();
       ctx.revert();
     };
-  }, [isOpen, project]);
+  }, [project]);
 
-  if (!isOpen || !project) return null;
+  if (!project) return null;
 
   const heroTagline = project.hero?.heading?.join(" ") || "Project Overview";
 
   return (
     <div
-      ref={overlayRef}
-      className="projectoverlay fixed inset-0 z-[90] w-full h-screen overflow-hidden"
+      ref={pageRef}
+      className="projectoverlay relative w-full min-h-screen overflow-x-hidden bg-[#101010]"
     >
       {/* 5 Vertical Color Bands Background */}
       <div className="absolute inset-0 z-0 flex w-full h-full pointer-events-none">
@@ -610,13 +414,10 @@ export default function ProjectDetailOverlay({
         ))}
       </div>
 
-      {/* Close Button */}
-      <CloseButton onClick={handleClose} />
-
       {/* Main Content */}
       <div
         ref={contentRef}
-        className="relative z-10 w-full h-full overflow-y-auto"
+        className="relative z-10 w-full min-h-screen overflow-y-visible"
       >
         <div className="min-h-screen w-full px-[2vw] md:px-[1.5vw] lg:px-[1.2vw] py-[4vw] md:py-[2vw] flex flex-col md:flex-row items-start">
           {/* LEFT PART (Sticky on Desktop) */}
@@ -724,9 +525,9 @@ export default function ProjectDetailOverlay({
                     the challenge
                   </h2>
                   <h4 className="text-[2.5vw] md:text-[1.2vw] text-white leading-[1.2] font-light">
-                    {project.challenge.objective}
+                    {project.challenge?.objective}
                   </h4>
-                  {project.challenge.detail && (
+                  {project.challenge?.detail && (
                     <p className="mt-4 text-[2vw] md:text-[0.9vw] text-white/70 font-light max-w-[80%]">
                       {project.challenge.detail}
                     </p>
@@ -759,7 +560,7 @@ export default function ProjectDetailOverlay({
               )}
 
               {/* Stats & Services */}
-              {project.stats?.services?.length > 0 && (
+              {project.stats && project.stats.services && project.stats.services.length > 0 && (
                 <div className="mt-[8vw] md:mt-[4vw]">
                   <div className="flex justify-between items-end mb-[2.5vw] md:mb-[1.5vw]">
                     <h2 className="text-white text-[4.5vw] md:text-[1.8vw] font-light uppercase tracking-wide">

@@ -217,6 +217,12 @@ html {
 
 .font-about {
   font-family: "Space Grotesk Variable";
+  /* font-weight: 100; */
+}
+
+.font-about-proj {
+  font-family: "Space Grotesk Variable";
+  font-weight: 100;
 }
 
 .font-about-complement {
