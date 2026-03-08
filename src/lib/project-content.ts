@@ -2,11 +2,52 @@ import { getCollection, type CollectionEntry } from "astro:content";
 
 export type ProjectEntry = CollectionEntry<"projects">;
 
+export interface MediaItem {
+  type: "image" | "video";
+  url: string;
+  alt?: string;
+  aspectRatio?: string;
+}
+
+export interface ProjectDetailData {
+  title: string;
+  order: number;
+  slug: string;
+  year: number;
+  link: string;
+  githubLink?: string;
+  tagline: string;
+  description: string;
+  techStack: string[];
+  highlights: string[];
+  media: MediaItem[];
+  published: boolean;
+}
+
+export function toProjectDetailData(entry: ProjectEntry): ProjectDetailData {
+  const { data } = entry;
+
+  return {
+    title: data.title,
+    slug: data.slug ?? entry.id,
+    order: data.order,
+    year: data.year,
+    link: data.link,
+    githubLink: data.githubLink,
+    tagline: data.tagline,
+    description: data.description,
+    techStack: data.techStack,
+    highlights: data.highlights,
+    media: data.media,
+    published: data.published,
+  };
+}
+
 function sortProjects(a: ProjectEntry, b: ProjectEntry) {
   const orderDiff = a.data.order - b.data.order;
   if (orderDiff !== 0) return orderDiff;
 
-  return Number(b.data.metadata.year) - Number(a.data.metadata.year);
+  return Number(b.data.year) - Number(a.data.year);
 }
 
 export async function getAllProjects() {
@@ -20,14 +61,18 @@ export async function getAllProjects() {
 export async function getProjectCards() {
   const projects = await getAllProjects();
 
-  return projects.map((project: ProjectEntry) => ({
-    id: project.data.slug ?? project.id,
+  return projects.map((project) => ({
     title: project.data.title,
-    svgTitle: project.data.hero.svgIcon,
+    slug: project.data.slug,
+    order: project.data.order,
+    year: project.data.year,
+    link: project.data.link,
+    githubLink: project.data.githubLink,
+    tagline: project.data.tagline,
     description: project.data.description,
-    tags: project.data.metadata.services,
-    link: `/projects/${project.id}`,
-    thumbnail: project.data.hero.image,
-    year: project.data.metadata.year,
+    techStack: project.data.techStack,
+    highlights: project.data.highlights,
+    media: project.data.media,
+    published: project.data.published,
   }));
 }

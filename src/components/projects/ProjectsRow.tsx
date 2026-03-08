@@ -77,7 +77,7 @@ export const ProjectRow = ({ project, index }: ProjectRowProps) => {
               scale: 1,
               duration: 0.35,
             },
-            0
+            0,
           );
 
           // > Title Slide (The Inner Element)
@@ -87,7 +87,7 @@ export const ProjectRow = ({ project, index }: ProjectRowProps) => {
               x: 10,
               duration: 0.5,
             },
-            0
+            0,
           );
 
           // > Meta Fade (Using class selector for simplicity)
@@ -97,7 +97,7 @@ export const ProjectRow = ({ project, index }: ProjectRowProps) => {
               opacity: 0.3,
               duration: 0.3,
             },
-            0
+            0,
           );
 
           // > Arrow Reveal
@@ -108,7 +108,7 @@ export const ProjectRow = ({ project, index }: ProjectRowProps) => {
               autoAlpha: 1,
               duration: 0.3,
             },
-            0.05
+            0.05,
           );
         }
       });
@@ -138,10 +138,10 @@ export const ProjectRow = ({ project, index }: ProjectRowProps) => {
             start: "top 95%", // Start slightly earlier
             toggleActions: "play none none reverse", // Simple play/reverse
           },
-        }
+        },
       );
     },
-    { scope: rowRef }
+    { scope: rowRef },
   );
 
   // ---------------------------------------------------------
