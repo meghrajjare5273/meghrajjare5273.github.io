@@ -10,6 +10,7 @@ import { gsap } from "gsap";
 import { SplitText } from "gsap/SplitText";
 import { Flip } from "gsap/all";
 import type { ProjectDetailData } from "@/lib/project-content";
+import DOMPurify from "isomorphic-dompurify";
 
 // Register GSAP plugins
 gsap.registerPlugin(SplitText, Flip);
@@ -216,7 +217,18 @@ export const ProjectDetail = ({ project, onReturn }: ProjectDetailProps) => {
       // Clear previous SplitText instances
       splitTextInstances.current.forEach((st) => st.revert());
       splitTextInstances.current = [];
+      let titleAnimTargets;
 
+      // If we have an SVG, we animate the wrapper. If text, we split it.
+      if (project.svgTitle) {
+        titleAnimTargets = titleRef.current;
+        gsap.set(titleAnimTargets, { yPercent: 100, opacity: 0 });
+      } else {
+        const titleSplit = new SplitText(titleRef.current, animate.chars);
+        if (titleSplit.chars) splitTextInstances.current.push(titleSplit);
+        titleAnimTargets = titleSplit.chars;
+        gsap.set(titleAnimTargets, { yPercent: 100, opacity: 0 });
+      }
       // Create SplitText instances
       const titleSplit = new SplitText(titleRef.current, animate.chars);
       const yearSplit = new SplitText(yearRef.current, animate.chars);
@@ -260,6 +272,16 @@ export const ProjectDetail = ({ project, onReturn }: ProjectDetailProps) => {
           opacity: 0,
         },
       );
+
+      // Awwwards-style sequence
+      tl.to(titleAnimTargets, {
+        yPercent: 0,
+        opacity: 1,
+        duration: 1.2,
+        // Only stagger if it's text characters
+        stagger: project.svgTitle ? 0 : { each: 0.03, from: "start" },
+        ease: "expo.out",
+      });
 
       // Awwwards-style sequence
       tl.to(titleSplit.chars, {
@@ -497,7 +519,7 @@ export const ProjectDetail = ({ project, onReturn }: ProjectDetailProps) => {
   return (
     <div
       ref={containerRef}
-      className="infoverview flex md:flex-row flex-col px-[2vw] md:px-[1.5vw] py-[4vw] md:py-[2vw] h-screen w-full relative z-[2] bg-[#1d1f1d] text-white overflow-hidden"
+      className="infoverview flex md:flex-row flex-col px-[2vw] md:px-[1.5vw] py-[4vw] md:py-[2vw] h-screen w-full relative z-[2] bg-[#9f9a95] dark:bg-[#1d1d1d] text-white overflow-hidden"
     >
       {/* Left Part */}
       <div className="left-part h-[48%] md:h-full w-full md:w-[44%] flex flex-col">
@@ -521,13 +543,27 @@ export const ProjectDetail = ({ project, onReturn }: ProjectDetailProps) => {
 
         {/* Headings */}
         <div className="heading mt-[2.5vw] md:mt-[1.5vw]">
-          <h3
-            ref={titleRef}
-            className="projecttitle text-[14vw] md:text-[7.6vw] leading-[1] text-white uppercase tracking-tight"
-            style={{ fontFamily: "'Oswald', 'Anton', 'Impact', sans-serif" }}
-          >
-            {project.title}
-          </h3>
+          <div className="overflow-hidden projecttitle">
+            <div ref={titleRef}>
+              {project.svgTitle ? (
+                <div
+                  className="w-full max-w-[70vw] md:max-w-[35vw] text-white [&>svg]:w-full [&>svg]:h-auto"
+                  dangerouslySetInnerHTML={{
+                    __html: DOMPurify.sanitize(project.svgTitle),
+                  }}
+                />
+              ) : (
+                <h3
+                  className="text-[14vw] md:text-[7.6vw] leading-[1] text-white uppercase tracking-tight"
+                  style={{
+                    fontFamily: "'Oswald', 'Anton', 'Impact', sans-serif",
+                  }}
+                >
+                  {project.title}
+                </h3>
+              )}
+            </div>
+          </div>
           <div className="subheading flex items-center gap-[3vw] md:gap-[2vw] mt-2">
             <div className="year">
               <h2

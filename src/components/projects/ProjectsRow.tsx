@@ -4,13 +4,13 @@ import gsap from "gsap";
 import { useGSAP } from "@gsap/react";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { ArrowRight } from "lucide-react";
-import type { Project } from "@/lib/projects";
 import DOMPurify from "isomorphic-dompurify";
+import type { ProjectCard } from "@/lib/project-content";
 
 gsap.registerPlugin(ScrollTrigger);
 
 interface ProjectRowProps {
-  project: Project;
+  project: ProjectCard;
   index: number;
 }
 
@@ -158,8 +158,7 @@ export const ProjectRow = ({ project, index }: ProjectRowProps) => {
   return (
     <a
       ref={rowRef}
-      href={project.link}
-      target={project.link.startsWith("http") ? "_blank" : "_self"}
+      href={`/projects/${project.slug}`}
       rel="noreferrer"
       onMouseEnter={handleMouseEnter}
       onMouseLeave={handleMouseLeave}

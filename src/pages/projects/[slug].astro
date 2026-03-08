@@ -1,33 +1,33 @@
 ---
 // src/pages/projects/[slug].astro
-// import ProjectLayout from "@/layouts/ProjectLayout.astro";
-// import {ProjectsPageOrchestrator} from "@/components/orchestrators/ProjectPageOrchestrator";
-import Layout from "@/layouts/Layout.astro";
-import { getCollection } from "astro:content";
-import { toProjectDetailData } from "@/lib/project-content";
-import ProjectDetail from "@/components/projects/ProjectDetail";
+
+import Layout from '@/layouts/Layout.astro'
+import { ProjectsPageOrchestrator } from '@/components/orchestrators/ProjectPageOrchestrator'
+import { getCollection } from 'astro:content'
+import { toProjectDetailData } from '@/lib/project-content'
+import { ProjectDetail } from '@/components/projects/ProjectDetail'
 
 export async function getStaticPaths() {
-  const entries = await getCollection("projects", ({ data }) => data.published);
-
+  const entries = await getCollection('projects', ({ data }) => data.published)
   return entries.map((entry) => ({
-    params: {
-      slug: entry.data.slug ?? entry.slug,
-    },
-    props: {
-      entry,
-    },
-  }));
+    params: { slug: entry.data.slug},
+    props: entry,
+  }))
 }
 
-const { entry } = Astro.props;
-const projectDetail = toProjectDetailData(entry);
+const entry = Astro.props
+const projectDetail = toProjectDetailData(entry)
 
-const pageTitle = `${entry.data.title} – Project • Meghraj Jare`;
-const pageDescription = entry.data.description;
-const ogImage = entry.data.media[0];
+const pageTitle = `${entry.data.title} — Project | Meghraj Jare`
+const pageDescription = entry.data.description
+
+// ✅ FIX: Extract the string URL from the MediaItem object.
+// entry.data.media[0] is a MediaItem ({ type, url, alt? }), NOT a string.
+const ogImage = entry.data.media[0]?.url
 ---
 
 <Layout title={pageTitle} description={pageDescription} image={ogImage}>
-  <ProjectDetail project={projectDetail} />
+  <ProjectsPageOrchestrator client:load>
+    <ProjectDetail client:load project={projectDetail} />
+  </ProjectsPageOrchestrator>
 </Layout>
