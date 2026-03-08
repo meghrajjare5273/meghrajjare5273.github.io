@@ -9,6 +9,7 @@ export interface MediaItem {
   aspectRatio?: string;
 }
 
+// ✅ Full data shape used by the [slug].astro detail page
 export interface ProjectDetailData {
   title: string;
   order: number;
@@ -18,15 +19,32 @@ export interface ProjectDetailData {
   githubLink?: string;
   tagline: string;
   description: string;
+  techStack: string[]; // ✅ was: string
+  highlights: string[]; // ✅ was: string
+  media: MediaItem[]; // ✅ was: MediaItem
+  published: boolean;
+}
+
+// ✅ NEW — leaner type used by ProjectsList / ProjectsRow
+export interface ProjectCard {
+  title: string;
+  slug: string | undefined;
+  order: number;
+  year: number;
+  link: string;
+  githubLink?: string;
+  tagline: string;
+  description: string;
   techStack: string[];
   highlights: string[];
   media: MediaItem[];
+  thumbnail?: string; // ✅ NEW — for hover previews in ProjectsRow
+  svgTitle?: string; // ✅ NEW — for SVG logo titles in ProjectsRow
   published: boolean;
 }
 
 export function toProjectDetailData(entry: ProjectEntry): ProjectDetailData {
   const { data } = entry;
-
   return {
     title: data.title,
     slug: data.slug ?? entry.id,
@@ -46,11 +64,10 @@ export function toProjectDetailData(entry: ProjectEntry): ProjectDetailData {
 function sortProjects(a: ProjectEntry, b: ProjectEntry) {
   const orderDiff = a.data.order - b.data.order;
   if (orderDiff !== 0) return orderDiff;
-
   return Number(b.data.year) - Number(a.data.year);
 }
 
-export async function getAllProjects() {
+export async function getAllProjects(): Promise<ProjectEntry[]> {
   const projects = await getCollection(
     "projects",
     ({ data }: ProjectEntry) => data.published,
@@ -58,9 +75,8 @@ export async function getAllProjects() {
   return projects.sort(sortProjects);
 }
 
-export async function getProjectCards() {
+export async function getProjectCards(): Promise<ProjectCard[]> {
   const projects = await getAllProjects();
-
   return projects.map((project) => ({
     title: project.data.title,
     slug: project.data.slug,
@@ -73,6 +89,8 @@ export async function getProjectCards() {
     techStack: project.data.techStack,
     highlights: project.data.highlights,
     media: project.data.media,
+    thumbnail: project.data.thumbnail, // ✅ NEW
+    svgTitle: project.data.svgTitle, // ✅ NEW
     published: project.data.published,
   }));
 }

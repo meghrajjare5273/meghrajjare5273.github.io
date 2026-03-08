@@ -9,32 +9,13 @@ import {
 import { gsap } from "gsap";
 import { SplitText } from "gsap/SplitText";
 import { Flip } from "gsap/all";
+import type { ProjectDetailData } from "@/lib/project-content";
 
 // Register GSAP plugins
 gsap.registerPlugin(SplitText, Flip);
 
-export interface MediaItem {
-  type: "image" | "video";
-  url: string;
-  alt?: string;
-  // Optional: specify aspect ratio for mixed content (e.g., "16/9", "4/3", "1/1")
-  aspectRatio?: string;
-}
-
-export interface Project {
-  title: string;
-  link: string;
-  githubLink?: string; // Optional GitHub repository link
-  year: number;
-  tagline: string;
-  description: string;
-  techStack: string[];
-  highlights: string[];
-  media: MediaItem[];
-}
-
 interface ProjectDetailProps {
-  project: Project;
+  project: ProjectDetailData;
   onReturn?: () => void;
 }
 
