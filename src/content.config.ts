@@ -1,6 +1,13 @@
 import { defineCollection, z } from "astro:content";
 import { glob } from "astro/loaders";
 
+const mediaItemSchema = z.object({
+  type: z.enum(["image", "video"]),
+  url: z.string().url(),
+  alt: z.string().optional(),
+  aspectRatio: z.string().optional(),
+});
+
 const projects = defineCollection({
   loader: glob({
     pattern: "**/*.{md,mdx}",
@@ -8,89 +15,17 @@ const projects = defineCollection({
   }),
   schema: z.object({
     title: z.string(),
+    order: z.number().int(),
     slug: z.string().optional(),
+    year: z.number().int(),
+    link: z.string().url(),
+    githubLink: z.string().url().optional(),
+    tagline: z.string(),
     description: z.string(),
-    order: z.number().int().nonnegative().default(999),
-    published: z.boolean().default(true),
-
-    metadata: z.object({
-      industry: z.string(),
-      year: z.string(),
-      services: z.array(z.string()),
-      repoLink: z.string().url(),
-      deploymentLink: z.string().url().optional(),
-    }),
-
-    background: z.object({
-      heading: z.string(),
-      text: z.string(),
-    }),
-
-    challenge: z.object({
-      objective: z.string(),
-      detail: z.string(),
-    }),
-
-    hero: z.object({
-      heading: z.array(z.string()).min(1),
-      svgIcon: z.string().optional(),
-      image: z.string(),
-      imageAlt: z.string().optional(),
-    }),
-
-    showcase: z.object({
-      thumbnail: z.string(),
-      alt: z.string(),
-      videoSrc: z.string(),
-    }),
-
-    gallery: z.object({
-      left: z.object({
-        image: z.string(),
-        description: z.string(),
-      }),
-      right: z.object({
-        image: z.string(),
-        quote: z.string(),
-        description: z.string(),
-      }),
-    }),
-
-    techStack: z.object({
-      heading: z.string(),
-      description: z.string(),
-      stack: z.array(z.string()),
-      team: z.array(
-        z.object({
-          name: z.string(),
-          role: z.string(),
-        }),
-      ),
-      teamImage: z.string(),
-    }),
-
-    stats: z.object({
-      heading: z.string().default("System status"),
-      description: z.string().default("Current service overview."),
-      snapshotDate: z.string().optional(),
-      services: z.array(
-        z.object({
-          name: z.string(),
-          status: z.enum(["active", "degraded", "offline"]),
-          description: z.string(),
-          updatedAt: z.string(),
-        }),
-      ),
-    }),
-
-    testimonial: z.object({
-      quote: z.string(),
-      author: z.object({
-        image: z.string(),
-        name: z.string(),
-        role: z.string(),
-      }),
-    }),
+    techStack: z.array(z.string()),
+    highlights: z.array(z.string()),
+    media: z.array(mediaItemSchema),
+    published: z.boolean(),
   }),
 });
 
