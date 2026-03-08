@@ -5,15 +5,16 @@ import { useGSAP } from "@gsap/react";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { ProjectRow } from "@/components/projects/ProjectsRow";
 // Import the type, but REMOVE the named import of the hardcoded 'projects' list
-import type { Project } from "@/lib/projects";
+// import type { Project } from "@/lib/projects";
 import Navbar from "@/components/landing/Navbar";
 import Footer from "@/components/landing/Footer";
+import type { ProjectCard } from "@/lib/project-content";
 
 gsap.registerPlugin(ScrollTrigger);
 
 // 1. Define the props interface
 interface ProjectsListProps {
-  projects: Project[];
+  projects: ProjectCard[];
 }
 
 // 2. Accept the prop in the component function
@@ -37,7 +38,7 @@ export function ProjectsList({ projects }: ProjectsListProps) {
             stagger: 0.05,
             ease: "power2.out",
             delay: 0.3,
-          }
+          },
         );
 
         // 3. Subtext Entrance
@@ -51,7 +52,7 @@ export function ProjectsList({ projects }: ProjectsListProps) {
             stagger: 0.5,
             ease: "power2.out",
             delay: 0.3,
-          }
+          },
         );
 
         // 2. List Entrance
@@ -68,12 +69,12 @@ export function ProjectsList({ projects }: ProjectsListProps) {
               trigger: ".project-list-container",
               start: "top 90%",
             },
-          }
+          },
         );
       });
       return () => ctx.revert();
     },
-    { scope: containerRef }
+    { scope: containerRef },
   );
 
   return (
@@ -131,11 +132,16 @@ export function ProjectsList({ projects }: ProjectsListProps) {
 
         {/* List Section */}
         <div className="project-list-container w-full flex flex-col">
-          {/* 3. Use the 'projects' prop here instead of the hardcoded variable */}
           {projects.map((project, index) => (
-            <div key={project.id} className="project-row-wrapper opacity-0">
-              <ProjectRow project={project} index={index + 1} />
-            </div>
+            <>
+              {/* Replace project.id with project.slug or project.title */}
+              <div
+                key={project.slug || project.title}
+                className="project-row-wrapper opacity-0"
+              >
+                <ProjectRow project={project} index={index + 1} />
+              </div>
+            </>
           ))}
         </div>
       </main>
