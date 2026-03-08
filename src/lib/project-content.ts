@@ -24,6 +24,7 @@ export interface ProjectDetailData {
   media: MediaItem[]; // ✅ was: MediaItem
   published: boolean;
   svgTitle: string;
+  thumbnail: string;
 }
 
 // ✅ NEW — leaner type used by ProjectsList / ProjectsRow
@@ -60,6 +61,7 @@ export function toProjectDetailData(entry: ProjectEntry): ProjectDetailData {
     media: data.media,
     published: data.published,
     svgTitle: data.svgTitle,
+    thumbnail: data.thumbnail,
   };
 }
 

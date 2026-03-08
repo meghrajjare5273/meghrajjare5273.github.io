@@ -519,7 +519,7 @@ export const ProjectDetail = ({ project, onReturn }: ProjectDetailProps) => {
   return (
     <div
       ref={containerRef}
-      className="infoverview flex md:flex-row flex-col px-[2vw] md:px-[1.5vw] py-[4vw] md:py-[2vw] h-screen w-full relative z-[2] bg-[#9f9a95] dark:bg-[#1d1d1d] text-white overflow-hidden"
+      className="infoverview flex md:flex-row flex-col px-[2vw] md:px-[1.5vw] py-[4vw] md:py-[2vw] h-screen w-full relative z-[2] bg-[#1d1f1d] text-white overflow-hidden"
     >
       {/* Left Part */}
       <div className="left-part h-[48%] md:h-full w-full md:w-[44%] flex flex-col">

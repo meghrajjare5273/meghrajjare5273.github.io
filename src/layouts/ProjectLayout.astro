@@ -1,183 +1,40 @@
 ---
-import "@/styles/global.css";
+// src/layouts/ProjectLayout.astro
+import Layout from "./Layout.astro";
 import Navbar from "@/components/landing/Navbar";
 import Footer from "@/components/landing/Footer";
-import DocumentClientSetup from "@/layouts/DocumentClientSetup.astro";
-
-import { ProjectHero } from "@/components/projects/dynamic/Hero";
-import { ProjectInfo } from "@/components/projects/dynamic/ProjectInfo";
-import { ProjectBackground } from "@/components/projects/dynamic/Background";
-import { ProjectShowcase } from "@/components/projects/dynamic/Showcase";
-import { ProjectChallenge } from "@/components/projects/dynamic/Challenge";
-import { ProjectGallery } from "@/components/projects/dynamic/Gallery";
-import {
-  ProjectTechStack,
-  type TeamMember,
-} from "@/components/projects/dynamic/TechStack";
-import { ProjectStats } from "@/components/projects/dynamic/Stats";
-import { ProjectFooter } from "@/components/projects/dynamic/CTA";
+import type { ProjectDetailData } from "@/lib/project-content";
 
 interface Props {
-  data: {
-    title: string;
-    description: string;
-    metadata: {
-      industry: string;
-      year: string;
-      services: string[];
-      repoLink: string;
-      deploymentLink?: string;
-    };
-    hero: {
-      heading: string[];
-      svgIcon?: string;
-      image: string;
-      imageAlt?: string;
-    };
-    background: {
-      heading: string;
-      text: string;
-    };
-    showcase: {
-      videoSrc: string;
-      thumbnail: string;
-      alt: string;
-    };
-    challenge: {
-      objective: string;
-      detail: string;
-    };
-    gallery: {
-      left: { image: string; description: string };
-      right: { image: string; quote: string; description: string };
-    };
-    techStack: {
-      heading: string;
-      description: string;
-      stack: string[];
-      team: TeamMember[];
-      roles?: string[];
-      teamImage: string;
-    };
-    stats: {
-      heading: string;
-      description: string;
-      snapshotDate?: string;
-      services: {
-        name: string;
-        status: "active" | "degraded" | "offline";
-        description: string;
-        updatedAt: string;
-      }[];
-    };
-    testimonial: {
-      quote: string;
-      author: { image: string; name: string; role: string };
-    };
-  };
+  project: ProjectDetailData;
 }
 
-const { data } = Astro.props;
-const canonical = Astro.site ? new URL(Astro.url.pathname, Astro.site).toString() : Astro.url.href;
+const { project } = Astro.props;
+
+// Construct dynamic SEO tags based on project data
+const seoDescription = project.tagline || project.description.substring(0, 160);
+const canonicalURL = new URL(Astro.url.pathname, Astro.site);
 ---
 
-<!doctype html>
-<html lang="en">
-  <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-  <link rel="apple-touch-icon" href="/favicon.svg" />
+<Layout 
+  title={`${project.title} | Meghraj Jare`} 
+  description={seoDescription}
+>
+  <slot name="seo-meta" slot="head">
+    <meta property="og:title" content={`${project.title} | Meghraj Jare`} />
+    <meta property="og:description" content={seoDescription} />
+    <meta property="og:type" content="article" />
+    <meta property="og:url" content={canonicalURL} />
+    <meta property="og:image" content={new URL(project.thumbnail, Astro.site)} />
+    <meta name="twitter:card" content="summary_large_image" />
+    <link rel="canonical" href={canonicalURL} />
+  </slot>
 
-  <title>{data.title} | Meghraj Jare</title>
-  <meta name="description" content={data.description} />
-  <link rel="canonical" href={canonical} />
+  <Navbar client:load />
+  
+  <main>
+    <slot />
+  </main>
 
-  <meta property="og:type" content="website" />
-  <meta property="og:title" content={`${data.title} | Meghraj Jare`} />
-  <meta property="og:description" content={data.description} />
-  <meta property="og:url" content={canonical} />
-  <meta property="og:image" content={data.hero.image} />
-
-  <meta name="twitter:card" content="summary_large_image" />
-  <meta name="twitter:title" content={`${data.title} | Meghraj Jare`} />
-  <meta name="twitter:description" content={data.description} />
-  <meta name="twitter:image" content={data.hero.image} />
-
-  <DocumentClientSetup />
-</head>
-  <body>
-    <main
-      class="w-full min-h-dvh pt-[120px] md:pt-[150px] flex flex-col gap-12 md:gap-20 bg-[#eceae8] dark:bg-[#0e0e0e] overflow-x-hidden"
-    >
-      <Navbar client:load />
-
-      <ProjectHero
-        titleLines={data.hero.heading}
-        svgIcon={data.hero.svgIcon}
-        image={data.hero.image}
-        imageAlt={data.hero.imageAlt}
-        client:load
-      />
-
-      <ProjectInfo
-        industry={data.metadata.industry}
-        year={data.metadata.year}
-        services={data.metadata.services.join(", ")}
-        repoLink={data.metadata.repoLink}
-        deploymentLink={data.metadata.deploymentLink}
-        client:load
-      />
-
-      <ProjectBackground
-        heading={data.background.heading}
-        text={data.background.text}
-        client:load
-      />
-
-      <ProjectShowcase
-        videoSrc={data.showcase.videoSrc}
-        thumbnail={data.showcase.thumbnail}
-        alt={data.showcase.alt}
-        client:load
-      />
-
-      <ProjectChallenge
-        objective={data.challenge.objective}
-        detail={data.challenge.detail}
-        client:load
-      />
-
-      <ProjectGallery
-        left={data.gallery.left}
-        right={data.gallery.right}
-        client:load
-      />
-
-      <ProjectTechStack
-        heading={data.techStack.heading}
-        description={data.techStack.description}
-        stack={data.techStack.stack}
-        team={data.techStack.team}
-        teamImage={data.techStack.teamImage}
-        client:load
-      />
-
-      <ProjectStats
-        heading={data.stats.heading}
-        description={data.stats.description}
-        services={data.stats.services}
-        snapshotDate={data.stats.snapshotDate}
-        client:load
-      />
-
-      <ProjectFooter
-        quote={data.testimonial.quote}
-        author={data.testimonial.author}
-        client:load
-      />
-
-      <Footer client:load />
-    </main>
-  </body>
-</html>
+  <Footer client:visible />
+</Layout>
