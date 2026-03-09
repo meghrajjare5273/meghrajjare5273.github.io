@@ -7,7 +7,6 @@ import gsap from "gsap";
 import { useGSAP } from "@gsap/react";
 
 // Register GSAP plugin
-gsap.registerPlugin(useGSAP);
 
 export default function Navbar() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);

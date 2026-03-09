@@ -1,5 +1,3 @@
-
-
 import React, { useRef, useState, useLayoutEffect } from "react";
 import gsap from "gsap";
 import { useGSAP } from "@gsap/react";
@@ -14,42 +12,55 @@ const SIGNATURE_DRAW_DURATION = 2.0;
 export function PageOrchestrator({ children }: PageOrchestratorProps) {
   const [introFinished, setIntroFinished] = useState(false);
   const [shouldPlayIntro, setShouldPlayIntro] = useState(true);
-  
+
   const introContainerRef = useRef<HTMLDivElement>(null);
   const signatureWrapperRef = useRef<HTMLDivElement>(null);
   const contentRef = useRef<HTMLDivElement>(null);
 
-// In PageOrchestrator.tsx, replace the useLayoutEffect with:
-useLayoutEffect(() => {
-  const handleBeforePreparation = () => {
-    // Clear the flag when navigating AWAY from home
-    if (window.location.pathname !== '/' && window.location.pathname !== '/index.astro') {
-      sessionStorage.removeItem('intro-completed');
+  // In PageOrchestrator.tsx, replace the useLayoutEffect with:
+  useLayoutEffect(() => {
+    const handleBeforePreparation = () => {
+      // Clear the flag when navigating AWAY from home
+      if (
+        window.location.pathname !== "/" &&
+        window.location.pathname !== "/index.astro"
+      ) {
+        sessionStorage.removeItem("intro-completed");
+      }
+    };
+
+    const hasVisited = sessionStorage.getItem("intro-completed");
+    const navEntry = performance.getEntriesByType(
+      "navigation",
+    )[0] as PerformanceNavigationTiming;
+    // Only skip intro if we're on the same page within the same navigation session
+    if (hasVisited && navEntry?.type !== "reload") {
+      // Not a reload
+      setShouldPlayIntro(false);
+      setIntroFinished(true);
     }
-  };
 
-  const hasVisited = sessionStorage.getItem('intro-completed');
-  
-  // Only skip intro if we're on the same page within the same navigation session
-  if (hasVisited && performance.navigation.type !== 1) { // Not a reload
-    setShouldPlayIntro(false);
-    setIntroFinished(true);
-  }
+    document.addEventListener(
+      "astro:before-preparation",
+      handleBeforePreparation,
+    );
 
-  document.addEventListener('astro:before-preparation', handleBeforePreparation);
-  
-  return () => {
-    document.removeEventListener('astro:before-preparation', handleBeforePreparation);
-  };
-}, []);
-
+    return () => {
+      document.removeEventListener(
+        "astro:before-preparation",
+        handleBeforePreparation,
+      );
+    };
+  }, []);
 
   useGSAP(() => {
     if (!shouldPlayIntro) {
       gsap.set(contentRef.current, { opacity: 1, zIndex: 1 });
-      
+
       window.dispatchEvent(
-        new CustomEvent("page-intro-complete", { detail: { timestamp: Date.now() } })
+        new CustomEvent("page-intro-complete", {
+          detail: { timestamp: Date.now() },
+        }),
       );
       return;
     }
@@ -71,20 +82,33 @@ useLayoutEffect(() => {
 
     tl.to({}, { duration: SIGNATURE_DRAW_DURATION * 0.85 });
 
-    tl.to(signatureWrapperRef.current, {
-        y: -80, opacity: 0, duration: 0.8, ease: "power2.in",
-    }, "exit");
+    tl.to(
+      signatureWrapperRef.current,
+      {
+        y: -80,
+        opacity: 0,
+        duration: 0.8,
+        ease: "power2.in",
+      },
+      "exit",
+    );
 
-    tl.to(introContainerRef.current, {
+    tl.to(
+      introContainerRef.current,
+      {
         yPercent: -100,
         duration: 0.8,
         ease: "power4.inOut",
         onStart: () => {
           window.dispatchEvent(
-            new CustomEvent("page-intro-complete", { detail: { timestamp: Date.now() } })
+            new CustomEvent("page-intro-complete", {
+              detail: { timestamp: Date.now() },
+            }),
           );
         },
-    }, "exit+=0.2");
+      },
+      "exit+=0.2",
+    );
 
     return () => {
       document.body.style.overflow = originalOverflow;

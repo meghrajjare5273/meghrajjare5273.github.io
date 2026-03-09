@@ -18,7 +18,7 @@ const projects = defineCollection({
     svgTitle: z.string(),
     thumbnail: z.string(),
     order: z.number().int(),
-    slug: z.string().optional(),
+    slug: z.string(),
     year: z.number().int(),
     link: z.string().url(),
     githubLink: z.string().url().optional(),

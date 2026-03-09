@@ -1,7 +1,6 @@
 import { useRef, useLayoutEffect, useMemo } from "react";
 import { gsap } from "gsap";
 import { SplitText } from "gsap/SplitText";
-import { Flip } from "gsap/all";
 import type { ProjectDetailData } from "@/lib/project-content";
 import DOMPurify from "isomorphic-dompurify";
 import Navbar from "../landing/Navbar";
@@ -12,7 +11,8 @@ import MagneticScrambleButton from "@/components/projects/details/ScrambleButton
 import ProjectMediaCarousel from "@/components/projects/details/VideoCarousel";
 import ProjectDetailsSidebar from "@/components/projects/details/DetailSidebar";
 
-gsap.registerPlugin(SplitText, Flip);
+// Register GSAP plugins
+gsap.registerPlugin(SplitText);
 
 interface ProjectDetailProps {
   project: ProjectDetailData;
@@ -23,24 +23,27 @@ export const ProjectDetail = ({ project, onReturn }: ProjectDetailProps) => {
   const containerRef = useRef<HTMLDivElement>(null);
   const navbarRef = useRef<HTMLDivElement>(null);
   const footerRef = useRef<HTMLDivElement>(null);
+  const contentWrapperRef = useRef<HTMLDivElement>(null);
   const splitTextInstances = useRef<SplitText[]>([]);
 
-  const animate = useMemo(() => {
-    return {
+  const animate = useMemo(
+    () => ({
       chars: { type: "chars", charsClass: "char-anim" },
       words: { type: "words", wordsClass: "word-anim" },
-    };
-  }, []);
+    }),
+    [],
+  );
 
   useLayoutEffect(() => {
     if (!containerRef.current) return;
     const q = gsap.utils.selector(containerRef);
 
     const ctx = gsap.context(() => {
+      // Clean up previous SplitText instances
       splitTextInstances.current.forEach((st) => st.revert());
       splitTextInstances.current = [];
 
-      // Query elements using scoped class names from child components
+      // Query elements
       const titleEl = q(".gsap-anim-title")[0];
       const yearEl = q(".gsap-anim-year")[0];
       const taglineEl = q(".gsap-anim-tagline")[0];
@@ -53,8 +56,8 @@ export const ProjectDetail = ({ project, onReturn }: ProjectDetailProps) => {
       const highlightsEl = q(".gsap-anim-highlights")[0];
       const descriptionEl = q(".gsap-anim-description")[0];
 
+      // Prepare title animation targets
       let titleAnimTargets;
-
       if (project.svgTitle) {
         titleAnimTargets = titleEl;
         gsap.set(titleAnimTargets, { yPercent: 100, opacity: 0 });
@@ -65,24 +68,29 @@ export const ProjectDetail = ({ project, onReturn }: ProjectDetailProps) => {
         gsap.set(titleAnimTargets, { yPercent: 100, opacity: 0 });
       }
 
+      // Split text for year and tagline
       const yearSplit = new SplitText(yearEl, animate.chars);
       const taglineSplit = new SplitText(taglineEl, animate.words);
 
       if (yearSplit.chars) splitTextInstances.current.push(yearSplit);
       if (taglineSplit.words) splitTextInstances.current.push(taglineSplit);
 
-      const tl = gsap.timeline({ defaults: { ease: "expo.out" }, delay: 0.1 });
+      // FIX 1: Navbar - Start visible but animate in smoothly
+      // Instead of starting off-screen, start with slight offset for smoother feel
+      gsap.set(navbarRef.current, { y: -20, opacity: 0 });
+      gsap.set(footerRef.current, { y: 20, opacity: 0 });
+      gsap.set(contentWrapperRef.current, { opacity: 0, y: 20 });
 
-      gsap.set(navbarRef.current, { y: -100, opacity: 0 });
-      gsap.set(footerRef.current, { y: 100, opacity: 0 });
       gsap.set([yearSplit.chars, taglineSplit.words], {
         yPercent: 100,
         opacity: 0,
       });
+
       gsap.set(imageContainerEl, {
         clipPath: "polygon(0% 100%, 100% 100%, 100% 100%, 0% 100%)",
       });
       gsap.set(imageInnerEl, { scale: 1.4 });
+
       gsap.set(
         [
           techStackEl,
@@ -92,103 +100,119 @@ export const ProjectDetail = ({ project, onReturn }: ProjectDetailProps) => {
           liveLinkEl,
           githubLinkEl,
         ],
-        { y: 40, opacity: 0 },
+        { y: 30, opacity: 0 },
       );
 
-      tl.to(titleAnimTargets, {
-        yPercent: 0,
+      // Create main timeline with better staggered timing
+      const tl = gsap.timeline({
+        defaults: { ease: "expo.out" },
+        delay: 0.1,
+      });
+
+      // FIX 2: Animate navbar FIRST (not last) for better UX
+      tl.to(navbarRef.current, {
+        y: 0,
         opacity: 1,
-        duration: 1.2,
-        stagger: project.svgTitle ? 0 : { each: 0.03, from: "start" },
+        duration: 0.6,
+        ease: "power3.out",
+        onComplete: () => {
+          gsap.set(navbarRef.current, { clearProps: "all" });
+        },
       })
         .to(
+          contentWrapperRef.current,
+          {
+            opacity: 1,
+            y: 0,
+            duration: 0.5,
+            ease: "power2.out",
+          },
+          "-=0.3",
+        )
+        .to(
+          titleAnimTargets,
+          {
+            yPercent: 0,
+            opacity: 1,
+            duration: 1.0,
+            stagger: project.svgTitle ? 0 : { each: 0.03, from: "start" },
+          },
+          "-=0.2",
+        )
+        .to(
           yearSplit.chars,
-          { yPercent: 0, opacity: 1, duration: 0.8, stagger: 0.05 },
-          "-=0.9",
+          { yPercent: 0, opacity: 1, duration: 0.6, stagger: 0.05 },
+          "-=0.7",
         )
         .to(
           taglineSplit.words,
           {
             yPercent: 0,
             opacity: 1,
-            duration: 0.8,
+            duration: 0.6,
             stagger: 0.04,
             ease: "power3.out",
           },
-          "-=0.6",
+          "-=0.5",
         )
         .to(
           closeBtnEl,
-          { y: 0, opacity: 1, duration: 0.7, ease: "power3.out" },
-          "-=0.5",
+          { y: 0, opacity: 1, duration: 0.5, ease: "power3.out" },
+          "-=0.4",
         )
         .to(
           imageContainerEl,
           {
             clipPath: "polygon(0% 0%, 100% 0%, 100% 100%, 0% 100%)",
-            duration: 1.4,
+            duration: 1.2,
             ease: "expo.inOut",
           },
-          "-=0.8",
+          "-=0.6",
         )
-        .to(imageInnerEl, { scale: 1, duration: 1.6 }, "-=1.4")
+        .to(imageInnerEl, { scale: 1, duration: 1.4 }, "-=1.2")
         .to(
           liveLinkEl,
-          { y: 0, opacity: 1, duration: 0.7, ease: "power3.out" },
-          "-=1",
+          { y: 0, opacity: 1, duration: 0.5, ease: "power3.out" },
+          "-=0.8",
         )
         .to(
           githubLinkEl,
-          { y: 0, opacity: 1, duration: 0.7, ease: "power3.out" },
-          "-=0.6",
+          { y: 0, opacity: 1, duration: 0.5, ease: "power3.out" },
+          "-=0.4",
         )
         .to(
           descriptionEl,
-          { y: 0, opacity: 1, duration: 0.8, ease: "power3.out" },
-          "-=0.5",
+          { y: 0, opacity: 1, duration: 0.6, ease: "power3.out" },
+          "-=0.3",
         )
         .to(
           [techStackEl, highlightsEl],
           {
             y: 0,
             opacity: 1,
-            duration: 0.7,
-            stagger: 0.15,
+            duration: 0.5,
+            stagger: 0.1,
             ease: "power3.out",
           },
-          "-=0.5",
+          "-=0.3",
         )
         .to(
-          navbarRef.current,
-          {
-            y: 0,
-            opacity: 1,
-            duration: 0.8,
-            onComplete: () => {
-              if (navbarRef.current) {
-                gsap.set(navbarRef.current, { clearProps: "all" });
-              }
-            },
-          },
-          "-=0.8",
-        )
-        .to(footerRef.current, { y: 0, opacity: 1, duration: 0.8 }, "-=0.6")
-        .add(() => {
-          gsap.set([closeBtnEl, liveLinkEl, githubLinkEl], {
-            pointerEvents: "auto",
-          });
-        }, "-=0.3");
+          footerRef.current,
+          { y: 0, opacity: 1, duration: 0.6, ease: "power3.out" },
+          "-=0.4",
+        );
 
+      // Parallax effect for image on scroll (desktop only)
       const mm = gsap.matchMedia();
       mm.add("(min-width: 768px)", () => {
         gsap.to(imageInnerEl, {
-          yPercent: 10,
+          yPercent: 8,
           ease: "none",
           scrollTrigger: {
             trigger: containerRef.current,
             start: "top top",
             end: "bottom top",
-            scrub: true,
+            scrub: 1.5,
           },
         });
       });
@@ -205,6 +229,7 @@ export const ProjectDetail = ({ project, onReturn }: ProjectDetailProps) => {
   const handleReturn = () => {
     if (!containerRef.current) return;
     const q = gsap.utils.selector(containerRef);
+
     const ctx = gsap.context(() => {
       const tl = gsap.timeline({
         onComplete: () => {
@@ -217,10 +242,10 @@ export const ProjectDetail = ({ project, onReturn }: ProjectDetailProps) => {
       });
 
       tl.to([navbarRef.current, footerRef.current], {
-        y: (i) => (i === 0 ? -100 : 100),
+        y: (i) => (i === 0 ? -20 : 20),
         opacity: 0,
-        duration: 0.5,
-        stagger: 0.1,
+        duration: 0.4,
+        stagger: 0.05,
         ease: "power3.in",
       })
         .to(
@@ -230,22 +255,22 @@ export const ProjectDetail = ({ project, onReturn }: ProjectDetailProps) => {
             q(".gsap-anim-tagline"),
           ],
           {
-            yPercent: -50,
+            yPercent: -30,
             opacity: 0,
-            duration: 0.6,
-            stagger: 0.05,
+            duration: 0.5,
+            stagger: 0.03,
             ease: "power3.in",
           },
-          "-=0.3",
+          "-=0.2",
         )
         .to(
           q(".gsap-anim-image-container"),
           {
             clipPath: "polygon(0% 100%, 100% 100%, 100% 100%, 0% 100%)",
-            duration: 0.8,
+            duration: 0.6,
             ease: "expo.inOut",
           },
-          "-=0.4",
+          "-=0.3",
         )
         .to(
           [
@@ -257,55 +282,63 @@ export const ProjectDetail = ({ project, onReturn }: ProjectDetailProps) => {
             q(".gsap-anim-github-link"),
           ],
           {
-            y: 30,
+            y: 20,
             opacity: 0,
-            duration: 0.5,
-            stagger: 0.05,
+            duration: 0.4,
+            stagger: 0.03,
             ease: "power3.in",
           },
-          "-=0.6",
+          "-=0.4",
         );
     }, containerRef);
+
     return () => ctx.revert();
   };
 
   const containerAspectRatio = useMemo(
-    () => project.media[0]?.aspectRatio || "4/3",
+    () => project.media[0]?.aspectRatio || "16/9",
     [project.media],
   );
 
   return (
-    <div className="relative min-h-screen bg-[#1d1f1d]">
-      <div ref={navbarRef} className="absolute top-0 left-0 right-0">
+    <div className="relative min-h-screen bg-background">
+      {/* FIX 3: Navbar with proper z-index and backdrop blur for better visibility */}
+      <div
+        ref={navbarRef}
+        className="fixed top-0 left-0 right-0 z-50 bg-background/80 border-b border-border/50"
+      >
         <Navbar />
       </div>
 
       <div
         ref={containerRef}
-        className="infoverview flex md:flex-row flex-col px-[2vw] md:px-[1.5vw] py-[4vw] md:py-[2vw] min-h-screen w-full relative z-[2] bg-[#9f9a95] dark:bg-[#1d1d1d] text-white overflow-hidden pt-[80px] md:pt-[100px] pb-[60px] md:pb-[80px]"
+        className="infoverview flex flex-col lg:flex-row px-4 sm:px-6 lg:px-[2vw] py-20 lg:py-[4vw] min-h-screen w-full relative z-[2] bg-background/80 text-foreground overflow-hidden pt-24 lg:pt-[100px] pb-16 lg:pb-[80px]"
       >
-        <div className="left-part h-[48%] md:h-full w-full md:w-[44%] flex flex-col">
+        <div
+          ref={contentWrapperRef}
+          className="left-part w-full lg:w-[44%] flex flex-col"
+        >
           <MagneticScrambleButton
             text="GO BACK"
             onClick={handleReturn}
-            wrapperClassName="gsap-anim-close-btn relative z-10"
+            wrapperClassName="gsap-anim-close-btn relative z-10 w-fit"
             buttonClassName="closeBtn relative z-10"
-            textClassName="text-[4vw] md:text-[1.3vw] leading-[1.25]"
+            textClassName="text-sm sm:text-base lg:text-[1.3vw] leading-[1.25]"
           />
 
-          <div className="heading mt-[2.5vw] md:mt-[1.5vw]">
+          <div className="heading mt-6 lg:mt-[1.5vw]">
             <div className="overflow-hidden projecttitle">
               <div className="gsap-anim-title">
                 {project.svgTitle ? (
                   <div
-                    className="w-full max-w-[70vw] md:max-w-[35vw] text-white [&>svg]:w-full [&>svg]:h-auto"
+                    className="w-full max-w-[80vw] lg:max-w-[35vw] text-foreground [&>svg]:w-full [&>svg]:h-auto"
                     dangerouslySetInnerHTML={{
                       __html: DOMPurify.sanitize(project.svgTitle),
                     }}
                   />
                 ) : (
                   <h3
-                    className="text-[14vw] md:text-[7.6vw] leading-[1] text-white uppercase tracking-tight"
+                    className="text-4xl sm:text-5xl lg:text-[7.6vw] leading-[1] text-foreground uppercase tracking-tight"
                     style={{
                       fontFamily: "'Oswald', 'Anton', 'Impact', sans-serif",
                     }}
@@ -315,26 +348,29 @@ export const ProjectDetail = ({ project, onReturn }: ProjectDetailProps) => {
                 )}
               </div>
             </div>
-            <div className="subheading flex items-center gap-[3vw] md:gap-[2vw] mt-2">
+
+            {/* FIX 4: Better responsive layout for subheading */}
+            <div className="subheading flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-[2vw] mt-3 lg:mt-2">
               <div className="year">
-                <h2 className="gsap-anim-year projectyear text-white text-[4vw] leading-[1.1] md:text-[2vw] font-about-complement">
+                <h2 className="gsap-anim-year projectyear text-foreground text-xl sm:text-2xl lg:text-[2vw] font-about-complement">
                   {project.year}
                 </h2>
               </div>
               <div className="shortdescription">
-                <h4 className="gsap-anim-tagline projectshorttag text-white text-[3vw] leading-[1] md:text-[1.3vw] font-about-proj">
+                <h4 className="gsap-anim-tagline projectshorttag text-foreground text-base sm:text-lg lg:text-[1.3vw] font-about-proj leading-tight">
                   {project.tagline}
                 </h4>
               </div>
             </div>
 
-            <div className="flex flex-wrap gap-[2vw] md:gap-[1vw] mt-[3vw] md:mt-[1vw]">
+            {/* FIX 5: Responsive button layout */}
+            <div className="flex flex-wrap gap-3 lg:gap-[1vw] mt-6 lg:mt-[1vw]">
               <MagneticScrambleButton
                 text="LIVE LINK"
                 href={project.link}
                 wrapperClassName="gsap-anim-live-link"
-                buttonClassName="bg-[#242A23]"
-                textClassName="text-[4vw] md:text-[1.3vw] leading-[1.2]"
+                buttonClassName="bg-primary text-primary-foreground hover:bg-primary/90"
+                textClassName="text-sm sm:text-base lg:text-[1.3vw] leading-[1.2]"
               />
 
               {project.githubLink && (
@@ -342,20 +378,23 @@ export const ProjectDetail = ({ project, onReturn }: ProjectDetailProps) => {
                   text="GITHUB REPO"
                   href={project.githubLink}
                   wrapperClassName="gsap-anim-github-link"
-                  buttonClassName="bg-[#242A23]"
-                  textClassName="text-[4vw] md:text-[1.3vw] leading-[1.2]"
+                  buttonClassName="bg-secondary text-secondary-foreground hover:bg-secondary/90"
+                  textClassName="text-sm sm:text-base lg:text-[1.3vw] leading-[1.2]"
                 />
               )}
             </div>
           </div>
 
-          <ProjectMediaCarousel
-            project={project}
-            containerAspectRatio={containerAspectRatio}
-          />
+          {/* FIX 6: Responsive media carousel */}
+          <div className="mt-6 lg:mt-0">
+            <ProjectMediaCarousel
+              project={project}
+              containerAspectRatio={containerAspectRatio}
+            />
+          </div>
         </div>
 
-        <div className="right-part h-[52%] mt-auto md:h-full flex flex-col justify-end w-full md:w-[56%]">
+        <div className="right-part mt-8 lg:mt-auto lg:h-full flex flex-col justify-end w-full lg:w-[56%]">
           <ProjectDetailsSidebar
             description={project.description}
             techStack={project.techStack}
@@ -364,7 +403,7 @@ export const ProjectDetail = ({ project, onReturn }: ProjectDetailProps) => {
         </div>
       </div>
 
-      <div ref={footerRef} className="relative bottom-0 left-0 right-0 z-50">
+      <div ref={footerRef} className="relative bottom-0 left-0 right-0 z-40">
         <Footer />
       </div>
     </div>

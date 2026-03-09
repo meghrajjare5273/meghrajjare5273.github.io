@@ -133,15 +133,12 @@ export function ProjectsList({ projects }: ProjectsListProps) {
         {/* List Section */}
         <div className="project-list-container w-full flex flex-col">
           {projects.map((project, index) => (
-            <>
+            <React.Fragment key={project.slug || project.title}>
               {/* Replace project.id with project.slug or project.title */}
-              <div
-                key={project.slug || project.title}
-                className="project-row-wrapper opacity-0"
-              >
+              <div className="project-row-wrapper opacity-0">
                 <ProjectRow project={project} index={index + 1} />
               </div>
-            </>
+            </React.Fragment>
           ))}
         </div>
       </main>
