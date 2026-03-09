@@ -6,7 +6,7 @@ interface ProjectsPageOrchestratorProps {
   children: React.ReactNode;
 }
 
-// We define the grid structure in CSS classes, 
+// We define the grid structure in CSS classes,
 // so we don't need a hardcoded "PANEL_COUNT" constant for logic anymore.
 // Mobile = 3 cols, Desktop = 5 cols.
 
@@ -98,34 +98,34 @@ export function ProjectsPageOrchestrator({
               duration: 0.4,
               ease: "back.out(2)",
             },
-            "-=0.3"
+            "-=0.3",
           )
           .call(
             () => {
               window.dispatchEvent(
                 new CustomEvent("page-transition-complete", {
                   detail: { timestamp: Date.now() },
-                })
+                }),
               );
             },
             undefined,
-            "+=0.1"
+            "+=0.1",
           );
       };
 
       document.addEventListener(
         "astro:before-preparation",
-        handleBeforePreparation
+        handleBeforePreparation,
       );
 
       return () => {
         document.removeEventListener(
           "astro:before-preparation",
-          handleBeforePreparation
+          handleBeforePreparation,
         );
       };
     },
-    { scope: containerRef }
+    { scope: containerRef },
   );
 
   return (
@@ -134,7 +134,7 @@ export function ProjectsPageOrchestrator({
       <div
         ref={containerRef}
         className="fixed inset-0 z-100000 pointer-events-none grid grid-cols-3 md:grid-cols-5 h-full w-screen overflow-hidden"
->
+      >
         {Array.from({ length: 5 }).map((_, index) => (
           <div
             key={index}

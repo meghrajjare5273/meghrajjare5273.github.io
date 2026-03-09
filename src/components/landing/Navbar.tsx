@@ -1,5 +1,3 @@
-"use client";
-
 import React, { useEffect, useRef, useState } from "react";
 import { MenuToggleIcon } from "@/components/ui/menu-toggle";
 import { initTheme } from "@/lib/theme";
@@ -56,7 +54,7 @@ export default function Navbar() {
             stagger: 0.05,
             ease: "power3.out",
           },
-          "-=0.1"
+          "-=0.1",
         )
         // Fade in bottom meta
         .to(
@@ -68,14 +66,12 @@ export default function Navbar() {
             stagger: 0.1,
             ease: "power3.out",
           },
-          "<+=0.2"
+          "<+=0.2",
         );
 
       timeline.current = tl;
-    }
-    ,
-    { scope: menuContainerRef }
- 
+    },
+    { scope: menuContainerRef },
   );
 
   // Control Timeline based on state
@@ -131,7 +127,7 @@ export default function Navbar() {
           <div className="flex-1 flex justify-start z-10">
             <a href="/" aria-label="Home" className="hidden md:block">
               <div className="text-2xl font-bold tracking-tighter text-foreground">
- <svg
+                <svg
                   width="33.93"
                   height="45"
                   viewBox="0 0 172.25571 228.51735"
@@ -165,7 +161,10 @@ export default function Navbar() {
 
           {/* Center: Name */}
           <div className="absolute left-1/2 top-1/2 transform -translate-x-1/2 -translate-y-1/2 z-0">
-            <div className="text-4xl font-stretch-condensed md:text-5xl text-foreground font-handwriting whitespace-nowrap" style={{ fontWeight: "bold" }}>
+            <div
+              className="text-4xl font-stretch-condensed md:text-5xl text-foreground font-handwriting whitespace-nowrap"
+              style={{ fontWeight: "bold" }}
+            >
               Meghraj Jare
             </div>
           </div>
@@ -208,7 +207,6 @@ export default function Navbar() {
         }}
       >
         <div className="relative w-full h-full flex flex-col justify-between">
-          
           {/* Top Bar: Theme Toggle + Close Button */}
           <div className="w-full flex justify-end items-center px-6 py-6 md:px-12 lg:px-24">
             <div className="flex items-center gap-6">
@@ -216,7 +214,7 @@ export default function Navbar() {
                 className="text-foreground hover:opacity-70 transition-opacity duration-300"
                 direction="top"
               />
-              
+
               <button
                 type="button"
                 className="group relative flex items-center justify-center p-2 rounded-full border border-transparent hover:border-foreground/10 transition-all duration-300"
@@ -241,24 +239,28 @@ export default function Navbar() {
           */}
           <div className="flex-1 flex flex-col justify-center px-6 md:px-12 lg:px-24 w-full">
             <div className="w-full max-w-screen-2xl mx-auto flex justify-start">
-               <MenuComponent className="font-about" />
+              <MenuComponent className="font-about" />
             </div>
           </div>
 
           {/* Bottom Meta Section */}
           <div className="w-full px-6 py-6 md:px-12 lg:px-24 pb-10">
             <div className="max-w-screen-2xl mx-auto flex flex-col md:flex-row items-center md:items-end justify-between gap-6 text-center md:text-left text-xs md:text-sm font-medium tracking-wide uppercase text-neutral-500 dark:text-neutral-400">
-              
               {/* Left Side: Copyright */}
               <div className="menu-meta order-2 md:order-1">
                 <span className="block md:inline">©2025 Meghraj Jare</span>
                 <span className="hidden md:inline mx-2">|</span>
-                <a href="#" className="hover:text-foreground transition-colors">Privacy Policy</a>
+                <a href="#" className="hover:text-foreground transition-colors">
+                  Privacy Policy
+                </a>
               </div>
 
               {/* Right Side: Contact Info */}
               <div className="menu-meta order-1 md:order-2 flex flex-col md:items-end gap-1">
-                <a href="mailto:meghrajjare77@gmail.com" className="hover:text-foreground transition-colors text-foreground md:text-base font-normal normal-case tracking-normal">
+                <a
+                  href="mailto:meghrajjare77@gmail.com"
+                  className="hover:text-foreground transition-colors text-foreground md:text-base font-normal normal-case tracking-normal"
+                >
                   meghrajjare77@gmail.com
                 </a>
                 <span className="opacity-60">Pune, Maharashtra, India</span>

@@ -1,8 +1,6 @@
 ---
 // src/layouts/ProjectLayout.astro
 import Layout from "./Layout.astro";
-import Navbar from "@/components/landing/Navbar";
-import Footer from "@/components/landing/Footer";
 import type { ProjectDetailData } from "@/lib/project-content";
 
 interface Props {
@@ -29,12 +27,8 @@ const canonicalURL = new URL(Astro.url.pathname, Astro.site);
     <meta name="twitter:card" content="summary_large_image" />
     <link rel="canonical" href={canonicalURL} />
   </slot>
-
-  <Navbar client:load />
   
   <main>
     <slot />
   </main>
-
-  <Footer client:visible />
 </Layout>

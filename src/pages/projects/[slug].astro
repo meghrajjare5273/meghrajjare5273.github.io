@@ -8,18 +8,18 @@ import { ProjectsPageOrchestrator } from '@/components/orchestrators/ProjectPage
 export async function getStaticPaths() {
   const projects = await getCollection('projects');
   return projects.map((entry) => ({
-    params: { slug: entry.slug || entry.id },
+    params: { slug: entry.data.slug || entry.id },
     props: { entry },
   }));
 }
 
 const { entry } = Astro.props;
-const { Content } = await render(entry);
 const projectData = entry.data;
+const slug = projectData.slug!;
 ---
 
-<ProjectLayout project={projectData}>
+<ProjectLayout project={{...projectData, slug}}>
   <ProjectsPageOrchestrator client:load>
-    <ProjectDetail project={projectData} client:load />
+    <ProjectDetail project={{...projectData, slug}} client:load />
   </ProjectsPageOrchestrator>
 </ProjectLayout>
