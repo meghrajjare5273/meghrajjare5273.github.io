@@ -9,6 +9,7 @@ import Macbook from "@/components/ui/macbook";
 import IPhoneMockup from "@/components/ui/iphone";
 import { GridBackground } from "../ui/grid-background";
 import StatusCard from "@/components/ui/status-card";
+import { introState } from "@/lib/intro-state";
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -51,6 +52,10 @@ export function HeroSection() {
   }, []);
 
   useEffect(() => {
+    if (introState.complete) {
+      setCanAnimate(true);
+      return;
+    }
     const handleIntroComplete = () => setCanAnimate(true);
     window.addEventListener("page-intro-complete", handleIntroComplete);
     return () =>

@@ -1,7 +1,9 @@
-import React, { useRef, useState, useLayoutEffect } from "react";
+// src/components/orchestrators/PageOrchestrator.tsx
+import React, { useRef, useState, useEffect } from "react";
 import gsap from "gsap";
 import { useGSAP } from "@gsap/react";
 import SignatureLogo from "../loading/signature-logo";
+import { introState } from "@/lib/intro-state"; // ← NEW
 
 interface PageOrchestratorProps {
   children: React.ReactNode;
@@ -9,42 +11,46 @@ interface PageOrchestratorProps {
 
 const SIGNATURE_DRAW_DURATION = 2.0;
 
+function computeShouldPlayIntro(): boolean {
+  if (typeof window === "undefined") return false;
+  const hasVisited = sessionStorage.getItem("intro-completed");
+  const navEntry = performance.getEntriesByType(
+    "navigation",
+  )[0] as PerformanceNavigationTiming;
+  return !(hasVisited && navEntry?.type !== "reload");
+}
+
 export function PageOrchestrator({ children }: PageOrchestratorProps) {
-  const [introFinished, setIntroFinished] = useState(false);
-  const [shouldPlayIntro, setShouldPlayIntro] = useState(true);
+  const [shouldPlayIntro] = useState<boolean>(computeShouldPlayIntro);
+  const [introFinished, setIntroFinished] = useState<boolean>(
+    () => !shouldPlayIntro,
+  );
 
   const introContainerRef = useRef<HTMLDivElement>(null);
   const signatureWrapperRef = useRef<HTMLDivElement>(null);
   const contentRef = useRef<HTMLDivElement>(null);
 
-  // In PageOrchestrator.tsx, replace the useLayoutEffect with:
-  useLayoutEffect(() => {
+  useEffect(() => {
     const handleBeforePreparation = () => {
-      // Clear the flag when navigating AWAY from home
+      // Clear sessionStorage flag if navigating away from home
       if (
         window.location.pathname !== "/" &&
         window.location.pathname !== "/index.astro"
       ) {
         sessionStorage.removeItem("intro-completed");
       }
+      // ── KEY CHANGE ──────────────────────────────────────────────
+      // Always reset the signal so HeroSection starts fresh on the
+      // next visit to "/". Without this, canAnimate would be set
+      // immediately on re-entry without the animation logic running.
+      introState.reset();
+      // ────────────────────────────────────────────────────────────
     };
-
-    const hasVisited = sessionStorage.getItem("intro-completed");
-    const navEntry = performance.getEntriesByType(
-      "navigation",
-    )[0] as PerformanceNavigationTiming;
-    // Only skip intro if we're on the same page within the same navigation session
-    if (hasVisited && navEntry?.type !== "reload") {
-      // Not a reload
-      setShouldPlayIntro(false);
-      setIntroFinished(true);
-    }
 
     document.addEventListener(
       "astro:before-preparation",
       handleBeforePreparation,
     );
-
     return () => {
       document.removeEventListener(
         "astro:before-preparation",
@@ -55,7 +61,15 @@ export function PageOrchestrator({ children }: PageOrchestratorProps) {
 
   useGSAP(() => {
     if (!shouldPlayIntro) {
+      // Returning visitor — skip intro, make content visible immediately.
       gsap.set(contentRef.current, { opacity: 1, zIndex: 1 });
+
+      // ── KEY CHANGE ──────────────────────────────────────────────
+      // Mark the signal BEFORE dispatching. Any island whose useEffect
+      // runs AFTER this point will check the flag and act immediately
+      // without needing to receive the event.
+      introState.markComplete();
+      // ────────────────────────────────────────────────────────────
 
       window.dispatchEvent(
         new CustomEvent("page-intro-complete", {
@@ -65,6 +79,7 @@ export function PageOrchestrator({ children }: PageOrchestratorProps) {
       return;
     }
 
+    // First-time visitor — run full intro animation.
     const originalOverflow = document.body.style.overflow;
     document.body.style.overflow = "hidden";
 
@@ -77,22 +92,14 @@ export function PageOrchestrator({ children }: PageOrchestratorProps) {
     });
 
     gsap.set(contentRef.current, { zIndex: 1, opacity: 1 });
-    // FIX: Increased zIndex from 50 to 9999 to correctly cover all page content
     gsap.set(introContainerRef.current, { zIndex: 9999, yPercent: 0 });
 
     tl.to({}, { duration: SIGNATURE_DRAW_DURATION * 0.85 });
-
     tl.to(
       signatureWrapperRef.current,
-      {
-        y: -80,
-        opacity: 0,
-        duration: 0.8,
-        ease: "power2.in",
-      },
+      { y: -80, opacity: 0, duration: 0.8, ease: "power2.in" },
       "exit",
     );
-
     tl.to(
       introContainerRef.current,
       {
@@ -100,6 +107,9 @@ export function PageOrchestrator({ children }: PageOrchestratorProps) {
         duration: 0.8,
         ease: "power4.inOut",
         onStart: () => {
+          // ── KEY CHANGE ────────────────────────────────────────────
+          introState.markComplete(); // mark before dispatching
+          // ──────────────────────────────────────────────────────────
           window.dispatchEvent(
             new CustomEvent("page-intro-complete", {
               detail: { timestamp: Date.now() },
@@ -132,7 +142,6 @@ export function PageOrchestrator({ children }: PageOrchestratorProps) {
           </div>
         </div>
       )}
-
       <div ref={contentRef} className="relative min-h-screen bg-background">
         {children}
       </div>

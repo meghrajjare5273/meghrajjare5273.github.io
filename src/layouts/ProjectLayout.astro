@@ -18,7 +18,7 @@ const canonicalURL = new URL(Astro.url.pathname, Astro.site);
   title={`${project.title} | Meghraj Jare`} 
   description={seoDescription}
 >
-  <slot name="seo-meta" slot="head">
+  <slot name="head" slot="head">
     <meta property="og:title" content={`${project.title} | Meghraj Jare`} />
     <meta property="og:description" content={seoDescription} />
     <meta property="og:type" content="article" />

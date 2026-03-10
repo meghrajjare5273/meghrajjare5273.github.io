@@ -1,0 +1,246 @@
+/* src/styles/blog-section.css */
+
+/* ── CSS Variables (override these in your :root theme) ── */
+:root {
+  --blog-row-bg: transparent;
+  --blog-row-text: #0a0a0a;
+  --blog-hover-bg: #0a0a0a;
+  --blog-hover-text: #f5f5f0;
+  --blog-accent: #0a0a0a;
+  --blog-muted: #888;
+  --blog-divider: #d0d0ce;
+  --blog-font-sans: "Inter", "Helvetica Neue", sans-serif;
+}
+
+/* ── Section Layout ── */
+.blog-section {
+  display: grid;
+  grid-template-columns: 320px 1fr;
+  gap: 0;
+  min-height: 100vh;
+  padding: 0;
+  font-family: var(--blog-font-sans);
+}
+
+@media (max-width: 768px) {
+  .blog-section {
+    grid-template-columns: 1fr;
+    grid-template-rows: auto auto;
+  }
+}
+
+/* ── Sidebar ── */
+.blog-sidebar {
+  padding: 2rem 2rem 2rem 2.5rem;
+  border-right: 1px solid var(--blog-divider);
+}
+
+.blog-sidebar-content {
+  position: sticky;
+  top: 2rem;
+}
+
+.blog-heading {
+  font-size: clamp(3rem, 6vw, 5rem);
+  font-weight: 800;
+  line-height: 1;
+  letter-spacing: -0.03em;
+  margin: 0 0 2rem 0;
+  color: var(--blog-accent);
+}
+
+.blog-count {
+  font-size: 1rem;
+  font-weight: 400;
+  vertical-align: super;
+  margin-left: 0.15em;
+  color: var(--blog-muted);
+  letter-spacing: 0;
+}
+
+.blog-sidebar-label {
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--blog-accent);
+  margin-bottom: 0.5rem;
+}
+
+.blog-sidebar-divider {
+  height: 1px;
+  background: var(--blog-divider);
+  margin-bottom: 1rem;
+}
+
+.blog-description {
+  font-size: 0.875rem;
+  line-height: 1.6;
+  color: var(--blog-muted);
+  max-width: 280px;
+  margin: 0 0 1.75rem 0;
+}
+
+/* ── Sidebar Thumbnail ── */
+.blog-sidebar-thumbnail {
+  position: relative;
+  width: 100%;
+  max-width: 280px;
+  aspect-ratio: 1 / 1;
+  background: #0a0a0a;
+  overflow: hidden;
+}
+
+.blog-thumbnail-label {
+  position: absolute;
+  top: 0.75rem;
+  left: 0.85rem;
+  color: #f5f5f0;
+  font-size: 1.4rem;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  z-index: 2;
+  line-height: 1;
+}
+
+.blog-thumbnail-img {
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  width: 65%;
+  height: 75%;
+  object-fit: cover;
+  display: block;
+}
+
+/* ── Article List ── */
+.blog-article-list {
+  padding: 0 2.5rem;
+}
+
+.blog-list-header {
+  display: grid;
+  grid-template-columns: 140px 1fr;
+  padding: 1rem 0;
+  border-bottom: 1px solid var(--blog-divider);
+}
+
+.blog-header-label {
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--blog-muted);
+}
+
+.blog-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.blog-list-li {
+  position: relative;
+}
+
+/* ── List Item ── */
+.blog-list-item {
+  display: block;
+  text-decoration: none;
+  position: relative;
+  overflow: hidden;
+  cursor: pointer;
+  /* smooth bg transition fallback (GSAP overrides) */
+  transition: background-color 0.3s ease;
+}
+
+.blog-item-divider {
+  height: 1px;
+  background: var(--blog-divider);
+  width: 100%;
+}
+
+.blog-item-inner {
+  display: grid;
+  grid-template-columns: 140px 1fr;
+  align-items: center;
+  height: 80px; /* fixed row height for ticker math */
+  overflow: hidden;
+}
+
+/* ── Ticker Wrapper ── */
+/* 3 spans stacked: total height = 3 × row height */
+/* Shifting by -33.333% reveals the 2nd span exactly */
+.blog-ticker-wrapper {
+  display: flex;
+  flex-direction: column;
+  /* will-change for perf */
+  will-change: transform;
+}
+
+.blog-ticker-span {
+  height: 80px; /* must match .blog-item-inner height */
+  display: flex;
+  align-items: center;
+  flex-shrink: 0;
+  font-size: 0.9rem;
+  color: inherit;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.blog-ticker-title {
+  font-size: clamp(1rem, 2vw, 1.35rem);
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  white-space: normal; /* allow wrapping for long titles */
+  line-height: 1.2;
+}
+
+/* ── Hover Image ── */
+.blog-item-hover-image {
+  padding: 0 0 1rem 140px; /* align under the title column */
+  will-change: transform, opacity;
+}
+
+.blog-item-hover-image img {
+  width: 200px;
+  height: 130px;
+  object-fit: cover;
+  display: block;
+}
+
+/* ── Mobile ── */
+@media (max-width: 768px) {
+  .blog-sidebar {
+    border-right: none;
+    border-bottom: 1px solid var(--blog-divider);
+    padding: 1.5rem;
+  }
+
+  .blog-sidebar-content {
+    position: static;
+  }
+
+  .blog-article-list {
+    padding: 0 1.5rem;
+  }
+
+  .blog-item-inner {
+    grid-template-columns: 100px 1fr;
+    height: 70px;
+  }
+
+  .blog-ticker-span {
+    height: 70px;
+  }
+
+  .blog-item-hover-image {
+    padding-left: 100px;
+  }
+
+  .blog-ticker-title {
+    font-size: 0.95rem;
+  }
+}
