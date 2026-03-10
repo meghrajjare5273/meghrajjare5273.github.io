@@ -301,18 +301,18 @@ export const ProjectDetail = ({ project, onReturn }: ProjectDetailProps) => {
   );
 
   return (
-    <div className="relative min-h-screen bg-background">
+    <div className="relative min-h-screen bg-[#eceae8] dark:bg-[#0a0a0a]">
       {/* FIX 3: Navbar with proper z-index and backdrop blur for better visibility */}
       <div
         ref={navbarRef}
-        className="fixed top-0 left-0 right-0 z-50 bg-background/80 border-b border-border/50"
+        className="fixed top-0 left-0 right-0 z-50 bg-[#eceae8]/80 dark:bg-[#0a0a0a]/80"
       >
         <Navbar />
       </div>
 
       <div
         ref={containerRef}
-        className="infoverview flex flex-col lg:flex-row px-4 sm:px-6 lg:px-[2vw] py-20 lg:py-[4vw] min-h-screen w-full relative z-[2] bg-background/80 text-foreground overflow-hidden pt-24 lg:pt-[100px] pb-16 lg:pb-[80px]"
+        className="infoverview flex flex-col lg:flex-row px-4 sm:px-6 lg:px-[2vw] py-20 lg:py-[4vw] min-h-screen w-full relative z-[2] text-neutral-900 dark:text-white overflow-hidden pt-24 lg:pt-[100px] pb-16 lg:pb-[80px]"
       >
         <div
           ref={contentWrapperRef}

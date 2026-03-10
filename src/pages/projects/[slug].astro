@@ -1,6 +1,6 @@
 ---
 // src/pages/projects/[slug].astro
-import { getCollection, render } from 'astro:content';
+import { getCollection } from 'astro:content';
 import ProjectLayout from '@/layouts/ProjectLayout.astro';
 import { ProjectDetail } from '@/components/projects/ProjectDetail';
 import { ProjectsPageOrchestrator } from '@/components/orchestrators/ProjectPageOrchestrator';
@@ -15,11 +15,10 @@ export async function getStaticPaths() {
 
 const { entry } = Astro.props;
 const projectData = entry.data;
-const slug = projectData.slug!;
 ---
 
-<ProjectLayout project={{...projectData, slug}}>
+<ProjectLayout project={projectData}>
   <ProjectsPageOrchestrator client:load>
-    <ProjectDetail project={{...projectData, slug}} client:load />
+    <ProjectDetail project={projectData} client:load />
   </ProjectsPageOrchestrator>
 </ProjectLayout>

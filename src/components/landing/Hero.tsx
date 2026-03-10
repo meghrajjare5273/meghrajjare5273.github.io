@@ -324,7 +324,7 @@ export function HeroSection() {
                   />
                 </div>
                 <p className="w-full md:w-fit font-about text-base md:text-lg leading-relaxed max-w-[320px] uppercase tracking-wide transition-transform duration-500 ease-out group-hover:translate-x-4 backdrop-blur-md md:backdrop-blur-none rounded-md p-2 md:p-0 pointer-events-auto">
-                  I build and design full stack web appplications using modern
+                  I build and design full stack web applications using modern
                   tech &amp; AI.
                 </p>
               </div>
