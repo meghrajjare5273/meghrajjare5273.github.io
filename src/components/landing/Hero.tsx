@@ -3,13 +3,13 @@ import { ArrowDown } from "lucide-react";
 import gsap from "gsap";
 import { useGSAP } from "@gsap/react";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
-import Lenis from "lenis";
 import Navbar from "@/components/landing/Navbar";
 import Macbook from "@/components/ui/macbook";
 import IPhoneMockup from "@/components/ui/iphone";
 import { GridBackground } from "../ui/grid-background";
 import StatusCard from "@/components/ui/status-card";
 import { introState } from "@/lib/intro-state";
+import { useLenis } from "@/hooks/use-lenis";
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -22,7 +22,8 @@ export function HeroSection() {
   const macbookRef = useRef<HTMLDivElement>(null);
   const iphoneRef = useRef<HTMLDivElement>(null);
   const [canAnimate, setCanAnimate] = useState(false);
-  const [lenis, setLenis] = useState<Lenis | null>(null);
+  // const [lenis, setLenis] = useState<Lenis | null>(null);
+  const lenis = useLenis();
 
   // 2. Custom hook logic to lock height
   const [mobileHeight, setMobileHeight] = useState("100vh");
@@ -60,30 +61,6 @@ export function HeroSection() {
     window.addEventListener("page-intro-complete", handleIntroComplete);
     return () =>
       window.removeEventListener("page-intro-complete", handleIntroComplete);
-  }, []);
-
-  useEffect(() => {
-    const lenisInstance = new Lenis({
-      lerp: 0.08,
-      wheelMultiplier: 1.2,
-      touchMultiplier: 1.2,
-    });
-
-    setLenis(lenisInstance);
-
-    lenisInstance.on("scroll", ScrollTrigger.update);
-
-    function update(time: number) {
-      lenisInstance.raf(time * 1000);
-    }
-
-    gsap.ticker.add(update);
-    gsap.ticker.lagSmoothing(0);
-
-    return () => {
-      gsap.ticker.remove(update);
-      lenisInstance.destroy();
-    };
   }, []);
 
   useGSAP(

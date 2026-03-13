@@ -1,0 +1,53 @@
+---
+// No frontmatter needed – this is a pure client-side script component
+---
+
+<script>
+  import Lenis from 'lenis';
+  import gsap from 'gsap';
+  import ScrollTrigger from 'gsap/ScrollTrigger';
+
+  gsap.registerPlugin(ScrollTrigger);
+
+  let lenis: Lenis | null = null;
+  let tickerCallback: ((time: number) => void) | null = null;
+
+  function initLenis(): void {
+    // --- Teardown ---
+    if (tickerCallback) {
+      gsap.ticker.remove(tickerCallback);
+      tickerCallback = null;
+    }
+    if (lenis) {
+      lenis.destroy();
+      lenis = null;
+    }
+
+    // --- Create ---
+    lenis = new Lenis({
+      lerp: 0.05,
+      wheelMultiplier: 1.1,
+      touchMultiplier: 1.1,
+    });
+
+    // Sync Lenis scroll position → GSAP ScrollTrigger scrubs
+    lenis.on('scroll', ScrollTrigger.update);
+
+    // Drive Lenis through GSAP's ticker (not rAF directly)
+    tickerCallback = (time: number) => lenis!.raf(time * 1000);
+    gsap.ticker.add(tickerCallback);
+    gsap.ticker.lagSmoothing(0);
+
+    // Expose globally for React islands to read if needed
+    (window as any).lenis = lenis;
+
+    // Notify islands that a fresh Lenis instance is available
+    document.dispatchEvent(new CustomEvent('lenis:ready', { detail: lenis }));
+  }
+
+  // Run on initial page load
+  initLenis();
+
+  // Re-run after every ClientRouter navigation (DOM is swapped, islands not yet mounted)
+  document.addEventListener('astro:after-swap', initLenis);
+</script>
