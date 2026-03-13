@@ -5,10 +5,15 @@ import MenuComponent from "@/components/ui/menu";
 import { VerticalThemeWipeToggle } from "@/components/ui/theme-toggle";
 import gsap from "gsap";
 import { useGSAP } from "@gsap/react";
+import type Lenis from "lenis";
 
 // Register GSAP plugin
 
-export default function Navbar() {
+interface NavbarProps {
+  lenis?: Lenis | null;
+}
+
+export default function Navbar({ lenis }: NavbarProps) {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
   // Refs for GSAP

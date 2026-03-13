@@ -71,6 +71,8 @@ export function HeroSection() {
 
     setLenis(lenisInstance);
 
+    lenisInstance.on("scroll", ScrollTrigger.update);
+
     function update(time: number) {
       lenisInstance.raf(time * 1000);
     }

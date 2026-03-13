@@ -1,269 +1,265 @@
-// src/components/blogs/Section.tsx
-"use client";
+import { useCallback, useRef } from "react";
+import { gsap } from "gsap";
 
-import { useRef, useEffect, useState } from "react";
-import gsap from "gsap";
-
-interface BlogPost {
+type BlogPost = {
   slug: string;
   date: string;
   title: string;
   image: string;
-}
+};
 
 const BLOG_POSTS: BlogPost[] = [
   {
     slug: "the-creative-website-guide",
     date: "2026.1.11",
     title: "The Creative Website Guide",
-    image: "/images/blog/post-1.jpg",
+    image:
+      "https://images.unsplash.com/photo-1467232004584-a241de8bcf5d?w=400&q=80",
   },
   {
     slug: "how-to-rewire-your-brain-to-be-addicted-to-coding",
     date: "2025.12.22",
     title: "How to rewire your brain to be addicted to coding",
-    image: "/images/blog/post-2.jpg",
+    image:
+      "https://images.unsplash.com/photo-1555066931-4365d14bab8c?w=400&q=80",
   },
   {
     slug: "everything-you-need-to-know-to-make-a-good-developer-portfolio-site",
     date: "2025.12.15",
     title:
       "Everything You Need to Know To Make A Good Developer Portfolio Site",
-    image: "/images/blog/post-3.jpg",
+    image:
+      "https://images.unsplash.com/photo-1517180102446-f3ece451e9d8?w=400&q=80",
   },
 ];
 
-function BlogListItem({
-  post,
-  onHover,
-  onLeave,
-}: {
-  post: BlogPost;
-  onHover: (post: BlogPost) => void;
-  onLeave: () => void;
-}) {
-  const rowRef = useRef<HTMLAnchorElement>(null);
-  const dateWrapperRef = useRef<HTMLDivElement>(null);
-  const textWrapperRef = useRef<HTMLDivElement>(null);
-  const tlRef = useRef<gsap.core.Timeline | null>(null);
-
-  useEffect(() => {
-    const row = rowRef.current;
-    const dateWrapper = dateWrapperRef.current;
-    const textWrapper = textWrapperRef.current;
-
-    if (!row || !dateWrapper || !textWrapper) return;
-
-    gsap.set([dateWrapper, textWrapper], { y: "0%" });
-
-    const onEnter = () => {
-      onHover(post);
-      if (tlRef.current) tlRef.current.kill();
-      tlRef.current = gsap.timeline();
-
-      gsap.killTweensOf([dateWrapper, textWrapper]);
-
-      tlRef.current
-        .to(
-          [dateWrapper, textWrapper],
-          { y: "-33.333%", duration: 0.4, ease: "power2.out", stagger: 0.02 },
-          0,
-        )
-        .to(
-          row,
-          {
-            backgroundColor: "#0a0a0a",
-            color: "#f5f5f0",
-            duration: 0.3,
-            ease: "power2.out",
-          },
-          0,
-        );
-    };
-
-    const onLeaveLocal = () => {
-      onLeave();
-      if (tlRef.current) tlRef.current.kill();
-      tlRef.current = gsap.timeline();
-
-      gsap.killTweensOf([dateWrapper, textWrapper]);
-
-      tlRef.current
-        .to(
-          [dateWrapper, textWrapper],
-          { y: "0%", duration: 0.4, ease: "power2.out", stagger: 0.02 },
-          0,
-        )
-        .to(
-          row,
-          {
-            backgroundColor: "transparent",
-            color: "#0a0a0a",
-            duration: 0.3,
-            ease: "power2.out",
-          },
-          0,
-        );
-    };
-
-    row.addEventListener("mouseenter", onEnter);
-    row.addEventListener("mouseleave", onLeaveLocal);
-
-    return () => {
-      row.removeEventListener("mouseenter", onEnter);
-      row.removeEventListener("mouseleave", onLeaveLocal);
-      tlRef.current?.kill();
-    };
-  }, [post, onHover, onLeave]);
-
-  // Shared ticker span classes for date and title columns
-  const tickerSpanBase =
-    "h-[100px] max-[900px]:h-[80px] max-[600px]:h-[70px] flex items-center shrink-0 text-[0.9375rem] max-[600px]:text-[0.875rem] text-inherit whitespace-nowrap overflow-hidden text-ellipsis";
-
-  const tickerSpanTitle =
-    "h-[100px] max-[900px]:h-[80px] max-[600px]:h-[70px] flex items-center shrink-0 text-[1.75rem] max-[900px]:text-[1.25rem] max-[600px]:text-base font-semibold tracking-[-0.02em] whitespace-nowrap max-[600px]:whitespace-normal leading-[1.2] max-[600px]:leading-[1.3] overflow-hidden text-ellipsis text-inherit";
-
-  return (
-    <a
-      ref={rowRef}
-      href={`/blog/${post.slug}`}
-      className="block no-underline relative overflow-hidden cursor-pointer"
-      style={{ backgroundColor: "transparent", color: "#0a0a0a" }}
-    >
-      {/* Divider */}
-      <div className="h-px bg-[#e5e5e5] w-full" />
-
-      {/* Inner grid row */}
-      <div className="grid grid-cols-[140px_1fr] max-[900px]:grid-cols-[100px_1fr] max-[600px]:grid-cols-[80px_1fr] items-center h-[100px] max-[900px]:h-[80px] max-[600px]:h-[70px] overflow-hidden px-10 max-[900px]:px-8 max-[600px]:px-6">
-        {/* DATE column */}
-        <div className="overflow-hidden h-[100px] max-[900px]:h-[80px] max-[600px]:h-[70px]">
-          <div
-            ref={dateWrapperRef}
-            className="flex flex-col will-change-transform"
-          >
-            <span className={tickerSpanBase}>{post.date}</span>
-            <span className={tickerSpanBase}>{post.date}</span>
-            <span className={tickerSpanBase}>{post.date}</span>
-          </div>
-        </div>
-
-        {/* TITLE column */}
-        <div className="overflow-hidden h-[100px] max-[900px]:h-[80px] max-[600px]:h-[70px]">
-          <div
-            ref={textWrapperRef}
-            className="flex flex-col will-change-transform"
-          >
-            <span className={tickerSpanTitle}>{post.title}</span>
-            <span className={tickerSpanTitle}>{post.title}</span>
-            <span className={tickerSpanTitle}>{post.title}</span>
-          </div>
-        </div>
-      </div>
-    </a>
-  );
-}
-
 export default function BlogSection() {
-  const [activePost, setActivePost] = useState<BlogPost | null>(null);
-  const imageRef = useRef<HTMLImageElement>(null);
+  const imgARef = useRef<HTMLImageElement | null>(null);
+  const imgBRef = useRef<HTMLImageElement | null>(null);
+  const imageCardRef = useRef<HTMLDivElement | null>(null);
+  const numBadgeRef = useRef<HTMLSpanElement | null>(null);
 
-  const displayPost = activePost || BLOG_POSTS[0];
+  const dateTrackRefs = useRef<Array<HTMLDivElement | null>>([]);
+  const titleTrackRefs = useRef<Array<HTMLDivElement | null>>([]);
 
-  const handleHover = (post: BlogPost) => {
-    if (imageRef.current && post.image !== displayPost.image) {
-      gsap.to(imageRef.current, {
-        opacity: 0,
-        duration: 0.15,
-        onComplete: () => {
-          setActivePost(post);
-          gsap.to(imageRef.current, { opacity: 1, duration: 0.2 });
-        },
+  const useARef = useRef<boolean>(true);
+
+  const showImage = useCallback((): void => {
+    if (!imageCardRef.current) return;
+
+    gsap.to(imageCardRef.current, {
+      opacity: 1,
+      scale: 1,
+      duration: 0.4,
+      ease: "power2.out",
+      overwrite: true,
+    });
+  }, []);
+
+  const hideImage = useCallback((): void => {
+    if (!imageCardRef.current) return;
+
+    gsap.to(imageCardRef.current, {
+      opacity: 0,
+      scale: 0.95,
+      duration: 0.3,
+      ease: "power2.in",
+      overwrite: true,
+    });
+  }, []);
+
+  const rollText = useCallback(
+    (trackEl: HTMLDivElement | null, reverse = false): void => {
+      if (!trackEl) return;
+
+      gsap.killTweensOf(trackEl);
+
+      if (!reverse) {
+        gsap.fromTo(
+          trackEl,
+          { yPercent: 0 },
+          {
+            yPercent: -33.333,
+            duration: 0.5,
+            ease: "power2.out",
+            overwrite: true,
+          },
+        );
+        return;
+      }
+
+      gsap.to(trackEl, {
+        yPercent: 0,
+        duration: 0.3,
+        ease: "power2.inOut",
+        overwrite: true,
       });
-    } else {
-      setActivePost(post);
+    },
+    [],
+  );
+
+  const crossfadeImages = useCallback((post: BlogPost, num: number): void => {
+    const outgoingEl = useARef.current ? imgARef.current : imgBRef.current;
+    const incomingEl = useARef.current ? imgBRef.current : imgARef.current;
+
+    if (!outgoingEl || !incomingEl) return;
+
+    gsap.killTweensOf([outgoingEl, incomingEl], "opacity");
+
+    gsap.set(incomingEl, {
+      attr: { src: post.image, alt: post.title },
+    });
+
+    const tl = gsap.timeline({ overwrite: true });
+
+    tl.to(
+      outgoingEl,
+      { opacity: 0, duration: 0.38, ease: "power1.inOut" },
+      0,
+    ).to(incomingEl, { opacity: 1, duration: 0.38, ease: "power1.inOut" }, 0);
+
+    if (numBadgeRef.current) {
+      numBadgeRef.current.textContent = String(num).padStart(2, "0");
     }
+
+    useARef.current = !useARef.current;
+  }, []);
+
+  const handleEnter = useCallback(
+    (post: BlogPost, i: number): void => {
+      showImage();
+      crossfadeImages(post, i + 1);
+      rollText(dateTrackRefs.current[i]);
+      rollText(titleTrackRefs.current[i]);
+    },
+    [showImage, crossfadeImages, rollText],
+  );
+
+  const handleLeave = useCallback((): void => {
+    hideImage();
+    crossfadeImages(BLOG_POSTS[0], 1);
+
+    dateTrackRefs.current.forEach((trackEl) => {
+      if (trackEl) rollText(trackEl, true);
+    });
+
+    titleTrackRefs.current.forEach((trackEl) => {
+      if (trackEl) rollText(trackEl, true);
+    });
+  }, [hideImage, crossfadeImages, rollText]);
+
+  const setDateTrackRef = (el: HTMLDivElement | null, i: number): void => {
+    dateTrackRefs.current[i] = el;
   };
 
-  const handleLeave = () => {
-    if (imageRef.current && !activePost) return;
-
-    if (imageRef.current) {
-      gsap.to(imageRef.current, {
-        opacity: 0,
-        duration: 0.15,
-        onComplete: () => {
-          setActivePost(null);
-          gsap.to(imageRef.current, { opacity: 1, duration: 0.2 });
-        },
-      });
-    } else {
-      setActivePost(null);
-    }
+  const setTitleTrackRef = (el: HTMLDivElement | null, i: number): void => {
+    titleTrackRefs.current[i] = el;
   };
 
   return (
-    <section className="grid grid-cols-[380px_1fr] max-[900px]:grid-cols-1 gap-0 min-h-screen font-sans bg-white">
-      {/* ── SIDEBAR ── */}
-      <div className="px-10 py-12 max-[900px]:px-8 max-[900px]:py-8 border-r border-[#e5e5e5] max-[900px]:border-r-0 max-[900px]:border-b max-[900px]:border-b-[#e5e5e5]">
-        <div className="sticky top-12 max-[900px]:static">
-          <h1 className="text-[5rem] max-[900px]:text-[3.5rem] max-[600px]:text-[2.5rem] font-bold leading-[0.9] tracking-[-0.04em] mt-0 mb-12 max-[900px]:mb-8 text-[#0a0a0a] flex items-start gap-[0.1em]">
+    <section className="grid min-h-screen grid-cols-[320px_minmax(0,1fr)] items-start bg-[#fafaf8] px-6 font-['DM_Sans',sans-serif] max-[1100px]:grid-cols-[280px_minmax(0,1fr)] max-[900px]:grid-cols-1 max-[900px]:px-4">
+      <aside className="sticky top-14 h-[calc(100vh-56px)] overflow-y-auto px-0 pb-[72px] pl-2 pr-9 pt-[72px] max-[900px]:relative max-[900px]:top-auto max-[900px]:h-auto max-[900px]:overflow-visible max-[900px]:border-b max-[900px]:border-[#e9e9e7] max-[900px]:pb-12">
+        <div>
+          <h1 className="mb-14 text-[clamp(3.5rem,5vw,5.5rem)] font-bold leading-[0.88] tracking-[-0.045em] text-[#111]">
             Blog
-            {/* <sup className="text-base font-normal align-super ml-[0.15em] text-[#666] tracking-normal relative top-[0.5em]">({BLOG_POSTS.length})</sup> */}
+            <sup className="ml-[5px] align-super text-[clamp(0.85rem,1.6vw,1.35rem)] font-light tracking-[0] text-[#999]">
+              ({BLOG_POSTS.length})
+            </sup>
           </h1>
 
-          <div className="text-xs font-medium tracking-[0.05em] uppercase text-[#0a0a0a] mb-3">
-            <span>ABOUT</span>
-          </div>
-          <div className="h-px bg-[#e5e5e5] mb-5" />
+          <p className="mb-[14px] text-[0.7rem] font-medium uppercase tracking-[0.08em] text-[#bbb]">
+            About
+          </p>
 
-          <p className="text-[0.9375rem] leading-[1.6] text-[#666] max-w-[280px] mt-0 mb-10">
+          <div className="mb-[18px] h-px bg-[#e9e9e7]" />
+
+          <p className="mb-12 max-w-[250px] text-sm leading-[1.7] text-[#888]">
             Here's where I share my thoughts, insights, and growth. New blog
             article monthly, released towards the end of every month.
           </p>
 
-          {/* Thumbnail */}
-          <div className="relative w-full max-w-[280px] max-[900px]:max-w-[240px] aspect-square bg-[#0a0a0a] overflow-hidden">
-            <div className="absolute top-4 left-4 text-white text-2xl font-semibold tracking-[0.02em] z-[2] leading-none">
-              N<sup className="text-[0.75em] mx-[0.1em]">o</sup>&nbsp;0
-              {displayPost === BLOG_POSTS[0] && !activePost
-                ? BLOG_POSTS.length
-                : BLOG_POSTS.findIndex((p) => p.slug === displayPost.slug) + 1}
+          <div
+            ref={imageCardRef}
+            className="relative aspect-square w-full max-w-[252px] origin-bottom-left overflow-hidden rounded-[3px] bg-[#111] opacity-0 scale-95"
+          >
+            <div className="absolute left-[18px] top-4 z-[2] text-[1.3rem] font-semibold leading-none tracking-[-0.03em] text-white">
+              N<sup className="align-super text-[0.8rem]">o</sup>{" "}
+              <span ref={numBadgeRef}>01</span>
             </div>
-            <img
-              ref={imageRef}
-              src={displayPost.image}
-              alt={displayPost.title}
-              className="absolute bottom-0 right-0 w-[70%] h-[75%] object-cover block will-change-[opacity]"
-            />
+
+            <div className="absolute bottom-0 right-0 h-[75%] w-[70%]">
+              <img
+                ref={imgARef}
+                src={BLOG_POSTS[0].image}
+                alt={BLOG_POSTS[0].title}
+                className="absolute inset-0 block h-full w-full object-cover"
+              />
+              <img
+                ref={imgBRef}
+                src={BLOG_POSTS[0].image}
+                alt={BLOG_POSTS[0].title}
+                className="absolute inset-0 block h-full w-full object-cover opacity-0"
+              />
+            </div>
           </div>
         </div>
-      </div>
+      </aside>
 
-      {/* ── ARTICLE LIST ── */}
-      <div>
-        {/* Header row */}
-        <div className="grid grid-cols-[140px_1fr] max-[900px]:grid-cols-[100px_1fr] max-[600px]:grid-cols-[80px_1fr] px-10 max-[900px]:px-8 max-[600px]:px-6 py-6 max-[900px]:py-4 border-b border-b-[#e5e5e5]">
-          <span className="text-xs font-medium tracking-[0.05em] uppercase text-[#666]">
-            DATE
+      <div className="pb-[72px] pl-8 pr-2 pt-[72px]">
+        <div className="grid grid-cols-[128px_minmax(0,1fr)] gap-x-5 px-8 pb-5 max-[900px]:grid-cols-[96px_minmax(0,1fr)] max-[900px]:px-5 max-[900px]:pb-4 max-[600px]:grid-cols-[68px_minmax(0,1fr)] max-[600px]:px-[14px] max-[600px]:pb-3">
+          <span className="text-[0.68rem] font-medium uppercase tracking-[0.09em] text-[#c0c0bc]">
+            Date
           </span>
-          <span className="text-xs font-medium tracking-[0.05em] uppercase text-[#666]">
-            NAME
+          <span className="text-[0.68rem] font-medium uppercase tracking-[0.09em] text-[#c0c0bc]">
+            Name
           </span>
         </div>
 
-        <ul className="list-none m-0 p-0">
-          {BLOG_POSTS.map((post) => (
-            <li key={post.slug} className="relative">
-              <BlogListItem
-                post={post}
-                onHover={handleHover}
-                onLeave={handleLeave}
-              />
-            </li>
-          ))}
-          {/* Final bottom divider */}
-          <div className="h-px bg-[#e5e5e5] w-full" />
-        </ul>
+        {BLOG_POSTS.map((post, i) => (
+          <a
+            key={post.slug}
+            href={`/blog/${post.slug}`}
+            className="group block cursor-pointer border-t border-[#e9e9e7] bg-transparent text-[#111] no-underline transition-colors duration-[260ms] ease-[ease] last:border-b last:border-[#e9e9e7] hover:bg-[#111] hover:text-[#f4f4f0]"
+            onMouseEnter={() => handleEnter(post, i)}
+            onMouseLeave={handleLeave}
+          >
+            <div className="grid h-[110px] grid-cols-[128px_minmax(0,1fr)] items-stretch gap-x-5 overflow-hidden px-8 max-[900px]:h-[86px] max-[900px]:grid-cols-[96px_minmax(0,1fr)] max-[900px]:gap-x-[14px] max-[900px]:px-5 max-[600px]:h-[72px] max-[600px]:grid-cols-[68px_minmax(0,1fr)] max-[600px]:gap-x-[10px] max-[600px]:px-[14px]">
+              <div className="relative h-full overflow-hidden">
+                <div
+                  ref={(el) => setDateTrackRef(el, i)}
+                  className="flex h-[300%] flex-col will-change-transform"
+                >
+                  <div className="flex h-1/3 shrink-0 items-center whitespace-nowrap text-sm tracking-[0.01em] opacity-[0.45] transition-opacity duration-[250ms] ease-[ease] group-hover:opacity-100 max-[600px]:text-[0.78rem]">
+                    {post.date}
+                  </div>
+                  <div className="flex h-1/3 shrink-0 items-center whitespace-nowrap text-sm tracking-[0.01em] opacity-[0.45] transition-opacity duration-[250ms] ease-[ease] group-hover:opacity-100 max-[600px]:text-[0.78rem]">
+                    {post.date}
+                  </div>
+                  <div className="flex h-1/3 shrink-0 items-center whitespace-nowrap text-sm tracking-[0.01em] opacity-[0.45] transition-opacity duration-[250ms] ease-[ease] group-hover:opacity-100 max-[600px]:text-[0.78rem]">
+                    {post.date}
+                  </div>
+                </div>
+              </div>
+
+              <div className="relative h-full overflow-hidden">
+                <div
+                  ref={(el) => setTitleTrackRef(el, i)}
+                  className="flex h-[300%] flex-col will-change-transform"
+                >
+                  <div className="flex h-1/3 shrink-0 items-center whitespace-nowrap text-[1.6rem] font-semibold leading-[1.15] tracking-[-0.025em] max-[900px]:text-[1.2rem] max-[600px]:text-[0.95rem]">
+                    {post.title}
+                  </div>
+                  <div className="flex h-1/3 shrink-0 items-center whitespace-nowrap text-[1.6rem] font-semibold leading-[1.15] tracking-[-0.025em] max-[900px]:text-[1.2rem] max-[600px]:text-[0.95rem]">
+                    {post.title}
+                  </div>
+                  <div className="flex h-1/3 shrink-0 items-center whitespace-nowrap text-[1.6rem] font-semibold leading-[1.15] tracking-[-0.025em] max-[900px]:text-[1.2rem] max-[600px]:text-[0.95rem]">
+                    {post.title}
+                  </div>
+                </div>
+              </div>
+            </div>
+          </a>
+        ))}
       </div>
     </section>
   );

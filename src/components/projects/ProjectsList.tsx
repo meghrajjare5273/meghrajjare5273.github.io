@@ -1,5 +1,5 @@
 // src/components/projects/ProjectsList.tsx
-import React, { useRef } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import gsap from "gsap";
 import { useGSAP } from "@gsap/react";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
@@ -9,6 +9,7 @@ import { ProjectRow } from "@/components/projects/ProjectsRow";
 import Navbar from "@/components/landing/Navbar";
 import Footer from "@/components/landing/Footer";
 import type { ProjectCard } from "@/lib/project-content";
+import Lenis from "lenis";
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -20,10 +21,35 @@ interface ProjectsListProps {
 // 2. Accept the prop in the component function
 export function ProjectsList({ projects }: ProjectsListProps) {
   const containerRef = useRef<HTMLDivElement>(null);
+  const [lenis, setLenis] = useState<Lenis | null>(null);
+
+  useEffect(() => {
+    const lenisInstance = new Lenis({
+      lerp: 0.08,
+      wheelMultiplier: 1.2,
+      touchMultiplier: 1.2,
+    });
+
+    setLenis(lenisInstance);
+
+    lenisInstance.on("scroll", ScrollTrigger.update);
+
+    function update(time: number) {
+      lenisInstance.raf(time * 1000);
+    }
+
+    gsap.ticker.add(update);
+    gsap.ticker.lagSmoothing(0);
+
+    return () => {
+      gsap.ticker.remove(update);
+      lenisInstance.destroy();
+    };
+  }, []);
 
   useGSAP(
     () => {
-      if (!containerRef.current) return;
+      if (!containerRef.current || !lenis) return;
       const ctx = gsap.context(() => {
         // (Keep existing animation code exactly as is)
 
@@ -74,7 +100,7 @@ export function ProjectsList({ projects }: ProjectsListProps) {
       });
       return () => ctx.revert();
     },
-    { scope: containerRef },
+    { scope: containerRef, dependencies: [lenis] },
   );
 
   return (
