@@ -1,7 +1,6 @@
 "use client";
-
 import { useCallback, useEffect, useRef } from "react";
-import { gsap } from "gsap";
+import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import Navbar from "../landing/Navbar";
 import Footer from "../landing/Footer";
@@ -43,23 +42,18 @@ const BLOG_POSTS: BlogPost[] = [
 export default function BlogSection() {
   const sectionRef = useRef<HTMLElement | null>(null);
   const asideRef = useRef<HTMLElement | null>(null);
-
   const imgARef = useRef<HTMLImageElement | null>(null);
   const imgBRef = useRef<HTMLImageElement | null>(null);
   const imageCardRef = useRef<HTMLDivElement | null>(null);
   const numBadgeRef = useRef<HTMLSpanElement | null>(null);
-
   const dateTrackRefs = useRef<Array<HTMLDivElement | null>>([]);
   const titleTrackRefs = useRef<Array<HTMLDivElement | null>>([]);
-
   const useARef = useRef<boolean>(true);
 
-  // ─── Entrance animation ───────────────────────────────────────────────────
+  // --- Entrance animation ---
   useEffect(() => {
     if (!sectionRef.current) return;
-
     const ctx = gsap.context(() => {
-      // Set initial states
       gsap.set(".blog-heading", { y: 40, opacity: 0 });
       gsap.set(".blog-about-label", { y: 16, opacity: 0 });
       gsap.set(".blog-about-divider", { scaleX: 0, transformOrigin: "left" });
@@ -99,11 +93,14 @@ export default function BlogSection() {
     return () => ctx.revert();
   }, []);
 
-  // ─── Scroll-driven image card parallax ───────────────────────────────────
+  // --- Scroll-driven image card parallax using GSAP matchMedia ---
   useEffect(() => {
     if (!asideRef.current || !imageCardRef.current) return;
 
-    const ctx = gsap.context(() => {
+    // gsap.matchMedia cleanly handles window resizing and responsive thresholds
+    const mm = gsap.matchMedia();
+
+    mm.add("(min-width: 900px)", () => {
       gsap.to(".blog-image-card-inner", {
         y: -28,
         ease: "none",
@@ -114,15 +111,15 @@ export default function BlogSection() {
           scrub: 1.2,
         },
       });
-    }, asideRef);
+    });
 
-    return () => ctx.revert();
+    return () => mm.revert();
   }, []);
 
-  // ─── Mouse-follow for image card ─────────────────────────────────────────
+  // --- Mouse-follow for image card ---
   const handleSectionMouseMove = useCallback(
     (e: React.MouseEvent<HTMLElement>) => {
-      if (!imageCardRef.current) return;
+      if (!imageCardRef.current || window.innerWidth < 900) return;
       const rect = imageCardRef.current.getBoundingClientRect();
       const cx = rect.left + rect.width / 2;
       const cy = rect.top + rect.height / 2;
@@ -142,7 +139,7 @@ export default function BlogSection() {
   );
 
   const handleSectionMouseLeave = useCallback(() => {
-    if (!imageCardRef.current) return;
+    if (!imageCardRef.current || window.innerWidth < 900) return;
     gsap.to(imageCardRef.current, {
       rotateX: 0,
       rotateY: 0,
@@ -176,20 +173,14 @@ export default function BlogSection() {
       ease: "power2.in",
       overwrite: true,
       onComplete: () => {
-        // Silently reset image state once the card is invisible
-        if (imgARef.current) {
+        if (imgARef.current)
           gsap.set(imgARef.current, {
             opacity: 1,
             y: 0,
             attr: { src: BLOG_POSTS[0].image },
           });
-        }
-        if (imgBRef.current) {
-          gsap.set(imgBRef.current, { opacity: 0, y: 0 });
-        }
-        if (numBadgeRef.current) {
-          numBadgeRef.current.textContent = "01";
-        }
+        if (imgBRef.current) gsap.set(imgBRef.current, { opacity: 0, y: 0 });
+        if (numBadgeRef.current) numBadgeRef.current.textContent = "01";
         useARef.current = true;
       },
     });
@@ -198,11 +189,9 @@ export default function BlogSection() {
   const crossfadeImages = useCallback((post: BlogPost, num: number): void => {
     const outgoingEl = useARef.current ? imgARef.current : imgBRef.current;
     const incomingEl = useARef.current ? imgBRef.current : imgARef.current;
-
     if (!outgoingEl || !incomingEl) return;
 
     gsap.killTweensOf([outgoingEl, incomingEl]);
-    // Prep incoming below the frame
     gsap.set(incomingEl, {
       attr: { src: post.image, alt: post.title },
       y: 28,
@@ -222,17 +211,16 @@ export default function BlogSection() {
         0.1,
       );
 
-    if (numBadgeRef.current) {
+    if (numBadgeRef.current)
       numBadgeRef.current.textContent = String(num).padStart(2, "0");
-    }
 
     useARef.current = !useARef.current;
   }, []);
+
   const rollText = useCallback(
     (trackEl: HTMLDivElement | null, reverse = false): void => {
       if (!trackEl) return;
       gsap.killTweensOf(trackEl);
-
       if (!reverse) {
         gsap.fromTo(
           trackEl,
@@ -258,6 +246,9 @@ export default function BlogSection() {
 
   const handleEnter = useCallback(
     (post: BlogPost, i: number): void => {
+      // Prevent running complex animations on touch devices where hover states misbehave
+      if (window.innerWidth < 900) return;
+
       showImage();
       crossfadeImages(post, i + 1);
       rollText(dateTrackRefs.current[i]);
@@ -265,7 +256,10 @@ export default function BlogSection() {
     },
     [showImage, crossfadeImages, rollText],
   );
+
   const handleLeave = useCallback((): void => {
+    if (window.innerWidth < 900) return;
+
     hideImage();
     dateTrackRefs.current.forEach((el) => rollText(el, true));
     titleTrackRefs.current.forEach((el) => rollText(el, true));
@@ -280,42 +274,41 @@ export default function BlogSection() {
   };
 
   return (
-    <section
-      ref={sectionRef}
-      onMouseMove={handleSectionMouseMove}
-      onMouseLeave={handleSectionMouseLeave}
-      className="grid min-h-screen grid-cols-[320px_minmax(0,1fr)] items-start bg-[#fafaf8] px-6 font-['DM_Sans',sans-serif] max-[1100px]:grid-cols-[280px_minmax(0,1fr)] max-[900px]:grid-cols-1 max-[900px]:px-4"
-    >
-      {/* <div> */}
+    // Changed h-screen to min-h-screen to prevent mobile overflow breaks
+    <div className="flex min-h-screen flex-col bg-background font-[DM_Sans,sans-serif]">
       <Navbar />
-      {/* </div> */}
-      <aside
-        ref={asideRef}
-        className="sticky top-14 h-[calc(100vh-56px)] overflow-y-auto px-0 pb-[72px] pl-2 pr-9 pt-[72px] max-[900px]:relative max-[900px]:top-auto max-[900px]:h-auto max-[900px]:overflow-visible max-[900px]:border-b max-[900px]:border-[#e9e9e7] max-[900px]:pb-12"
+
+      <section
+        ref={sectionRef}
+        onMouseMove={handleSectionMouseMove}
+        onMouseLeave={handleSectionMouseLeave}
+        className="grid flex-1 grid-cols-[320px_minmax(0,1fr)] items-start px-6 py-10 min-[900px]:py-16 max-[1100px]:grid-cols-[280px_minmax(0,1fr)] max-[900px]:grid-cols-1 max-[900px]:px-4"
       >
-        <div>
-          <h1 className="blog-heading mb-14 text-[clamp(3.5rem,5vw,5.5rem)] font-bold leading-[0.88] tracking-[-0.045em] text-[#111]">
-            Blog
-            <sup className="ml-[5px] align-super text-[clamp(0.85rem,1.6vw,1.35rem)] font-light tracking-[0] text-[#999]">
-              ({BLOG_POSTS.length})
-            </sup>
-          </h1>
+        <aside
+          ref={asideRef}
+          className="sticky top-14 h-[calc(100vh-56px)] overflow-y-auto px-0 pb-[72px] pl-2 pr-9 pt-[72px] max-[900px]:relative max-[900px]:top-auto max-[900px]:h-auto max-[900px]:overflow-visible max-[900px]:border-b max-[900px]:border-border max-[900px]:pb-8 max-[900px]:pt-10"
+        >
+          <div>
+            <h1 className="blog-heading mb-14 text-[clamp(3.5rem,5vw,5.5rem)] font-bold leading-[0.88] tracking-[-0.045em] text-foreground md:-mt-8">
+              Blog{" "}
+              <sup className="ml-[5px] align-super text-[clamp(0.85rem,1.6vw,1.35rem)] font-light tracking-[0] text-muted-foreground">
+                {BLOG_POSTS.length}
+              </sup>
+            </h1>
 
-          <p className="blog-about-label mb-[14px] text-[0.7rem] font-medium uppercase tracking-[0.08em] text-[#bbb]">
-            About
-          </p>
+            <p className="blog-about-label mb-[14px] text-[0.7rem] font-medium uppercase tracking-[0.08em] text-muted-foreground">
+              About
+            </p>
+            <div className="blog-about-divider mb-[18px] h-px bg-border" />
+            <p className="blog-about-text mb-12 max-w-[250px] text-sm leading-[1.7] text-muted-foreground">
+              Here&apos;s where I share my thoughts, insights, and growth. New
+              blog article monthly, released towards the end of every month.
+            </p>
+          </div>
 
-          <div className="blog-about-divider mb-[18px] h-px bg-[#e9e9e7]" />
-
-          <p className="blog-about-text mb-12 max-w-[250px] text-sm leading-[1.7] text-[#888]">
-            Here's where I share my thoughts, insights, and growth. New blog
-            article monthly, released towards the end of every month.
-          </p>
-
-          {/* Image card — wrapped so parallax transforms don't fight opacity */}
           <div
             ref={imageCardRef}
-            className="relative aspect-square w-full max-w-[252px] origin-bottom-left overflow-hidden rounded-[3px] bg-[#111] opacity-0 scale-95"
+            className="relative hidden aspect-square w-full max-w-[252px] origin-bottom-left scale-95 overflow-hidden rounded-[3px] bg-foreground opacity-0 min-[900px]:block"
             style={{ transformStyle: "preserve-3d" }}
           >
             <div className="blog-image-card-inner absolute inset-0">
@@ -340,63 +333,70 @@ export default function BlogSection() {
               </div>
             </div>
           </div>
-        </div>
-      </aside>
+        </aside>
 
-      <div className="py-[72px] pl-8 pr-2 mt-38">
-        <div className="grid grid-cols-[128px_minmax(0,1fr)] gap-x-5 px-8 pb-5 max-[900px]:grid-cols-[96px_minmax(0,1fr)] max-[900px]:px-5 max-[900px]:pb-4 max-[600px]:grid-cols-[68px_minmax(0,1fr)] max-[600px]:px-[14px] max-[600px]:pb-3">
-          <span className="blog-col-header text-[0.68rem] font-medium uppercase tracking-[0.09em] text-[#c0c0bc]">
-            Date
-          </span>
-          <span className="blog-col-header text-[0.68rem] font-medium uppercase tracking-[0.09em] text-[#c0c0bc]">
-            Name
-          </span>
-        </div>
+        {/* Changed md:mt-34 to md:mt-32 as 34 is not a standard Tailwind spacing variable */}
+        <div className="w-full overflow-hidden py-8 md:mt-32 min-[900px]:py-[72px] min-[900px]:pl-8 min-[900px]:pr-2">
+          <div className="grid grid-cols-[128px_minmax(0,1fr)] gap-x-5 px-8 pb-5 max-[900px]:grid-cols-[96px_minmax(0,1fr)] max-[900px]:px-5 max-[900px]:pb-4 max-[600px]:grid-cols-[68px_minmax(0,1fr)] max-[600px]:px-[14px] max-[600px]:pb-3">
+            <span className="blog-col-header text-[0.68rem] font-medium uppercase tracking-[0.09em] text-muted-foreground">
+              Date
+            </span>
+            <span className="blog-col-header text-[0.68rem] font-medium uppercase tracking-[0.09em] text-muted-foreground">
+              Name
+            </span>
+          </div>
 
-        {BLOG_POSTS.map((post, i) => (
-          <a
-            key={post.slug}
-            href={`/blog/${post.slug}`}
-            className="blog-row group block cursor-pointer border-t border-[#e9e9e7] bg-transparent text-[#111] no-underline transition-colors duration-[260ms] ease-[ease] last:border-b last:border-[#e9e9e7] hover:bg-[#111] hover:text-[#f4f4f0]"
-            onMouseEnter={() => handleEnter(post, i)}
-            onMouseLeave={handleLeave}
-          >
-            <div className="grid h-[110px] grid-cols-[128px_minmax(0,1fr)] items-stretch gap-x-5 overflow-hidden px-8 max-[900px]:h-[86px] max-[900px]:grid-cols-[96px_minmax(0,1fr)] max-[900px]:gap-x-[14px] max-[900px]:px-5 max-[600px]:h-[72px] max-[600px]:grid-cols-[68px_minmax(0,1fr)] max-[600px]:gap-x-[10px] max-[600px]:px-[14px]">
-              <div className="relative h-full overflow-hidden">
-                <div
-                  ref={(el) => setDateTrackRef(el, i)}
-                  className="flex h-[300%] flex-col will-change-transform"
-                >
-                  {[0, 1, 2].map((k) => (
-                    <div
-                      key={k}
-                      className="flex h-1/3 shrink-0 items-center whitespace-nowrap text-sm tracking-[0.01em] opacity-[0.45] transition-opacity duration-[250ms] ease-[ease] group-hover:opacity-100 max-[600px]:text-[0.78rem]"
-                    >
-                      {post.date}
-                    </div>
-                  ))}
+          {BLOG_POSTS.map((post, i) => (
+            <button
+              key={post.slug}
+              onClick={() => {
+                window.location.href = `/blogs/${post.slug}`;
+              }}
+              className="blog-row group block w-full cursor-pointer border-t border-border bg-transparent text-start text-foreground no-underline transition-colors duration-[260ms] ease-[ease] hover:bg-foreground hover:text-background last:border-b last:border-border"
+              onMouseEnter={() => handleEnter(post, i)}
+              onMouseLeave={handleLeave}
+            >
+              <div className="grid h-[110px] grid-cols-[128px_minmax(0,1fr)] items-stretch gap-x-5 overflow-hidden px-8 max-[900px]:h-[86px] max-[900px]:grid-cols-[96px_minmax(0,1fr)] max-[900px]:gap-x-[14px] max-[900px]:px-5 max-[600px]:h-[72px] max-[600px]:grid-cols-[68px_minmax(0,1fr)] max-[600px]:gap-x-[10px] max-[600px]:px-[14px]">
+                <div className="relative h-full overflow-hidden">
+                  <div
+                    ref={(el) => setDateTrackRef(el, i)}
+                    className="flex h-[300%] flex-col will-change-transform"
+                  >
+                    {[0, 1, 2].map((k) => (
+                      <div
+                        key={k}
+                        className="flex h-[33.33%] shrink-0 items-center whitespace-nowrap text-sm tracking-[0.01em] opacity-[0.45] transition-opacity duration-[250ms] ease-[ease] group-hover:opacity-100 max-[600px]:text-[0.78rem]"
+                      >
+                        {post.date}
+                      </div>
+                    ))}
+                  </div>
+                </div>
+
+                <div className="relative h-full w-full overflow-hidden">
+                  <div
+                    ref={(el) => setTitleTrackRef(el, i)}
+                    className="flex h-[300%] w-full flex-col will-change-transform"
+                  >
+                    {[0, 1, 2].map((k) => (
+                      <div
+                        key={k}
+                        className="flex h-[33.33%] w-full shrink-0 items-center whitespace-nowrap text-[1.6rem] font-semibold leading-[1.15] tracking-[-0.025em] max-[900px]:text-[1.2rem] max-[600px]:text-[0.95rem]"
+                      >
+                        <span className="block w-full truncate pr-2">
+                          {post.title}
+                        </span>
+                      </div>
+                    ))}
+                  </div>
                 </div>
               </div>
+            </button>
+          ))}
+        </div>
+      </section>
 
-              <div className="relative h-full overflow-hidden">
-                <div
-                  ref={(el) => setTitleTrackRef(el, i)}
-                  className="flex h-[300%] flex-col will-change-transform"
-                >
-                  {[0, 1, 2].map((k) => (
-                    <div
-                      key={k}
-                      className="flex h-1/3 shrink-0 items-center whitespace-nowrap text-[1.6rem] font-semibold leading-[1.15] tracking-[-0.025em] max-[900px]:text-[1.2rem] max-[600px]:text-[0.95rem]"
-                    >
-                      {post.title}
-                    </div>
-                  ))}
-                </div>
-              </div>
-            </div>
-          </a>
-        ))}
-      </div>
-    </section>
+      <Footer />
+    </div>
   );
 }
