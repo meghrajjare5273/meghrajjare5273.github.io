@@ -11,8 +11,9 @@ import Footer from "../landing/Footer";
 import MagneticScrambleButton from "@/components/projects/details/ScrambleButton";
 import ProjectMediaCarousel from "@/components/projects/details/VideoCarousel";
 import ProjectDetailsSidebar from "@/components/projects/details/DetailSidebar";
-import Lenis from "lenis";
+// import Lenis from "lenis";
 import { useGSAP } from "@gsap/react";
+import { useLenis } from "@/hooks/use-lenis";
 
 // Register DrawSVGPlugin alongside the others
 gsap.registerPlugin(SplitText, ScrollTrigger, DrawSVGPlugin);
@@ -28,31 +29,9 @@ export const ProjectDetail = ({ project, onReturn }: ProjectDetailProps) => {
   const footerRef = useRef<HTMLDivElement>(null);
   const contentWrapperRef = useRef<HTMLDivElement>(null);
   const splitTextInstances = useRef<SplitText[]>([]);
-  const [lenis, setLenis] = useState<Lenis | null>(null);
+  // const [lenis, setLenis] = useState<Lenis | null>(null);
 
-  useEffect(() => {
-    const lenisInstance = new Lenis({
-      lerp: 0.08,
-      wheelMultiplier: 1.2,
-      touchMultiplier: 1.2,
-    });
-
-    setLenis(lenisInstance);
-
-    lenisInstance.on("scroll", ScrollTrigger.update);
-
-    function update(time: number) {
-      lenisInstance.raf(time * 1000);
-    }
-
-    gsap.ticker.add(update);
-    gsap.ticker.lagSmoothing(0);
-
-    return () => {
-      gsap.ticker.remove(update);
-      lenisInstance.destroy();
-    };
-  }, []);
+  const lenis = useLenis();
 
   useGSAP(
     () => {

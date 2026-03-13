@@ -3,6 +3,7 @@ import "@/styles/global.css";
 import { ClientRouter } from "astro:transitions";
 import DocumentClientSetup from "@/layouts/DocumentClientSetup.astro";
 import "lenis/dist/lenis.css"
+import LenisSetup from "@/components/global/LenisSetup.astro";
 
 interface Props {
   title?: string;
@@ -60,6 +61,7 @@ const canonical = Astro.site
     />
 
     <DocumentClientSetup />
+    <LenisSetup />
     <slot name="head" />
   </head>
   <body>

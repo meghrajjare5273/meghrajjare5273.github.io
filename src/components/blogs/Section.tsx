@@ -3,6 +3,8 @@
 import { useCallback, useEffect, useRef } from "react";
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
+import Navbar from "../landing/Navbar";
+import Footer from "../landing/Footer";
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -150,14 +152,14 @@ export default function BlogSection() {
     });
   }, []);
 
-  // ─── Hover helpers (unchanged logic, smoother timing) ────────────────────
   const showImage = useCallback((): void => {
     if (!imageCardRef.current) return;
     gsap.to(imageCardRef.current, {
       opacity: 1,
       scale: 1,
       y: 0,
-      duration: 0.45,
+      filter: "blur(0px)",
+      duration: 0.55,
       ease: "power3.out",
       overwrite: true,
     });
@@ -167,14 +169,65 @@ export default function BlogSection() {
     if (!imageCardRef.current) return;
     gsap.to(imageCardRef.current, {
       opacity: 0,
-      scale: 0.94,
-      y: 8,
-      duration: 0.35,
+      scale: 0.88,
+      y: 16,
+      filter: "blur(8px)",
+      duration: 0.38,
       ease: "power2.in",
       overwrite: true,
+      onComplete: () => {
+        // Silently reset image state once the card is invisible
+        if (imgARef.current) {
+          gsap.set(imgARef.current, {
+            opacity: 1,
+            y: 0,
+            attr: { src: BLOG_POSTS[0].image },
+          });
+        }
+        if (imgBRef.current) {
+          gsap.set(imgBRef.current, { opacity: 0, y: 0 });
+        }
+        if (numBadgeRef.current) {
+          numBadgeRef.current.textContent = "01";
+        }
+        useARef.current = true;
+      },
     });
   }, []);
 
+  const crossfadeImages = useCallback((post: BlogPost, num: number): void => {
+    const outgoingEl = useARef.current ? imgARef.current : imgBRef.current;
+    const incomingEl = useARef.current ? imgBRef.current : imgARef.current;
+
+    if (!outgoingEl || !incomingEl) return;
+
+    gsap.killTweensOf([outgoingEl, incomingEl]);
+    // Prep incoming below the frame
+    gsap.set(incomingEl, {
+      attr: { src: post.image, alt: post.title },
+      y: 28,
+      opacity: 0,
+    });
+
+    gsap
+      .timeline({ overwrite: true })
+      .to(
+        outgoingEl,
+        { opacity: 0, y: -20, duration: 0.32, ease: "power2.in" },
+        0,
+      )
+      .to(
+        incomingEl,
+        { opacity: 1, y: 0, duration: 0.45, ease: "power3.out" },
+        0.1,
+      );
+
+    if (numBadgeRef.current) {
+      numBadgeRef.current.textContent = String(num).padStart(2, "0");
+    }
+
+    useARef.current = !useARef.current;
+  }, []);
   const rollText = useCallback(
     (trackEl: HTMLDivElement | null, reverse = false): void => {
       if (!trackEl) return;
@@ -203,27 +256,6 @@ export default function BlogSection() {
     [],
   );
 
-  const crossfadeImages = useCallback((post: BlogPost, num: number): void => {
-    const outgoingEl = useARef.current ? imgARef.current : imgBRef.current;
-    const incomingEl = useARef.current ? imgBRef.current : imgARef.current;
-
-    if (!outgoingEl || !incomingEl) return;
-
-    gsap.killTweensOf([outgoingEl, incomingEl], "opacity");
-    gsap.set(incomingEl, { attr: { src: post.image, alt: post.title } });
-
-    gsap
-      .timeline({ overwrite: true })
-      .to(outgoingEl, { opacity: 0, duration: 0.36, ease: "power1.inOut" }, 0)
-      .to(incomingEl, { opacity: 1, duration: 0.36, ease: "power1.inOut" }, 0);
-
-    if (numBadgeRef.current) {
-      numBadgeRef.current.textContent = String(num).padStart(2, "0");
-    }
-
-    useARef.current = !useARef.current;
-  }, []);
-
   const handleEnter = useCallback(
     (post: BlogPost, i: number): void => {
       showImage();
@@ -233,13 +265,11 @@ export default function BlogSection() {
     },
     [showImage, crossfadeImages, rollText],
   );
-
   const handleLeave = useCallback((): void => {
     hideImage();
-    crossfadeImages(BLOG_POSTS[0], 1);
     dateTrackRefs.current.forEach((el) => rollText(el, true));
     titleTrackRefs.current.forEach((el) => rollText(el, true));
-  }, [hideImage, crossfadeImages, rollText]);
+  }, [hideImage, rollText]);
 
   const setDateTrackRef = (el: HTMLDivElement | null, i: number): void => {
     dateTrackRefs.current[i] = el;
@@ -256,6 +286,9 @@ export default function BlogSection() {
       onMouseLeave={handleSectionMouseLeave}
       className="grid min-h-screen grid-cols-[320px_minmax(0,1fr)] items-start bg-[#fafaf8] px-6 font-['DM_Sans',sans-serif] max-[1100px]:grid-cols-[280px_minmax(0,1fr)] max-[900px]:grid-cols-1 max-[900px]:px-4"
     >
+      {/* <div> */}
+      <Navbar />
+      {/* </div> */}
       <aside
         ref={asideRef}
         className="sticky top-14 h-[calc(100vh-56px)] overflow-y-auto px-0 pb-[72px] pl-2 pr-9 pt-[72px] max-[900px]:relative max-[900px]:top-auto max-[900px]:h-auto max-[900px]:overflow-visible max-[900px]:border-b max-[900px]:border-[#e9e9e7] max-[900px]:pb-12"
@@ -310,7 +343,7 @@ export default function BlogSection() {
         </div>
       </aside>
 
-      <div className="pb-[72px] pl-8 pr-2 pt-[72px]">
+      <div className="py-[72px] pl-8 pr-2 mt-38">
         <div className="grid grid-cols-[128px_minmax(0,1fr)] gap-x-5 px-8 pb-5 max-[900px]:grid-cols-[96px_minmax(0,1fr)] max-[900px]:px-5 max-[900px]:pb-4 max-[600px]:grid-cols-[68px_minmax(0,1fr)] max-[600px]:px-[14px] max-[600px]:pb-3">
           <span className="blog-col-header text-[0.68rem] font-medium uppercase tracking-[0.09em] text-[#c0c0bc]">
             Date
