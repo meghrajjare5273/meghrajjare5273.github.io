@@ -1,4 +1,4 @@
-import { useRef, useLayoutEffect, useMemo } from "react";
+import { useRef, useLayoutEffect, useMemo, useState, useEffect } from "react";
 import { gsap } from "gsap";
 import { SplitText } from "gsap/SplitText";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
@@ -11,6 +11,8 @@ import Footer from "../landing/Footer";
 import MagneticScrambleButton from "@/components/projects/details/ScrambleButton";
 import ProjectMediaCarousel from "@/components/projects/details/VideoCarousel";
 import ProjectDetailsSidebar from "@/components/projects/details/DetailSidebar";
+import Lenis from "lenis";
+import { useGSAP } from "@gsap/react";
 
 // Register DrawSVGPlugin alongside the others
 gsap.registerPlugin(SplitText, ScrollTrigger, DrawSVGPlugin);
@@ -26,12 +28,37 @@ export const ProjectDetail = ({ project, onReturn }: ProjectDetailProps) => {
   const footerRef = useRef<HTMLDivElement>(null);
   const contentWrapperRef = useRef<HTMLDivElement>(null);
   const splitTextInstances = useRef<SplitText[]>([]);
+  const [lenis, setLenis] = useState<Lenis | null>(null);
 
-  useLayoutEffect(() => {
-    if (!containerRef.current) return;
-    const q = gsap.utils.selector(containerRef);
+  useEffect(() => {
+    const lenisInstance = new Lenis({
+      lerp: 0.08,
+      wheelMultiplier: 1.2,
+      touchMultiplier: 1.2,
+    });
 
-    const ctx = gsap.context(() => {
+    setLenis(lenisInstance);
+
+    lenisInstance.on("scroll", ScrollTrigger.update);
+
+    function update(time: number) {
+      lenisInstance.raf(time * 1000);
+    }
+
+    gsap.ticker.add(update);
+    gsap.ticker.lagSmoothing(0);
+
+    return () => {
+      gsap.ticker.remove(update);
+      lenisInstance.destroy();
+    };
+  }, []);
+
+  useGSAP(
+    () => {
+      if (!containerRef.current) return;
+      const q = gsap.utils.selector(containerRef);
+
       splitTextInstances.current.forEach((st) => st.revert());
       splitTextInstances.current = [];
 
@@ -53,14 +80,13 @@ export const ProjectDetail = ({ project, onReturn }: ProjectDetailProps) => {
 
       if (project.svgTitle) {
         titleAnimTargets = titleEl;
-        // Select all possible drawable shapes inside the injected SVG
         svgPathsTargets = q(
           ".gsap-anim-title svg path, .gsap-anim-title svg line, .gsap-anim-title svg polyline, .gsap-anim-title svg polygon, .gsap-anim-title svg circle, .gsap-anim-title svg rect",
         );
 
         gsap.set(titleAnimTargets, { yPercent: 105, opacity: 0 });
         if (svgPathsTargets) {
-          gsap.set(svgPathsTargets, { drawSVG: "0%" }); // Hide strokes initially
+          gsap.set(svgPathsTargets, { drawSVG: "0%" });
         }
       } else {
         const titleSplit = new SplitText(titleEl, {
@@ -130,21 +156,19 @@ export const ProjectDetail = ({ project, onReturn }: ProjectDetailProps) => {
         "-=0.35",
       );
 
-      // 3. Title chars ribbon-cascade or SVG draw
       if (project.svgTitle) {
         tl.to(
           titleAnimTargets,
           {
             yPercent: 0,
-            opacity: 1, // Fix: actually reveal the wrapper
+            opacity: 1,
             duration: 0.4,
             ease: "expo.out",
           },
           "-=0.25",
         );
 
-        // Draw the SVG strokes if shapes were found
-        if (svgPathsTargets && svgPathsTargets) {
+        if (svgPathsTargets) {
           tl.to(
             svgPathsTargets,
             {
@@ -153,7 +177,7 @@ export const ProjectDetail = ({ project, onReturn }: ProjectDetailProps) => {
               stagger: 0.05,
               ease: "elastic.out",
             },
-            "<", // Run concurrently with the wrapper sliding up
+            "<",
           );
         }
       } else {
@@ -169,7 +193,6 @@ export const ProjectDetail = ({ project, onReturn }: ProjectDetailProps) => {
         );
       }
 
-      // Continue the rest of the timeline
       tl.to(
         yearSplit.chars,
         {
@@ -284,14 +307,13 @@ export const ProjectDetail = ({ project, onReturn }: ProjectDetailProps) => {
         });
       });
 
-      return () => mm.revert();
-    }, containerRef);
-
-    return () => {
-      splitTextInstances.current.forEach((st) => st.revert());
-      ctx.revert();
-    };
-  }, [project]);
+      return () => {
+        mm.revert();
+        splitTextInstances.current.forEach((st) => st.revert());
+      };
+    },
+    { scope: containerRef, dependencies: [project, lenis] },
+  );
 
   const handleReturn = () => {
     if (!containerRef.current) return;

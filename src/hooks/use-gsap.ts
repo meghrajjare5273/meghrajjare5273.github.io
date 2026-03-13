@@ -7,14 +7,14 @@ let gsapInitialized = false;
 
 export function initGSAP() {
   if (typeof window !== "undefined" && !gsapInitialized) {
-    gsap.registerPlugin(ScrollTrigger, );
+    gsap.registerPlugin(ScrollTrigger);
     gsapInitialized = true;
   }
 }
 
 export function useScrollAnimation(
   animationFn: () => gsap.core.Timeline | void,
-  deps: any[] = []
+  deps: any[] = [],
 ) {
   const containerRef = useRef<HTMLElement>(null);
 
