@@ -1,0 +1,30 @@
+---
+title: "Hello World: Building This Portfolio"
+slug: hello-world-building-this-portfolio
+description: "A behind-the-scenes look at how I built this portfolio with Astro.js, GSAP, and a custom design system — and what I learned along the way."
+pubDate: 2025-12-10
+author: Meghraj Jare
+thumbnail: /images/blog/hello-world.png
+tags: ["Astro.js", "GSAP", "Portfolio", "Web Development"]
+readTime: 6
+published: true
+featured: true
+---
+
+## Why Astro?
+
+When I set out to rebuild my portfolio, my top requirement was **zero-JS by default** with the ability to
+opt in to interactivity only where it matters. Astro's island architecture fits that perfectly.
+React components only ship JavaScript when I add `client:load` — everything else is pure HTML.
+
+## The Animation System
+
+Every page transition and scroll-driven reveal is powered by **GSAP 3.14**.
+The key insight was separating animation concerns into orchestrator components so the
+actual content components stay clean.
+
+```tsx
+// The pattern used across every page
+const tl = gsap.timeline({ defaults: { ease: "expo.out" } });
+tl.from(".hero-text", { yPercent: 100, stagger: 0.04, duration: 0.9 });
+```

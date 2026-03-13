@@ -4,6 +4,7 @@ import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import Navbar from "../landing/Navbar";
 import Footer from "../landing/Footer";
+import type { BlogCard } from "@/lib/blog-content";
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -39,7 +40,7 @@ const BLOG_POSTS: BlogPost[] = [
   },
 ];
 
-export default function BlogSection() {
+export default function BlogSection({ posts }: { posts: BlogCard[] }) {
   const sectionRef = useRef<HTMLElement | null>(null);
   const asideRef = useRef<HTMLElement | null>(null);
   const imgARef = useRef<HTMLImageElement | null>(null);
@@ -186,14 +187,14 @@ export default function BlogSection() {
     });
   }, []);
 
-  const crossfadeImages = useCallback((post: BlogPost, num: number): void => {
+  const crossfadeImages = useCallback((post: BlogCard, num: number): void => {
     const outgoingEl = useARef.current ? imgARef.current : imgBRef.current;
     const incomingEl = useARef.current ? imgBRef.current : imgARef.current;
     if (!outgoingEl || !incomingEl) return;
 
     gsap.killTweensOf([outgoingEl, incomingEl]);
     gsap.set(incomingEl, {
-      attr: { src: post.image, alt: post.title },
+      attr: { src: post.thumbnail!, alt: post.title },
       y: 28,
       opacity: 0,
     });
@@ -245,7 +246,7 @@ export default function BlogSection() {
   );
 
   const handleEnter = useCallback(
-    (post: BlogPost, i: number): void => {
+    (post: BlogCard, i: number): void => {
       // Prevent running complex animations on touch devices where hover states misbehave
       if (window.innerWidth < 900) return;
 
@@ -274,8 +275,8 @@ export default function BlogSection() {
   };
 
   return (
-    // Changed h-screen to min-h-screen to prevent mobile overflow breaks
-    <div className="flex min-h-screen flex-col bg-background font-[DM_Sans,sans-serif]">
+    // Changed generic bg-background to the specific contact section colors
+    <div className="flex min-h-screen flex-col bg-[#b3ada6] dark:bg-[#313131] text-foreground font-[DM_Sans,sans-serif]">
       <Navbar />
 
       <section
@@ -291,16 +292,16 @@ export default function BlogSection() {
           <div>
             <h1 className="blog-heading mb-14 text-[clamp(3.5rem,5vw,5.5rem)] font-bold leading-[0.88] tracking-[-0.045em] text-foreground md:-mt-8">
               Blog{" "}
-              <sup className="ml-[5px] align-super text-[clamp(0.85rem,1.6vw,1.35rem)] font-light tracking-[0] text-muted-foreground">
-                {BLOG_POSTS.length}
+              <sup className="ml-[5px] align-super text-[clamp(0.85rem,1.6vw,1.35rem)] font-light tracking-[0] text-foreground/60">
+                {posts.length}
               </sup>
             </h1>
 
-            <p className="blog-about-label mb-[14px] text-[0.7rem] font-medium uppercase tracking-[0.08em] text-muted-foreground">
+            <p className="blog-about-label mb-[14px] text-[0.7rem] font-medium uppercase tracking-[0.08em] text-foreground/60">
               About
             </p>
-            <div className="blog-about-divider mb-[18px] h-px bg-border" />
-            <p className="blog-about-text mb-12 max-w-[250px] text-sm leading-[1.7] text-muted-foreground">
+            <div className="blog-about-divider mb-[18px] h-px bg-black/10 dark:bg-white/10" />
+            <p className="blog-about-text mb-12 max-w-[250px] text-sm leading-[1.7] text-foreground/60">
               Here&apos;s where I share my thoughts, insights, and growth. New
               blog article monthly, released towards the end of every month.
             </p>
@@ -320,14 +321,14 @@ export default function BlogSection() {
               <div className="absolute bottom-0 right-0 h-[75%] w-[70%]">
                 <img
                   ref={imgARef}
-                  src={BLOG_POSTS[0].image}
-                  alt={BLOG_POSTS[0].title}
+                  src={posts[0].thumbnail}
+                  alt={posts[0].title}
                   className="absolute inset-0 block h-full w-full object-cover"
                 />
                 <img
                   ref={imgBRef}
-                  src={BLOG_POSTS[0].image}
-                  alt={BLOG_POSTS[0].title}
+                  src={posts[0].thumbnail}
+                  alt={posts[0].title}
                   className="absolute inset-0 block h-full w-full object-cover opacity-0"
                 />
               </div>
@@ -335,30 +336,30 @@ export default function BlogSection() {
           </div>
         </aside>
 
-        {/* Changed md:mt-34 to md:mt-32 as 34 is not a standard Tailwind spacing variable */}
         <div className="w-full overflow-hidden py-8 md:mt-32 min-[900px]:py-[72px] min-[900px]:pl-8 min-[900px]:pr-2">
           <div className="grid grid-cols-[128px_minmax(0,1fr)] gap-x-5 px-8 pb-5 max-[900px]:grid-cols-[96px_minmax(0,1fr)] max-[900px]:px-5 max-[900px]:pb-4 max-[600px]:grid-cols-[68px_minmax(0,1fr)] max-[600px]:px-[14px] max-[600px]:pb-3">
-            <span className="blog-col-header text-[0.68rem] font-medium uppercase tracking-[0.09em] text-muted-foreground">
+            <span className="blog-col-header text-[0.68rem] font-medium uppercase tracking-[0.09em] text-foreground/60">
               Date
             </span>
-            <span className="blog-col-header text-[0.68rem] font-medium uppercase tracking-[0.09em] text-muted-foreground">
+            <span className="blog-col-header text-[0.68rem] font-medium uppercase tracking-[0.09em] text-foreground/60">
               Name
             </span>
           </div>
 
-          {BLOG_POSTS.map((post, i) => (
+          {posts.map((post, i) => (
             <button
               key={post.slug}
               onClick={() => {
                 window.location.href = `/blogs/${post.slug}`;
               }}
-              className="blog-row group block w-full cursor-pointer border-t border-border bg-transparent text-start text-foreground no-underline transition-colors duration-[260ms] ease-[ease] hover:bg-foreground hover:text-background last:border-b last:border-border"
+              // Added explicit hover text colors and updated borders to match Contact theme
+              className="blog-row group block w-full cursor-pointer border-t border-black/10 dark:border-white/10 bg-transparent text-start text-foreground no-underline transition-colors duration-[260ms] ease-[ease] hover:bg-foreground hover:text-[#b3ada6] dark:hover:text-[#313131] last:border-b last:border-black/10 dark:last:border-white/10"
               onMouseEnter={() => handleEnter(post, i)}
               onMouseLeave={handleLeave}
             >
               <div className="grid h-[110px] grid-cols-[128px_minmax(0,1fr)] items-stretch gap-x-5 overflow-hidden px-8 max-[900px]:h-[86px] max-[900px]:grid-cols-[96px_minmax(0,1fr)] max-[900px]:gap-x-[14px] max-[900px]:px-5 max-[600px]:h-[72px] max-[600px]:grid-cols-[68px_minmax(0,1fr)] max-[600px]:gap-x-[10px] max-[600px]:px-[14px]">
                 <div className="relative h-full overflow-hidden">
-                  <div
+                  {/* <div
                     ref={(el) => setDateTrackRef(el, i)}
                     className="flex h-[300%] flex-col will-change-transform"
                   >
@@ -370,7 +371,7 @@ export default function BlogSection() {
                         {post.date}
                       </div>
                     ))}
-                  </div>
+                  </div> */}
                 </div>
 
                 <div className="relative h-full w-full overflow-hidden">

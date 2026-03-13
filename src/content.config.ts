@@ -1,5 +1,6 @@
-import { defineCollection, z } from "astro:content";
+import { z } from "astro/zod";
 import { glob } from "astro/loaders";
+import { defineCollection } from "astro:content";
 
 const mediaItemSchema = z.object({
   type: z.enum(["image", "video"]),
@@ -31,6 +32,24 @@ const projects = defineCollection({
   }),
 });
 
+const blogs = defineCollection({
+  loader: glob({ pattern: "**/*.{md,mdx}", base: "./src/content/blog" }),
+  schema: z.object({
+    title: z.string(),
+    slug: z.string(),
+    description: z.string(),
+    pubDate: z.coerce.date(),
+    updatedDate: z.coerce.date().optional(),
+    author: z.string().default("Meghraj Jare"),
+    thumbnail: z.string(),
+    tags: z.array(z.string()).default([]),
+    readTime: z.number().int().optional(), // estimated minutes
+    published: z.boolean().default(false),
+    featured: z.boolean().default(false),
+  }),
+});
+
 export const collections = {
   projects,
+  blogs,
 };
