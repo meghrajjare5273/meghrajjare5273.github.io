@@ -8,7 +8,7 @@ import Contact from "@/components/landing/Contact";
 ---
 
 <Layout>
-  <PageOrchestrator client:load>
+  <PageOrchestrator client:only='react'>
     <HeroSection client:load />
     <About client:visible={{rootMargin: "200px"}} />
     <Contact client:visible={{rootMargin: "200px"}} />

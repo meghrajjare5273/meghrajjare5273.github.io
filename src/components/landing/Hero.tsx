@@ -4,16 +4,14 @@ import gsap from "gsap";
 import { useGSAP } from "@gsap/react";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import Navbar from "@/components/landing/Navbar";
-import Macbook from "@/components/ui/macbook";
-import IPhoneMockup from "@/components/ui/iphone";
+import { Macbook } from "@/components/ui/macbook";
+import { IPhoneMockup } from "@/components/ui/iphone";
 import { GridBackground } from "../ui/grid-background";
 import StatusCard from "@/components/ui/status-card";
 import { introState } from "@/lib/intro-state";
 import { useLenis } from "@/hooks/use-lenis";
 
 gsap.registerPlugin(ScrollTrigger);
-
-// 1. Configure ScrollTrigger to ignore address bar resizes
 ScrollTrigger.config({ ignoreMobileResize: true });
 
 export function HeroSection() {
@@ -22,32 +20,22 @@ export function HeroSection() {
   const macbookRef = useRef<HTMLDivElement>(null);
   const iphoneRef = useRef<HTMLDivElement>(null);
   const [canAnimate, setCanAnimate] = useState(false);
-  // const [lenis, setLenis] = useState<Lenis | null>(null);
+
+  // ── FIX A: Remove dead useState for lenis. Only keep the hook. ──
   const lenis = useLenis();
 
-  // 2. Custom hook logic to lock height
   const [mobileHeight, setMobileHeight] = useState("100vh");
-
   useEffect(() => {
-    // Function to set height based on innerHeight (visual viewport)
-    const setHeight = () => {
-      setMobileHeight(`${window.innerHeight}px`);
-    };
-
-    // Set initial height
+    const setHeight = () => setMobileHeight(`${window.innerHeight}px`);
     setHeight();
-
-    // Only update height if WIDTH changes (orientation change), not height (address bar)
     let lastWidth = window.innerWidth;
     const handleResize = () => {
       if (window.innerWidth !== lastWidth) {
         lastWidth = window.innerWidth;
         setHeight();
-        // Force ScrollTrigger to refresh positions on orientation change
         ScrollTrigger.refresh();
       }
     };
-
     window.addEventListener("resize", handleResize);
     return () => window.removeEventListener("resize", handleResize);
   }, []);
@@ -63,23 +51,55 @@ export function HeroSection() {
       window.removeEventListener("page-intro-complete", handleIntroComplete);
   }, []);
 
+  // ── FIX B: Unconditional mount-time useGSAP (NO dependency array key) ──
+  // useGSAP = useLayoutEffect = runs SYNCHRONOUSLY after DOM insertion,
+  // BEFORE the browser paints a single pixel. This is the correct place
+  // for initial states. It runs once, regardless of canAnimate or lenis.
   useGSAP(
     () => {
-      if (!canAnimate || !trackRef.current || !contentRef.current || !lenis)
-        return;
+      // Use autoAlpha (opacity + visibility) per official GSAP FOUC guide.
+      // visibility:hidden was set in CSS as a safety net before JS runs.
+      // GSAP takes over management from here.
+      gsap.set(".animate-text-reveal", { autoAlpha: 0, y: 110, rotateX: -20 });
+      gsap.set(".animate-fade-in", { autoAlpha: 0, y: 30 });
+
+      // Use matchMedia so device initial states are screen-size aware
+      const mm = gsap.matchMedia();
+      mm.add("(min-width: 768px)", () => {
+        gsap.set(macbookRef.current, {
+          autoAlpha: 0,
+          y: "20vh",
+          scale: 0.8,
+          force3D: true,
+          backfaceVisibility: "hidden",
+        });
+      });
+      mm.add("(max-width: 767px)", () => {
+        gsap.set(iphoneRef.current, {
+          autoAlpha: 0,
+          y: "20vh",
+          scale: 0.75,
+          force3D: true,
+          backfaceVisibility: "hidden",
+        });
+      });
+      return () => mm.revert();
+    },
+    { scope: contentRef },
+  ); // No `dependencies` key = runs exactly once on mount
+
+  // ── FIX C: Entrance animation — depends on canAnimate ONLY (not lenis) ──
+  // Lenis initialising slowly must not delay the text/device reveal.
+  // Reduced device duration: 1.5s → 1.0s for snappier entrance.
+  useGSAP(
+    () => {
+      if (!canAnimate || !contentRef.current) return;
 
       const q = gsap.utils.selector(contentRef);
-      const mm = gsap.matchMedia();
+      // NOTE: gsap.set calls are intentionally REMOVED here.
+      // They are handled by the mount hook above.
 
-      // --- SHARED INITIAL STATES ---
-      gsap.set(".animate-text-reveal", { y: "110%", rotateX: -20, opacity: 0 });
-      gsap.set(".animate-fade-in", { opacity: 0, y: 30 });
-
-      gsap.set([macbookRef.current, iphoneRef.current], {
-        force3D: true,
-        backfaceVisibility: "hidden",
-      });
-
+      const start = "<";
       const entranceTl = gsap.timeline({
         defaults: { ease: "power3.out" },
         delay: 0.2,
@@ -89,24 +109,24 @@ export function HeroSection() {
         .to(
           ".animate-text-reveal",
           {
-            y: "0%",
+            autoAlpha: 1,
+            y: 0,
             rotateX: 0,
-            opacity: 1,
             duration: 1.4,
             stagger: 0.15,
             ease: "power4.out",
           },
-          "start+=0.9",
+          "<0.9",
         )
         .to(
           ".animate-fade-in",
-          { opacity: 1, y: 0, duration: 1, stagger: 0.2 },
+          { autoAlpha: 1, y: 0, duration: 1, stagger: 0.2 },
           "-=1.2",
         );
 
-      // --- DESKTOP ANIMATION ---
+      const mm = gsap.matchMedia();
+
       mm.add("(min-width: 768px)", () => {
-        gsap.set(macbookRef.current, { y: "20vh", scale: 0.8 });
         gsap.set(q(".macbook-screen-close"), {
           rotationX: 90,
           scale: 0.9,
@@ -115,12 +135,52 @@ export function HeroSection() {
         gsap.set(q(".macbook-screen-open"), { rotationX: 0, z: -580 });
         gsap.set(q(".macbook-content-mask"), { opacity: 0 });
 
+        // ── Duration reduced 1.5s → 1.0s for snappier entrance ──
         entranceTl.to(
           macbookRef.current,
-          { y: "10vh", scale: 1, duration: 1.5, ease: "expo.out" },
-          "start",
+          {
+            autoAlpha: 1,
+            y: "10vh",
+            scale: 1,
+            duration: 1.0,
+            ease: "expo.out",
+          },
+          start,
         );
+      });
 
+      mm.add("(max-width: 767px)", () => {
+        gsap.set(q(".iphone-content-mask"), { opacity: 0 });
+
+        // ── Duration reduced 1.5s → 1.0s for snappier entrance ──
+        entranceTl.to(
+          iphoneRef.current,
+          {
+            autoAlpha: 1,
+            y: "5vh",
+            scale: 0.85,
+            duration: 1.0,
+            ease: "expo.out",
+          },
+          start,
+        );
+      });
+
+      return () => mm.revert();
+    },
+    { scope: contentRef, dependencies: [canAnimate] },
+  );
+
+  // ── Scroll animations still require lenis (ScrollTrigger needs it) ──
+  useGSAP(
+    () => {
+      if (!canAnimate || !lenis || !trackRef.current || !contentRef.current)
+        return;
+
+      const q = gsap.utils.selector(contentRef);
+      const mm = gsap.matchMedia();
+
+      mm.add("(min-width: 768px)", () => {
         const scrollTl = gsap.timeline({
           scrollTrigger: {
             trigger: trackRef.current,
@@ -129,79 +189,35 @@ export function HeroSection() {
             scrub: 1.5,
           },
         });
-
-        scrollTl.to(
-          [".hero-text-container", ".hero-sub-text"],
-          {
-            y: -150,
-            opacity: 0,
-            duration: 0.1,
-            ease: "power1.in",
-          },
-          0,
-        );
-
-        scrollTl.to(
-          macbookRef.current,
-          {
-            y: "-15vh",
-            scale: 1.25,
-            duration: 0.3,
-            ease: "power1.inOut",
-          },
-          0,
-        );
-
-        scrollTl.to(
-          q(".macbook-content-mask"),
-          {
-            opacity: 1,
-            duration: 0.1,
-            ease: "power2.out",
-          },
-          0.1,
-        );
-
-        scrollTl.to(
-          q(".macbook-screen-close"),
-          {
-            rotationX: 0,
-            scale: 1,
-            bottom: 0,
-            duration: 0.65,
-            ease: "none",
-          },
-          0.25,
-        );
-
-        scrollTl.to(
-          q(".macbook-screen-open"),
-          {
-            rotationX: -90,
-            duration: 0.65,
-            ease: "none",
-          },
-          0.25,
-        );
+        scrollTl
+          .to(
+            [".hero-text-container", ".hero-sub-text"],
+            { y: -150, opacity: 0, duration: 0.1, ease: "power1.in" },
+            0,
+          )
+          .to(
+            macbookRef.current,
+            { y: "-15vh", scale: 1.25, duration: 0.3, ease: "power1.inOut" },
+            0,
+          )
+          .to(
+            q(".macbook-content-mask"),
+            { opacity: 1, duration: 0.1, ease: "power2.out" },
+            0.1,
+          )
+          .to(
+            q(".macbook-screen-close"),
+            { rotationX: 0, scale: 1, bottom: 0, duration: 0.65, ease: "none" },
+            0.25,
+          )
+          .to(
+            q(".macbook-screen-open"),
+            { rotationX: -90, duration: 0.65, ease: "none" },
+            0.25,
+          );
       });
 
-      // --- MOBILE ANIMATION ---
       mm.add("(max-width: 767px)", () => {
-        gsap.set(iphoneRef.current, { y: "20vh", scale: 0.75, opacity: 0 });
-        gsap.set(q(".iphone-content-mask"), { opacity: 0 });
-
-        entranceTl.to(
-          iphoneRef.current,
-          {
-            y: "5vh",
-            scale: 0.85,
-            opacity: 1,
-            duration: 1.5,
-            ease: "expo.out",
-          },
-          "start",
-        );
-
         const scrollTl = gsap.timeline({
           scrollTrigger: {
             trigger: trackRef.current,
@@ -210,44 +226,26 @@ export function HeroSection() {
             scrub: true,
           },
         });
-
-        scrollTl.to(
-          [".hero-text-container", ".hero-sub-text"],
-          {
-            y: -100,
-            opacity: 0,
-            duration: 0.1,
-            ease: "power1.in",
-          },
-          0,
-        );
-
-        scrollTl.to(
-          iphoneRef.current,
-          {
-            y: "5dvh",
-            scale: 1.1,
-            duration: 0.5,
-            ease: "power1.inOut",
-          },
-          0,
-        );
-
-        scrollTl.to(
-          q(".iphone-content-mask"),
-          {
-            opacity: 1,
-            duration: 0.1,
-            ease: "power2.out",
-          },
-          0.1,
-        );
+        scrollTl
+          .to(
+            [".hero-text-container", ".hero-sub-text"],
+            { y: -100, opacity: 0, duration: 0.1, ease: "power1.in" },
+            0,
+          )
+          .to(
+            iphoneRef.current,
+            { y: "5dvh", scale: 1.1, duration: 0.5, ease: "power1.inOut" },
+            0,
+          )
+          .to(
+            q(".iphone-content-mask"),
+            { opacity: 1, duration: 0.1, ease: "power2.out" },
+            0.1,
+          );
       });
 
       ScrollTrigger.refresh();
-      return () => {
-        mm.revert();
-      };
+      return () => mm.revert();
     },
     { scope: contentRef, dependencies: [canAnimate, lenis] },
   );

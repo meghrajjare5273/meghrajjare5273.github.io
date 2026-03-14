@@ -1,43 +1,17 @@
 ---
-import BlogSection from '@/components/blogs/Section';
-import Layout from '@/layouts/Layout.astro';
+import Layout from '../../layouts/Layout.astro';
+import BlogSection from '../../components/blogs/Section';
+import { ProjectsPageOrchestrator } from '../../components/orchestrators/ProjectPageOrchestrator';
+import { getBlogCards } from '../../lib/blog-content';
 
-// Mock data - replace with your MDX fetching logic
-const mockPosts = [
-  {
-    id: '1',
-    title: 'The Creative Website Guide',
-    date: '2026.1.11',
-    slug: 'the-creative-website-guide',
-    excerpt: 'Exploring the boundaries of web design and creativity.'
-  },
-  {
-    id: '2',
-    title: 'How to rewire your brain',
-    date: '2025.12.22',
-    slug: 'how-to-rewire-your-brain-to-be-addicted-to-coding',
-    excerpt: 'Neuroscience meets software development.'
-  },
-  {
-    id: '3',
-    title: 'Everything You Need',
-    date: '2025.12.15',
-    slug: 'everything-you-need-to-know-to-make-a-good-developer-portfolio-site',
-    excerpt: 'A comprehensive guide to building your online presence.'
-  }
-];
-
-// For production, fetch from MDX files:
-// const posts = await getCollection('blog');
-// const formattedPosts = posts.map(post => ({
-//   id: post.id,
-//   title: post.data.title,
-//   date: formatDate(post.data.publishDate),
-//   slug: post.slug,
-//   excerpt: post.data.description
-// }));
+const posts = await getBlogCards();
 ---
 
-<Layout title="Blogs | Portfolio">
-    <BlogSection client:load />
+<Layout
+  title="Blogs | Meghraj Jare"
+  description="Thoughts on web development, AI/ML, and the craft of building great software."
+>
+  <ProjectsPageOrchestrator client:load >
+  <BlogSection client:load posts={posts} />
+  </ProjectsPageOrchestrator>
 </Layout>

@@ -1,9 +1,10 @@
-import { defineCollection, z } from "astro:content";
+import { defineCollection } from "astro:content";
+import { z } from "astro/zod";
 import { glob } from "astro/loaders";
 
 const mediaItemSchema = z.object({
   type: z.enum(["image", "video"]),
-  url: z.string().url(),
+  url: z.url(),
   alt: z.string().optional(),
   aspectRatio: z.string().optional(),
 });
@@ -31,6 +32,21 @@ const projects = defineCollection({
   }),
 });
 
-export const collections = {
-  projects,
-};
+const blogs = defineCollection({
+  loader: glob({ pattern: "**/*.{md,mdx}", base: "./src/content/blogs" }),
+  schema: z.object({
+    title: z.string(),
+    slug: z.string(),
+    description: z.string(),
+    pubDate: z.coerce.date(),
+    updatedDate: z.coerce.date().optional(),
+    author: z.string().default("Meghraj Jare"),
+    thumbnail: z.string().optional(), // FIX: optional — posts may not always have a cover image
+    tags: z.array(z.string()).default([]),
+    readTime: z.number().int().optional(),
+    published: z.boolean().default(false),
+    featured: z.boolean().default(false),
+  }),
+});
+
+export const collections = { projects, blogs };

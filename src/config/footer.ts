@@ -25,7 +25,7 @@ export const FOOTER_CONTENT = {
     {
       title: "Resources",
       links: [
-        { label: "Blog", href: "/blog" },
+        { label: "Blogs", href: "/blogs" },
         { label: "Documentation", href: "/docs" },
       ],
     },
