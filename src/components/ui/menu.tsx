@@ -2,26 +2,30 @@
 
 import React from "react";
 import { cn } from "@/lib/utils";
+import HeroSection from "../landing/Hero";
 
 const navigationItems = [
   { name: "Home", href: "/" },
   { name: "About", href: "/#about" },
+  { name: "Awards", href: "/awards" },
+  // { name: "Process", href: "/process" },
+  { name: "Blogs", href: "/blogs" },
   { name: "Projects", href: "/projects" },
-  { name: "Process", href: "/process" },
-  { name: "Latest News", href: "/blog" },
   { name: "Contact", href: "/#contact" },
 ];
 
-export const MenuComponent: React.FC<{ className?: string }> = ({ className }) => {
+export const MenuComponent: React.FC<{ className?: string }> = ({
+  className,
+}) => {
   return (
     <nav
       className={cn(
         // Changed items-center to items-start for left alignment
         "flex w-full flex-col items-start justify-center",
-        className
+        className,
       )}
     >
-      <ul 
+      <ul
         // Changed items-center to items-start
         // Reduced gap from gap-4 to gap-1 md:gap-2 for better vertical fit
         className="flex flex-col items-start gap-1 md:gap-2 group/list"
@@ -30,15 +34,12 @@ export const MenuComponent: React.FC<{ className?: string }> = ({ className }) =
         }}
       >
         {navigationItems.map((item, index) => (
-          <li
-            key={index}
-            className="menu-link-item" 
-          >
+          <li key={index} className="menu-link-item">
             <a
               href={item.href}
               className={cn(
                 "block font-about text-foreground transition-all w-full duration-300 ease-out",
-                // Reduced text sizes slightly: 
+                // Reduced text sizes slightly:
                 // Mobile: 4xl (was 5xl)
                 // Tablet: 6xl (was 7xl)
                 // Desktop: 7xl (was 8xl)
@@ -48,7 +49,7 @@ export const MenuComponent: React.FC<{ className?: string }> = ({ className }) =
                 "opacity-100",
                 // Hover Logic
                 "group-hover/list:opacity-40",
-                "hover:opacity-100! hover:translate-x-2" // Added slight right nudge on hover
+                "hover:opacity-100! hover:translate-x-2", // Added slight right nudge on hover
               )}
             >
               {item.name}

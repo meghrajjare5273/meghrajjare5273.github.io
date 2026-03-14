@@ -3,7 +3,6 @@ import { getCollection, type CollectionEntry } from "astro:content";
 
 export type BlogEntry = CollectionEntry<"blogs">;
 
-/** Full data shape — used by [slug].astro and BlogLayout */
 export interface BlogPostData {
   title: string;
   slug: string;
@@ -11,14 +10,13 @@ export interface BlogPostData {
   pubDate: Date;
   updatedDate?: Date;
   author: string;
-  thumbnail: string;
+  thumbnail?: string; // FIX: optional
   tags: string[];
   readTime?: number;
   published: boolean;
   featured: boolean;
 }
 
-/** Lean type — used by BlogList and BlogCard components */
 export interface BlogCard {
   title: string;
   slug: string;
@@ -26,27 +24,21 @@ export interface BlogCard {
   pubDate: Date;
   updatedDate?: Date;
   author: string;
-  thumbnail: string;
+  thumbnail?: string; // FIX: optional
   tags: string[];
   readTime?: number;
   featured: boolean;
 }
 
-// ─── Sorting ───────────────────────────────────────────────────────────────
-
 function sortPosts(a: BlogEntry, b: BlogEntry): number {
   return b.data.pubDate.getTime() - a.data.pubDate.getTime();
 }
 
-// ─── Query Helpers ─────────────────────────────────────────────────────────
-
-/** Returns all published posts sorted newest-first */
 export async function getAllPosts(): Promise<BlogEntry[]> {
   const posts = await getCollection("blogs", ({ data }) => data.published);
   return posts.sort(sortPosts);
 }
 
-/** Returns only featured published posts */
 export async function getFeaturedPosts(): Promise<BlogEntry[]> {
   const posts = await getCollection(
     "blogs",
@@ -55,7 +47,6 @@ export async function getFeaturedPosts(): Promise<BlogEntry[]> {
   return posts.sort(sortPosts);
 }
 
-/** Returns lean BlogCard objects for the listing page */
 export async function getBlogCards(): Promise<BlogCard[]> {
   const posts = await getAllPosts();
   return posts.map((post) => ({
@@ -71,8 +62,6 @@ export async function getBlogCards(): Promise<BlogCard[]> {
     featured: post.data.featured,
   }));
 }
-
-// ─── Formatting Utility ────────────────────────────────────────────────────
 
 export function formatDate(date: Date): string {
   return date.toLocaleDateString("en-US", {

@@ -1,9 +1,8 @@
 ---
-// src/pages/blog/index.astro
-import Layout from '@/layouts/Layout.astro';
-import BlogList from '@/components/blogs/Section';
-import { ProjectsPageOrchestrator } from '@/components/orchestrators/ProjectPageOrchestrator'
-import { getBlogCards } from '@/lib/blog-content';
+import Layout from '../../layouts/Layout.astro';
+import BlogSection from '../../components/blogs/Section';
+import { ProjectsPageOrchestrator } from '../../components/orchestrators/ProjectPageOrchestrator';
+import { getBlogCards } from '../../lib/blog-content';
 
 const posts = await getBlogCards();
 ---
@@ -13,7 +12,6 @@ const posts = await getBlogCards();
   description="Thoughts on web development, AI/ML, and the craft of building great software."
 >
   <ProjectsPageOrchestrator client:load >
-
-    <BlogList client:load posts={posts} />
+  <BlogSection client:load posts={posts} />
   </ProjectsPageOrchestrator>
 </Layout>

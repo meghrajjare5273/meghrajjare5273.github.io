@@ -1,19 +1,17 @@
+// src/content.config.ts
 import { z } from "astro/zod";
 import { glob } from "astro/loaders";
 import { defineCollection } from "astro:content";
 
 const mediaItemSchema = z.object({
-  type: z.enum(["image", "video"]),
+  type: z.enum(["image", "video", "url"]),
   url: z.string().url(),
   alt: z.string().optional(),
   aspectRatio: z.string().optional(),
 });
 
 const projects = defineCollection({
-  loader: glob({
-    pattern: "**/*.{md,mdx}",
-    base: "./src/content/projects",
-  }),
+  loader: glob({ pattern: "**/*.{md,mdx}", base: "./src/content/projects" }),
   schema: z.object({
     title: z.string(),
     svgTitle: z.string(),
@@ -33,7 +31,7 @@ const projects = defineCollection({
 });
 
 const blogs = defineCollection({
-  loader: glob({ pattern: "**/*.{md,mdx}", base: "./src/content/blog" }),
+  loader: glob({ pattern: "**/*.{md,mdx}", base: "./src/content/blogs" }),
   schema: z.object({
     title: z.string(),
     slug: z.string(),
@@ -41,15 +39,12 @@ const blogs = defineCollection({
     pubDate: z.coerce.date(),
     updatedDate: z.coerce.date().optional(),
     author: z.string().default("Meghraj Jare"),
-    thumbnail: z.string(),
+    thumbnail: z.string().optional(), // FIX: optional — posts may not always have a cover image
     tags: z.array(z.string()).default([]),
-    readTime: z.number().int().optional(), // estimated minutes
+    readTime: z.number().int().optional(),
     published: z.boolean().default(false),
     featured: z.boolean().default(false),
   }),
 });
 
-export const collections = {
-  projects,
-  blogs,
-};
+export const collections = { projects, blogs };
