@@ -279,7 +279,7 @@ export const ProjectMediaCarousel = ({
             </div>
 
             {/* Monospace Counter */}
-            <div className="flex items-baseline gap-0.5 pr-3 font-mono">
+            <div className="flex items-baseline gap-0.5 pr-3 font-sans">
               <span className="text-[10px] text-white/60 tabular-nums leading-none">
                 {currentIndexFormatted}
               </span>

@@ -1,17 +1,19 @@
-// src/content.config.ts
+import { defineCollection } from "astro:content";
 import { z } from "astro/zod";
 import { glob } from "astro/loaders";
-import { defineCollection } from "astro:content";
 
 const mediaItemSchema = z.object({
-  type: z.enum(["image", "video", "url"]),
-  url: z.string().url(),
+  type: z.enum(["image", "video"]),
+  url: z.url(),
   alt: z.string().optional(),
   aspectRatio: z.string().optional(),
 });
 
 const projects = defineCollection({
-  loader: glob({ pattern: "**/*.{md,mdx}", base: "./src/content/projects" }),
+  loader: glob({
+    pattern: "**/*.{md,mdx}",
+    base: "./src/content/projects",
+  }),
   schema: z.object({
     title: z.string(),
     svgTitle: z.string(),

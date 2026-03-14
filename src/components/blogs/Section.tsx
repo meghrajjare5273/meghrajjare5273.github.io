@@ -284,15 +284,15 @@ export default function BlogSection({ posts }: { posts: BlogCard[] }) {
           {posts.length > 0 && (
             <div
               ref={imageCardRef}
-              className="relative hidden aspect-square w-full max-w-[252px] origin-bottom-left scale-95 overflow-hidden rounded-[3px] bg-foreground opacity-0 min-[900px]:block"
+              className="relative hidden aspect-square w-full max-w-[252px] origin-bottom-left scale-95 overflow-hidden rounded-[3px] bg-[#181818] dark:bg-[#b3ada6] opacity-0 min-[900px]:block text-white  dark:text-black"
               style={{ transformStyle: "preserve-3d" }}
             >
               <div className="blog-image-card-inner absolute inset-0">
-                <div className="absolute left-[18px] top-4 z-[2] text-[1.3rem] font-semibold leading-none tracking-[-0.03em] text-white">
-                  N<sup className="align-super text-[0.8rem]">o</sup>
+                <div className="absolute left-[18px] top-5 z-[2] text-[1.3rem] font-semibold leading-none tracking-[-0.03em] ">
+                  N<sup className="align-super text-[0.8rem] ">o</sup>
                   <span ref={numBadgeRef}>01</span>
                 </div>
-                <div className="absolute bottom-0 right-0 h-[75%] w-[70%]">
+                <div className="absolute bottom-0 right-0 h-[80%] w-[85%]">
                   <img
                     ref={imgARef}
                     src={firstThumbnail}
@@ -338,7 +338,7 @@ export default function BlogSection({ posts }: { posts: BlogCard[] }) {
               key={post.slug}
               // FIX: navigate to the correct blog post URL
               onClick={() => (window.location.href = `/blogs/${post.slug}`)}
-              className="blog-row group block w-full cursor-pointer border-t border-black/10 dark:border-white/10 bg-transparent text-start text-foreground no-underline transition-colors duration-[260ms] ease-[ease] hover:bg-foreground hover:text-[#b3ada6] dark:hover:text-[#313131] last:border-b last:border-black/10 dark:last:border-white/10"
+              className="blog-row group block w-full cursor-pointer border-t border-black/10 dark:border-white/10 bg-transparent text-start text-foreground no-underline transition-colors duration-[260ms] ease-[ease] hover:bg-[#181818] hover:dark:bg-[#b3ada6] hover:text-[#b3ada6] dark:hover:text-[#313131] last:border-b last:border-black/10 dark:last:border-white/10"
               onMouseEnter={() => handleEnter(post, i)}
               onMouseLeave={handleLeave}
             >
