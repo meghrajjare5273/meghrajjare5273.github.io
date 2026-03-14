@@ -184,7 +184,11 @@
     @apply border-border outline-ring/50;
   }
   body {
-    @apply bg-background text-foreground;
+    /* @apply bg-background text-foreground; */
+    background-color: #eceae8;
+  }
+  html.dark body {
+    background-color: #181818;
   }
 }
 
@@ -251,6 +255,11 @@ html {
 .hero-text-container,
 .hero-sub-text {
   will-change: transform, opacity;
+}
+
+.animate-text-reveal,
+.animate-fade-in {
+  visibility: hidden;
 }
 
 /* src/styles/global.css */
